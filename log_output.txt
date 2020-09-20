@@ -1,0 +1,322 @@
+PS C:\Users\david\Projects\advanced-iot-lisat>  cd 'c:\Users\david\Projects\advanced-iot-lisat'; & 'C:\Users\david\AppData\Local\Programs\Python\Python37\python.exe' 'c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy\launcher' '60316' '--' 'c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py' 
+Traceback (most recent call last):
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy\__main__.py", line 45, in <module>
+    cli.main()
+  File "c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy/..\debugpy\server\cli.py", line 430, in main
+    run()
+  File "c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy/..\debugpy\server\cli.py", line 267, in run_file
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\runpy.py", line 263, in run_path
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\runpy.py", line 96, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 12, in <module>
+    ser = serial.Serial("COM4", 1000000)
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\site-packages\serial\serialwin32.py", line 31, in __init__
+    super(Serial, self).__init__(*args, **kwargs)
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\site-packages\serial\serialutil.py", line 240, in __init__
+    self.open()
+  File "C:\Users\david\AppData\Local\Programs\Python\Python37\lib\site-packages\serial\serialwin32.py", line 62, in open
+    raise SerialException("could not open port {!r}: {!r}".format(self.portstr, ctypes.WinError()))
+serial.serialutil.SerialException: could not open port 'COM4': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+PS C:\Users\david\Projects\advanced-iot-lisat>  cd 'c:\Users\david\Projects\advanced-iot-lisat'; & 'C:\Users\david\AppData\Local\Programs\Python\Python37\python.exe' 'c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy\launcher' '60355' '--' 'c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py' 
+PS C:\Users\david\Projects\advanced-iot-lisat>  cd 'c:\Users\david\Projects\advanced-iot-lisat'; & 'C:\Users\david\AppData\Local\Programs\Python\Python37\python.exe' 'c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy\launcher' '60366' '--' 'c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py' 
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'2.333.411\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'[i,t,v]2.334.34.409\r\n'
+Unrecognized reception:  b'409\r\n'
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+IndexError: list index out of range
+
+illegal line or parsing error b'[i,t,v]:94]:255.320\r\n'
+Unrecognized reception:  b'13\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 60, in <module>
+    time_value = int(values[1])
+ValueError: invalid literal for int() with base 10: '3i4'
+
+illegal line or parsing error b'[i,t,v]:429.3i4.436\r\n'
+Unrecognized reception:  b'33.332.448\r\n'
+Unrecognized reception:  b'.12.422\r\n'
+Unrecognized reception:  b']:309.334.478\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+IndexError: list index out of range
+
+illegal line or parsing error b'[i,t,v]:4232334.406\r\n'
+Unrecognized reception:  b']:697.333.413\r\n'
+Unrecognized reception:  b'[i,t,v]3.38.333.437\r\n'
+Unrecognized reception:  b':46.13.416\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'[i,t,v\r\n'
+Unrecognized reception:  b'v]:700.334.426\r\n'
+Unrecognized reception:  b'[,t,v]:180..332.410\r\n'
+Unrecognized reception:  b'i,t,v]:181.331.417\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'[i,t,1.473\r\n'
+Unrecognized reception:  b'327.516\r\n'
+Unrecognized reception:  b',v]:701.334.546\r\n'
+Unrecognized reception:  b'[05.333.513.332.442\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 60, in <module>
+    time_value = int(values[1])
+ValueError: invalid literal for int() with base 10: ''
+
+illegal line or parsing error b'[i,t,v]:57.\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+IndexError: list index out of range
+
+illegal line or parsing error b'[i,t,v]:3t,v]:642.33\n'
+Unrecognized reception:  b'.456\r\n'
+Unrecognized reception:  b'98.20.267\r\n'
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+IndexError: list index out of range
+
+illegal line or parsing error b'[i,t,v]:8332.469\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'331t,v]:268.332.453\r\n'
+Unrecognized reception:  b'333.463\r\n'
+Unrecognized reception:  b'v]:700.332.461\r\n'
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+ValueError: invalid literal for int() with base 10: ''
+
+illegal line or parsing error b'[i,t,v]:928.11..463\r[i,t,v]:929.36.46668\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 60, in <module>
+    time_value = int(values[1])
+ValueError: invalid literal for int() with base 10: 't,v]:87'
+
+illegal line or parsing error b'[i,t,v]:567.t,v]:87\r\n'
+Unrecognized reception:  b'332.428\r\n'
+Unrecognized reception:  b'v]:701.334.424\r\n'
+Unrecognized reception:  b't,v]:309.334.415\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'[i,t,vt,v]:359.03\r\n'
+Unrecognized reception:  b'399\r\n'
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+IndexError: list index out of range
+
+illegal line or parsing error b'[i,t,v]:710.330\r\n'
+Unrecognized reception:  b'\n'
+Unrecognized reception:  b']:300.332.334\r\n'
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 60, in <module>
+    time_value = int(values[1])
+ValueError: invalid literal for int() with base 10: ''
+
+illegal line or parsing error b'[i,t,v]:431..334.58\r\n'
+Unrecognized reception:  b'\n'
+Unrecognized reception:  b't,v]:705.332.332\r\n'
+Unrecognized reception:  b',v]:305.331.580\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b',v]:479.331.332.348\r\n'
+Unrecognized reception:  b'.374\r\n'
+Unrecognized reception:  b'.332.507\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'.339.411\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b']:309.331.463\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'[i,tt,v]:75.331.594\r\n'
+Unrecognized reception:  b'29\r\n'
+Unrecognized reception:  b'[i.420\r\n'
+PS C:\Users\david\Projects\advanced-iot-lisat>  cd 'c:\Users\david\Projects\advanced-iot-lisat'; & 'C:\Users\david\AppData\Local\Programs\Python\Python37\python.exe' 'c:\Users\david\.vscode\extensions\ms-python.python-2020.8.109390\pythonFiles\lib\python\debugpy\launcher' '60395' '--' 'c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py' 
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'332.420\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'i,t,v]:306.332.447\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'.332.463\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'331.523\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+ValueError: invalid literal for int() with base 10: '428\rt,v,t,v]:420'
+
+illegal line or parsing error b'[i,t,v]:419.333.428\rt,v,t,v]:420.331.422,t,v]:722.333.634.449\r\n'
+Unrecognized reception:  b',v]:723.2016.512\r\n'
+Unrecognized reception:  b'432\r\n'
+Unrecognized reception:  b'[i,t,v]\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Unrecognized reception:  b'304.338.466\r\n'
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Buffer overflow exception!
+Traceback (most recent call last):
+  File "c:\Users\david\Projects\advanced-iot-lisat\example-localization-arduino\receive_buffer.py", line 61, in <module>
+    sound_value = int(values[2])
+ValueError: invalid literal for int() with base 10: '537\ri,t,v]:]:910'
+
+illegal line or parsing error b'[i,t,v]:607.33334.537\ri,t,v]:]:910.332.519\r\n'
+Unrecognized reception:  b'326.357\r\n'
+Unrecognized reception:  b't,v]:307.331.470\r\n'
+PS C:\Users\david\Projects\advanced-iot-lisat>

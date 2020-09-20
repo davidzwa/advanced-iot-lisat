@@ -26,7 +26,7 @@ def write_audio(audio_buffer, sample_width, frequency):
 start_time = get_time_ms()
 prev_time = get_time_ms()
 sample_count = 0
-ser = serial.Serial("COM4", 2000000)
+ser = serial.Serial("COM4", 250000)
 ser.flushInput()
 data = []
 
@@ -34,6 +34,8 @@ while True:
     try:
         line = int(ser.readline().decode()[:-2]) # strip off any serial characters
     except UnicodeDecodeError:
+        continue
+    except ValueError:
         continue
     sample_count += 1
     abs_time = get_time_ms()
