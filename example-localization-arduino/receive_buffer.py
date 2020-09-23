@@ -46,8 +46,14 @@ def write_audio(audio_buffer, sample_width, frequency, filename):
 
 # Scale a value given min and max of chunk's samples to [0, 255] scale
 def map_value_8bit_unsigned(value, min, max):
-    ratio = 255.0/(max - min)
-    return int((value - min) * ratio)
+    ratio = 255.0 / (max - min)
+
+    # We dont want to fully compress nor normalize - we just want a normal range
+    if (ratio < 10.0):
+        return int((value - min) * ratio)
+    else:
+        # If the min/max difference is that small, the ratio is big and we shouldnt normalizeclip the signal
+        return int(value - min)
 
 def normalize_integer(value_list):
     max_value = max(value_list)
@@ -79,12 +85,14 @@ while True:
         rng_filename = "audio/" + get_random_string(3) + base_filename
         sound_vector = normalize_integer(sound_vector)
         # Perform tasks
-        frequency = 1 / (200 * 1E-6)
-        write_audio(sound_vector, 1, frequency, rng_filename)
-        playsound(rng_filename)
+        frequency = 1 / (500 * 1E-6)
+        # write_audio(sound_vector, 1, frequency, rng_filename)
+        # playsound(rng_filename)
         
         sound_vector = []
         time_vector = []
+        ser.write(bytes("ati", 'utf-8'))
+        # ser.writelines("V".encode());
     elif overflow_tag in str(serial_line):
         print('Buffer overflow exception!')
     else:

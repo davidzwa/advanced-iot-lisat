@@ -12,14 +12,21 @@ extern "C"
 #define os_timer_arm_us(a, b, c) ets_timer_arm_new(a, b, c, 0)
 }
 
-#define NO_BUFFER
+// TODOS
+// - [ ] Parameter setting over serial or wireless
+// - [ ] Storing parameters on flash
+// - [ ] Customizing LPF/HPF
+// - [ ] Better ping-pong buffer mechanism
+// - [ ] Bigger buffer > circular chunk sliding-window within buffer, f.e. 64 samples
+
+// #define NO_BUFFER
 
 #ifdef DEBUG
 const int sampling_period_us = 50000; // 50ms, 20 Hz;
 #define ADC_SAMPLES_COUNT 100
 #else
-const int sampling_period_us = 2000; // 200us, 5 kHz;
-#define ADC_SAMPLES_COUNT 3000
+const int sampling_period_us = 500; // 200us, 5 kHz;
+#define ADC_SAMPLES_COUNT 1000
 #endif
 
 const int analogInPin = A0;
@@ -57,12 +64,12 @@ void timerCallback(void *pArg)
         analogBuffer[bufPosition] = bandpassEMA(analogRead(analogInPin));
         bufPosition++;
     }
-    else
-    {
-        Serial.println("!Buffer overflow");
-    }
+    // else
+    // {
+    //     Serial.println("!Buffer overflow");
+    // }
 #endif
-        lastMicros = micros();
+    lastMicros = micros();
 }
 
 // HPF EMA
@@ -72,19 +79,18 @@ int EMA_S = 0;     //initialization of EMA S
 int filterValueEMA(int analogValue)
 {
     EMA_S = (EMA_a * analogValue) + ((1 - EMA_a) * EMA_S); // run the EMA
-    return analogValue; // - EMA_S; // calculate the high-pass signal
+    return analogValue;                                    // - EMA_S; // calculate the high-pass signal
 }
 
-float EMA_a_low = 0.3; //initialization of EMA alpha
-float EMA_a_high = 0.5;
+float EMA_a_low = 0.5; //initialization of EMA alpha
+float EMA_a_high = 0.9;
 int EMA_S_low = 0; //initialization of EMA S
 int EMA_S_high = 0;
-int bandpassEMA(int analogValue) {
+int bandpassEMA(int analogValue)
+{
     EMA_S_low = (EMA_a_low * analogValue) + ((1 - EMA_a_low) * EMA_S_low); //run the EMA
     EMA_S_high = (EMA_a_high * analogValue) + ((1 - EMA_a_high) * EMA_S_high);
-
-    // highpass = analogValue - EMA_S_low; //find the high-pass as before (for comparison)
-    return EMA_S_high - EMA_S_low;  //find the band-pass
+    return EMA_S_high - EMA_S_low; //find the band-pass
 }
 
 void user_init(void)
@@ -102,9 +108,24 @@ void setup()
     user_init();
 }
 
+String incoming = ""; // for incoming serial string data
+void checkIncomingSerial()
+{
+    if (Serial.available() > 0)
+    {
+        // read the incoming:
+        incoming = Serial.readString();
+        // say what you got:
+        // Serial.print("RX:");
+        Serial.println(incoming);
+
+        incoming = "";
+    }
+}
+
 void loop()
 {
-    #ifndef NO_BUFFER
+#ifndef NO_BUFFER
     // Transmitting = true => overflow? Shouldnt be possible in main routine.
     if (bufPosition >= ADC_SAMPLES_COUNT && transmitting == false)
     {
@@ -132,6 +153,8 @@ void loop()
     {
         Serial.print("!Re-transmitting ");
     }
+
+    checkIncomingSerial();
 #endif       // !NO_BUFFER
     yield(); // or delay(0);
 }
