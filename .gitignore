@@ -31,4 +31,10 @@
 *.out
 *.app
 
+# Matlab
 *.asv
+# Python/Arduino Project
+audio
+# CCS 10
+examples-ccs-v10/voice_detection_MSP_EXP432P401R_nortos_ccs/Debug/
+
