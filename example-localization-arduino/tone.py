@@ -2,7 +2,7 @@ import numpy
 import pygame
 
 sampleRate = 44100
-freq = 440
+freq = 1000
 
 pygame.mixer.init(44100, -16, 2, 512)
 # sampling frequency, size, channels, buffer
@@ -26,12 +26,17 @@ pygame.mixer.init(44100, -16, 2, 512)
 # but sound dropout may occur. It can be raised to larger values
 # to ensure playback never skips, but it will impose latency on sound playback.
 
-arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * freq * x / sampleRate)
-                   for x in range(0, sampleRate)]).astype(numpy.int16)
-arr2 = numpy.c_[arr, arr]
-sound = pygame.sndarray.make_sound(arr2)
+def get_sound(freq):
+    arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * freq * x / sampleRate)
+                    for x in range(0, sampleRate)]).astype(numpy.int16)
+    return numpy.c_[arr, arr]
+
+freq = 100
 while True:
+    sound = pygame.sndarray.make_sound(get_sound(freq))
     sound.play(-1)
-    pygame.time.delay(400)
+    pygame.time.delay(freq)
     sound.stop()
-    pygame.time.delay(1000)
+    pygame.time.delay(freq)
+
+    freq += 50
