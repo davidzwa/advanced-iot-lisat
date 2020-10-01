@@ -12,11 +12,11 @@
 
 ### Papers
 
-- Audio-based localization for swarms of micro air vehicles ([link])(https://ieeexplore.ieee.org/document/6907551)
+- Audio-based localization for swarms of micro air vehicles [(link)](https://ieeexplore.ieee.org/document/6907551)
   - TDOA using four microphones packed tightly together
   - Single 'beacon' unit which transmits chirps for others to localize
   - Extended Kalman filter for fusing sound information with sensory movement information
-- Sound based localization and identification in industrial environments ([link])(https://ieeexplore.ieee.org/abstract/document/8217063)
+- Sound based localization and identification in industrial environments [(link)](https://ieeexplore.ieee.org/abstract/document/8217063)
   - TDOA Source direction-only localization using two microphones
   - Beamforming to let microphones listen in specific direction
 
