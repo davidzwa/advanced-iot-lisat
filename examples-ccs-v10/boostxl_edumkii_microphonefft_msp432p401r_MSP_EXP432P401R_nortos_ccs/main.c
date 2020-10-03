@@ -18,10 +18,8 @@
 #include <arm_math.h>
 #include <arm_const_structs.h>
 
-#define TEST_LENGTH_SAMPLES 512
 #define SAMPLE_LENGTH 512
 #define BLOCK_SIZE 512
-#define NUM_TAPS 21
 
 /* ------------------------------------------------------------------
  * Global variables for FFT Bin Example
@@ -39,11 +37,11 @@ Graphics_Context g_sContext;
 
 /* DMA Control Table */
 #if defined(__TI_COMPILER_VERSION__)
-#pragma DATA_ALIGN(MSP_EXP432P401RLP_DMAControlTable, 1024)
+#pragma DATA_ALIGN(MSP_EXP432P401RLP_DMAControlTable, SAMPLE_LENGTH*2)
 #elif defined(__IAR_SYSTEMS_ICC__)
-#pragma data_alignment=1024
+#pragma data_alignment=SAMPLE_LENGTH*2
 #elif defined(__GNUC__)
-__attribute__ ((aligned (1024)))
+__attribute__ ((aligned (SAMPLE_LENGTH*2)))
 #elif defined(__CC_ARM)
 __align(1024)
 #endif
@@ -53,36 +51,43 @@ static DMA_ControlTable MSP_EXP432P401RLP_DMAControlTable[32];
 float hann[SAMPLE_LENGTH];
 int16_t data_array1[SAMPLE_LENGTH];
 int16_t data_array2[SAMPLE_LENGTH];
+int16_t data_input_filtered[SAMPLE_LENGTH];
+
 int16_t data_input[SAMPLE_LENGTH * 2];
 int16_t data_output[SAMPLE_LENGTH];
 
 /* FIR data/state */
-static q15_t testOutput[SAMPLE_LENGTH];
-static q15_t firStateF32[BLOCK_SIZE + NUM_TAPS -1];
-
 // http://t-filter.engineerjs.com/
+#define NUM_TAPS 26
+static q15_t firStateF32[BLOCK_SIZE + NUM_TAPS -1];
 q15_t firCoeffs32LP[NUM_TAPS] = {
-                                 -659,
-                                   -1915,
-                                   -2005,
-                                   -358,
-                                   1679,
-                                   1089,
-                                   -1853,
-                                   -2807,
-                                   2077,
-                                   10186,
-                                   14235,
-                                   10186,
-                                   2077,
-                                   -2807,
-                                   -1853,
-                                   1089,
-                                   1679,
-                                   -358,
-                                   -2005,
-                                   -1915,
-                                   -659};
+                                 272,
+                                   449,
+                                   -266,
+                                   -540,
+                                   -55,
+                                   -227,
+                                   -1029,
+                                   745,
+                                   3927,
+                                   1699,
+                                   -5616,
+                                   -6594,
+                                   2766,
+                                   9228,
+                                   2766,
+                                   -6594,
+                                   -5616,
+                                   1699,
+                                   3927,
+                                   745,
+                                   -1029,
+                                   -227,
+                                   -55,
+                                   -540,
+                                   -266,
+                                   449
+};
 //                                 1,0,0,1,1,1,-1,-3,-5,-3,4,10,10,10,0,0,14,4,-3,-5,-3,-1,1,1,1,0,0,0};
 
 volatile int switch_data = 0;
@@ -127,7 +132,7 @@ int main(void)
     // Initialize FIR instance
     uint32_t blockSize = BLOCK_SIZE;
     arm_fir_instance_q15 S;
-    arm_fir_init_q15(&S, NUM_TAPS, &firCoeffs32LP, &firStateF32, blockSize);
+    arm_fir_init_q15(&S, NUM_TAPS, firCoeffs32LP, firStateF32, blockSize);
 
     /* Configuring Timer_A to have a period of approximately 500ms and
      * an initial duty cycle of 10% of that (3200 ticks)  */
@@ -208,16 +213,15 @@ int main(void)
 
         int i = 0;
 //        arm_iir_lattice_q15(S, pSrc, pDst, blockSize);
-
 //        (&instance, data_array1, data_input);
 
         /* Computer real FFT using the completed data buffer */
         if(switch_data & 1)
         {
-            arm_fir_q15(&S, &data_array1, &data_array1, blockSize);
-            for(i = 0; i < 512; i++)
+            arm_fir_q15(&S, &data_array1, &data_input_filtered, blockSize);
+            for(i = 0; i < SAMPLE_LENGTH; i++)
             {
-                data_array1[i] = (int16_t)(hann[i] * data_array1[i]);
+                data_input_filtered[i] = (int16_t)(hann[i] * data_input_filtered[i]);
             }
             arm_rfft_instance_q15 instance;
             status = arm_rfft_init_q15(&instance, fftSize, ifftFlag,
@@ -227,10 +231,10 @@ int main(void)
         }
         else
         {
-            arm_fir_q15(&S, &data_array2, &data_array2, blockSize);
-            for(i = 0; i < 512; i++)
+            arm_fir_q15(&S, &data_array2, &data_input_filtered, blockSize);
+            for(i = 0; i < SAMPLE_LENGTH; i++)
             {
-                data_array2[i] = (int16_t)(hann[i] * data_array2[i]);
+                data_input_filtered[i] = (int16_t)(hann[i] * data_input_filtered[i]);
             }
             arm_rfft_instance_q15 instance;
             status = arm_rfft_init_q15(&instance, fftSize, ifftFlag,
@@ -240,7 +244,7 @@ int main(void)
         }
 
         /* Calculate magnitude of FFT complex output */
-        for(i = 0; i < 1024; i += 2)
+        for(i = 0; i < SAMPLE_LENGTH*2; i += 2)
         {
             data_output[i /
                         2] =
