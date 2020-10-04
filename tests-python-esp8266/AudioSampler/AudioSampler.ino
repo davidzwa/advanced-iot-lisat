@@ -35,10 +35,12 @@ const int sampling_period_us = 500; // 200us, 5 kHz;
 #endif
 
 const int ledPin = LED_BUILTIN;
-#define timeSecondsMs 20
+#define timeSecondsMs 50
 // https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
 const int analogInPin = A0;
 const int micTriggerPin = D5;
+const int mic2TriggerPin = D6;
+const int mic3TriggerPin = D7;
 const int wosModePin = 16;
 int analogBuffer[ADC_SAMPLES_COUNT];
 int analogBuffer_transmit[ADC_SAMPLES_COUNT];
@@ -122,20 +124,30 @@ void user_init(void)
 // Timer: Auxiliary variables
 unsigned long now = millis();
 unsigned long lastTrigger = 0;
+unsigned long lastTrigger2 = 0;
+unsigned long lastTrigger3 = 0;
 boolean startTimer = false;
 // Checks if motion was detected, sets LED HIGH and starts a timer
 ICACHE_RAM_ATTR void interruptMicTriggered()
 {
-    Serial.println("Sound detected.");
     digitalWrite(ledPin, HIGH);
     startTimer = true;
-    lastTrigger = millis();
+    lastTrigger = micros();
+}
+
+ICACHE_RAM_ATTR void interruptMic2Triggered()
+{
+    lastTrigger2 = micros();
+}
+
+ICACHE_RAM_ATTR void interruptMic3Triggered()
+{
+    lastTrigger3 = micros();
 }
 
 void setup()
 {
     WiFi.disconnect();
-    // WiFi.begin(ssid, password); // Connect to the network
 
     Serial.begin(serial_baud_rate);
     tickOccured = false;
@@ -153,6 +165,8 @@ void setup()
     pinMode(micTriggerPin, INPUT_PULLUP);
     // https://randomnerdtutorials.com/interrupts-timers-esp8266-arduino-ide-nodemcu/
     attachInterrupt(digitalPinToInterrupt(micTriggerPin), interruptMicTriggered, RISING);
+    attachInterrupt(digitalPinToInterrupt(mic2TriggerPin), interruptMic2Triggered, RISING);
+    attachInterrupt(digitalPinToInterrupt(mic3TriggerPin), interruptMic3Triggered, RISING);
 }
 
 String incoming = "";
@@ -175,7 +189,17 @@ void loop()
     // Turn off the LED after the number of seconds defined in the timeSeconds variable
     if (startTimer && (now - lastTrigger > (timeSecondsMs)))
     {
+        long minTriggerVal = min(min(lastTrigger, lastTrigger2), min(lastTrigger2, lastTrigger3));
+        if (lastTrigger - minTriggerVal < 1000 && lastTrigger2 - minTriggerVal < 1000 && lastTrigger3 - minTriggerVal < 1000) {
+            Serial.print(lastTrigger - minTriggerVal);
+        Serial.print(" ");
+        Serial.print(lastTrigger2 - minTriggerVal);
+        Serial.print(" ");
+        Serial.print(lastTrigger3 - minTriggerVal);
+        Serial.print(" ");
         Serial.println("Motion stopped...");
+        }
+        delay(100);
         digitalWrite(ledPin, LOW);
         digitalWrite(wosModePin, LOW);
         digitalWrite(wosModePin, HIGH);
