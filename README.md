@@ -1,5 +1,12 @@
 # Swarm Got Talent
 
+## Folders
+
+- `documentation`: papers and small write-ups
+- `backup`: old folders with valuable code
+- `Matlab_tdoa_simulation`: TDOA simulation + algorithm validation
+- `tests-python-eso8266`: secondary method of recording audio (quick mic/hardware tests)
+
 ## ToDo list (tentatively sorted by priority)
 - [x] done
 - [ ] to be done
@@ -19,5 +26,3 @@
 - Sound based localization and identification in industrial environments [(link)](https://ieeexplore.ieee.org/abstract/document/8217063)
   - TDOA Source direction-only localization using two microphones
   - Beamforming to let microphones listen in specific direction
-
-  

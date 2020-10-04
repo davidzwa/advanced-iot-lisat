@@ -1,0 +1,1258 @@
+******************************************************************************
+                  TI ARM Linker PC v20.2.2                     
+******************************************************************************
+>> Linked Thu Sep 24 11:45:04 2020
+
+OUTPUT FILE NAME:   <voice_detection_MSP_EXP432P401R_nortos_ccs.out>
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000c665
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  MAIN                  00000000   00040000  00015f6c  0002a094  R  X
+  INFO                  00200000   00004000  00000000  00004000  R  X
+  SRAM_CODE             01000000   00010000  00003cde  0000c322  RW X
+  SRAM_DATA             20000000   00010000  00003cde  0000c322  RW  
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    0000cc90   0000cc90    r-x
+  00000000    00000000    000000e4   000000e4    r-- .intvecs
+  000000e8    000000e8    0000caf8   0000caf8    r-x .text
+  0000cbe0    0000cbe0    000000b0   000000b0    r-- .cinit
+0000d000    0000d000    000092e0   000092e0    r--
+  0000d000    0000d000    000092e0   000092e0    r-- .const
+20000000    20000000    00003ade   00000000    rw-
+  20000000    20000000    00003a14   00000000    rw- .bss
+  20003a14    20003a14    000000ca   00000000    rw- .data
+2000fe00    2000fe00    00000200   00000000    rw-
+  2000fe00    2000fe00    00000200   00000000    rw- .stack
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    00000000    000000e4     
+                  00000000    000000e4     startup_msp432p401r_ccs.obj (.intvecs:retain)
+
+.text      0    000000e8    0000caf8     
+                  000000e8    00001974     vcd.a : vcd_common.obj (.text)
+                  00001a5c    00000004     msp432p4xx_driverlib.lib : cpu_MSP432P4XX.obj (.text:CPU_wfi)
+                  00001a60    00001152     vcd.a : vcd_hmm_oov.obj (.text)
+                  00002bb2    00000006     grlib.lib : context.o (.text:Graphics_flushBuffer)
+                  00002bb8    00000c6c     vcd.a : vcd_enroll.obj (.text)
+                  00003824    00000004     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:EUSCI_A_SPI_transmitData)
+                  00003828    00000b14     vcd.a : vcd_models.obj (.text)
+                  0000433c    00000004     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:EUSCI_B_SPI_transmitData)
+                  00004340    00000b0c     vcd.a : vcd_frontend.obj (.text)
+                  00004e4c    00000a4e     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:__TI_printfi)
+                  0000589a    00000006     grlib.lib : context.o (.text:Graphics_getDisplayHeight)
+                  000058a0    000009c8     vcd.a : vcd_upd_gsp.obj (.text)
+                  00006268    00000942           : vcd_trace.obj (.text)
+                  00006baa    00000006     grlib.lib : context.o (.text:Graphics_getDisplayWidth)
+                  00006bb0    00000426     vcd.a : vcd_getrhofs.obj (.text)
+                  00006fd6    00000002     startup_msp432p401r_ccs.obj (.text:Default_Handler)
+                  00006fd8    00000416     vad.a : vad.obj (.text)
+                  000073ee    00000002     rtsv7M4_T_le_v4SPD16_eabi.lib : div0.asm.obj (.text)
+                  000073f0    000003f8     vcd.a : vcd_reco.obj (.text)
+                  000077e8    00000366           : vcd_get_rhoa.obj (.text)
+                  00007b4e    00000002     --HOLE-- [fill = 0]
+                  00007b50    00000328           : vcd_get_gsf.obj (.text)
+                  00007e78    00000304     enroll_menu.obj (.text:EnrollMenu_processEvent)
+                  0000817c    00000004     grlib.lib : context.o (.text:Graphics_getFontHeight)
+                  00008180    000002d6     vcd.a : vcd_mathfunc.obj (.text)
+                  00008456    000002d0     grlib.lib : string.o (.text:Graphics_drawString)
+                  00008726    00000002     --HOLE-- [fill = 0]
+                  00008728    000002c0     recognize_menu.obj (.text:RecognizeMenu_processEvent)
+                  000089e8    00000278     audio_collect.obj (.text:Audio_startCollect)
+                  00008c60    00000270     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_a)
+                  00008ed0    00000268     update_menu.obj (.text:UpdateMenu_processEvent)
+                  00009138    000001e4     main.obj (.text:main)
+                  0000931c    000001d0     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_g)
+                  000094ec    000001c0     vcd_user.obj (.text:VCD_writeModel)
+                  000096ac    000001b6     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_add_t2.asm.obj (.text)
+                  00009862    00000002     --HOLE-- [fill = 0]
+                  00009864    00000180     vcd_user.obj (.text:VCD_updateModel)
+                  000099e4    00000004     grlib.lib : context.o (.text:Graphics_setFont)
+                  000099e8    0000016c     vcd.a : vcd_get_fb.obj (.text)
+                  00009b54    0000015c     Sharp96x96.obj (.text:Sharp96x96_RectFill)
+                  00009cb0    00000150     vcd_user.obj (.text:VCD_clearModel)
+                  00009e00    00000144     buttons.obj (.text:Buttons_setup)
+                  00009f44    00000144     leds.obj (.text:Leds_setup)
+                  0000a088    0000013c     Sharp96x96.obj (.text:Sharp96x96_LineDrawH)
+                  0000a1c4    0000013c     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_e)
+                  0000a300    00000136                                   : fd_div_t2.asm.obj (.text)
+                  0000a436    00000002     --HOLE-- [fill = 0]
+                  0000a438    0000012a     vcd.a : vcd_utt_det.obj (.text)
+                  0000a562    00000002     --HOLE-- [fill = 0]
+                  0000a564    00000124     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:fcvt)
+                  0000a688    00000110                                   : s_scalbn.c.obj (.text:scalbn)
+                  0000a798    00000108     delete_menu.obj (.text:DeleteMenu_processEvent)
+                  0000a8a0    000000fc     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_mul_t2.asm.obj (.text)
+                  0000a99c    000000f4     lcd.obj (.text:LCD_showMenu)
+                  0000aa90    000000e8     buttons.obj (.text:TA3_N_IRQHandler)
+                  0000ab78    000000e4     lcd.obj (.text:LCD_setup)
+                  0000ac5c    000000e0     buttons.obj (.text:PORT1_IRQHandler)
+                  0000ad3c    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : pre_init.c.obj (.text:_system_pre_init)
+                  0000ad40    000000e0     vcd.a : vcd_get_rfe.obj (.text)
+                  0000ae20    000000d8     Sharp96x96.obj (.text:Sharp96x96_Flush)
+                  0000aef8    000000d0     leds.obj (.text:Leds_setColor2)
+                  0000afc8    000000c4     lcd.obj (.text:LCD_updateSelectedItem)
+                  0000b08c    000000b8     msp432p4xx_driverlib.lib : cs_MSP432P4XX.obj (.text:CS_getDCOFrequency)
+                  0000b144    000000b1     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_ltostr)
+                  0000b1f5    00000003     --HOLE-- [fill = 0]
+                  0000b1f8    0000009c     msp432p4xx_driverlib.lib : cs_MSP432P4XX.obj (.text:_CSComputeCLKFrequency)
+                  0000b294    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.asm.obj (.text)
+                  0000b330    00000098     main_menu.obj (.text:MainMenu_processEvent)
+                  0000b3c8    00000098     main.obj (.text:systemSetup)
+                  0000b460    00000098     vcd.a : vcd_level.obj (.text)
+                  0000b4f8    00000096     rtsv7M4_T_le_v4SPD16_eabi.lib : ull_div_t2.asm.obj (.text)
+                  0000b58e    00000002     --HOLE-- [fill = 0]
+                  0000b590    00000094     lcd.obj (.text:LCD_showMessage)
+                  0000b624    00000094     Sharp96x96.obj (.text:Sharp96x96_LineDrawV)
+                  0000b6b8    00000094     vcd.a : vcd_get_gsp.obj (.text)
+                  0000b74c    0000008c     buttons.obj (.text:Buttons_shutdown)
+                  0000b7d8    0000008c     audio_collect.obj (.text:DMA_INT1_IRQHandler)
+                  0000b864    00000086     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_cmp_t2.asm.obj (.text:__aeabi_cdcmple)
+                  0000b8ea    00000086                                   : fd_cmp_t2.asm.obj (.text:__aeabi_cdrcmple)
+                  0000b970    00000084     grlib.lib : rectangle.o (.text:Graphics_fillRectangle)
+                  0000b9f4    00000080     Sharp96x96.obj (.text:Sharp96x96_DrawMultiple)
+                  0000ba74    00000080     Sharp96x96.obj (.text:Sharp96x96_SendToggleVCOMCommand)
+                  0000baf4    0000007c     audio_collect.obj (.text:Audio_stopCollect)
+                  0000bb70    0000007c     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:SPI_initMaster)
+                  0000bbec    0000007c     Sharp96x96.obj (.text:Sharp96x96_ClearScreen)
+                  0000bc68    0000007a     rtsv7M4_T_le_v4SPD16_eabi.lib : memset_t2.asm.obj (.text)
+                  0000bce2    00000002     --HOLE-- [fill = 0]
+                  0000bce4    00000078     system_msp432p401r.obj (.text:SystemInit)
+                  0000bd5c    00000074     Sharp96x96.obj (.text:Sharp96x96_LCDInit)
+                  0000bdd0    0000006e     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_mcpy)
+                  0000be3e    00000002     --HOLE-- [fill = 0]
+                  0000be40    0000006c     Sharp96x96.obj (.text:Sharp96x96_PixelDraw)
+                  0000beac    00000068     audio_collect.obj (.text:Audio_setupCollect)
+                  0000bf14    00000068     grlib.lib : string.o (.text:Graphics_getStringWidth)
+                  0000bf7c    00000068     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  0000bfe4    00000064     msp432p4xx_driverlib.lib : interrupt_MSP432P4XX.obj (.text:Interrupt_disableInterrupt)
+                  0000c048    00000064     vcd_user.obj (.text:VCD_initModelsList)
+                  0000c0ac    00000064     rtsv7M4_T_le_v4SPD16_eabi.lib : s_frexp.c.obj (.text:frexp)
+                  0000c110    00000062     Sharp96x96utils.obj (.text:reverse)
+                  0000c172    00000002     --HOLE-- [fill = 0]
+                  0000c174    00000058     Sharp96x96.obj (.text:Sharp96x96_InitializeDisplayBuffer)
+                  0000c1cc    00000056     rtsv7M4_T_le_v4SPD16_eabi.lib : _printfi.c.obj (.text:_pconv_f)
+                  0000c222    00000002     --HOLE-- [fill = 0]
+                  0000c224    00000054     msp432p4xx_driverlib.lib : sysctl_a_MSP432P4XX.obj (.text:SysCtl_A_getTLVInfo)
+                  0000c278    00000054     rtsv7M4_T_le_v4SPD16_eabi.lib : _ltoa.c.obj (.text:__TI_ltoa)
+                  0000c2cc    00000052                                   : _printfi.c.obj (.text:_ecpy)
+                  0000c31e    00000002     --HOLE-- [fill = 0]
+                  0000c320    0000004c     msp432p4xx_driverlib.lib : gpio_MSP432P4XX.obj (.text:GPIO_setAsPeripheralModuleFunctionOutputPin)
+                  0000c36c    0000004c                              : cs_MSP432P4XX.obj (.text:_CSGetDOCFrequency)
+                  0000c3b8    0000004c     rtsv7M4_T_le_v4SPD16_eabi.lib : atoi.c.obj (.text:atoi)
+                  0000c404    0000004a     grlib.lib : line.o (.text:Graphics_drawLineH)
+                  0000c44e    00000048     msp432p4xx_driverlib.lib : cs_MSP432P4XX.obj (.text:_CSGetDividerValue)
+                  0000c496    00000048     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_toi_t2.asm.obj (.text)
+                  0000c4de    00000002     --HOLE-- [fill = 0]
+                  0000c4e0    00000044     lcd.obj (.text:LCD_shutdown)
+                  0000c524    00000044     rtsv7M4_T_le_v4SPD16_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit:__TI_auto_init_nobinit_nopinit)
+                  0000c568    00000042     menus.obj (.text:Menus_nextItem)
+                  0000c5aa    00000002     --HOLE-- [fill = 0]
+                  0000c5ac    00000040     rtsv7M4_T_le_v4SPD16_eabi.lib : sprintf.c.obj (.text:sprintf)
+                  0000c5ec    0000003e                                   : _printfi.c.obj (.text:_fcpy)
+                  0000c62a    00000038     grlib.lib : string.o (.text:Graphics_drawStringCentered)
+                  0000c662    00000002     --HOLE-- [fill = 0]
+                  0000c664    00000034     rtsv7M4_T_le_v4SPD16_eabi.lib : boot_cortex_m.c.obj (.text:_c_int00_noargs:_c_int00_noargs)
+                  0000c698    00000030     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:is_A_Module)
+                  0000c6c8    0000002e     rtsv7M4_T_le_v4SPD16_eabi.lib : i_tofd_t2.asm.obj (.text)
+                  0000c6f6    00000002     --HOLE-- [fill = 0]
+                  0000c6f8    0000002c     lcd.obj (.text:LCD_clear)
+                  0000c724    0000002c     lcd.obj (.text:LCD_flush)
+                  0000c750    00000028     leds.obj (.text:Leds_shutdown)
+                  0000c778    00000028     msp432p4xx_driverlib.lib : pcm_MSP432P4XX.obj (.text:PCM_gotoLPM0)
+                  0000c7a0    00000028     rtsv7M4_T_le_v4SPD16_eabi.lib : memmov.c.obj (.text:memmove)
+                  0000c7c8    00000026     msp432p4xx_driverlib.lib : timer_a_MSP432P4XX.obj (.text:Timer_A_initCompare)
+                  0000c7ee    00000002     --HOLE-- [fill = 0]
+                  0000c7f0    00000024                              : cs_MSP432P4XX.obj (.text:CS_clearInterruptFlag)
+                  0000c814    00000024                              : gpio_MSP432P4XX.obj (.text:GPIO_setAsOutputPin)
+                  0000c838    00000022     grlib.lib : context.o (.text:Graphics_initContext)
+                  0000c85a    00000020     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:SPI_transmitData)
+                  0000c87a    00000002     --HOLE-- [fill = 0]
+                  0000c87c    00000020     lcd.obj (.text:TA2_0_IRQHandler)
+                  0000c89c    0000001e     rtsv7M4_T_le_v4SPD16_eabi.lib : strcat.c.obj (.text:strcat)
+                  0000c8ba    00000002     --HOLE-- [fill = 0]
+                  0000c8bc    0000001c     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:EUSCI_B_SPI_isBusy)
+                  0000c8d8    0000001c                              : timer_a_MSP432P4XX.obj (.text:Timer_A_getCounterValue)
+                  0000c8f4    0000001c     rtsv7M4_T_le_v4SPD16_eabi.lib : memccpy.c.obj (.text:memccpy)
+                  0000c910    0000001a     audio_collect.obj (.text:Audio_getActiveBuffer)
+                  0000c92a    0000001a     grlib.lib : string.o (.text:Graphics_getNumberOfLeadingZeros)
+                  0000c944    0000001a     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:SPI_enableModule)
+                  0000c95e    0000001a     rtsv7M4_T_le_v4SPD16_eabi.lib : s_copysign.c.obj (.text:copysign)
+                  0000c978    00000018     audio_collect.obj (.text:Audio_shutdownCollect)
+                  0000c990    00000018     msp432p4xx_driverlib.lib : cs_MSP432P4XX.obj (.text:CS_getACLK)
+                  0000c9a8    00000018                              : cs_MSP432P4XX.obj (.text:CS_getSMCLK)
+                  0000c9c0    00000018                              : gpio_MSP432P4XX.obj (.text:GPIO_setOutputLowOnPin)
+                  0000c9d8    00000018     leds.obj (.text:Leds_off1)
+                  0000c9f0    00000018     leds.obj (.text:Leds_on1)
+                  0000ca08    00000018     rtsv7M4_T_le_v4SPD16_eabi.lib : sprintf.c.obj (.text:_outs)
+                  0000ca20    00000016     grlib.lib : display.o (.text:Graphics_drawHorizontalLineOnDisplay)
+                  0000ca36    00000016     rtsv7M4_T_le_v4SPD16_eabi.lib : strchr.c.obj (.text:strchr)
+                  0000ca4c    00000014     msp432p4xx_driverlib.lib : gpio_MSP432P4XX.obj (.text:GPIO_setOutputHighOnPin)
+                  0000ca60    00000014                              : interrupt_MSP432P4XX.obj (.text:Interrupt_disableSleepOnIsrExit)
+                  0000ca74    00000014                              : interrupt_MSP432P4XX.obj (.text:Interrupt_enableSleepOnIsrExit)
+                  0000ca88    00000014     rtsv7M4_T_le_v4SPD16_eabi.lib : strcpy.c.obj (.text:strcpy)
+                  0000ca9c    00000014                                   : strlen.c.obj (.text:strlen)
+                  0000cab0    00000012     Sharp96x96.obj (.text:Sharp96x96_ColorTranslate)
+                  0000cac2    00000012     rtsv7M4_T_le_v4SPD16_eabi.lib : wcslen.c.obj (.text:wcslen)
+                  0000cad4    00000010     audio_collect.obj (.text:Audio_resetActive)
+                  0000cae4    00000010     buttons.obj (.text:Buttons_clearButton1)
+                  0000caf4    00000010     buttons.obj (.text:Buttons_clearButton2)
+                  0000cb04    0000000e     audio_collect.obj (.text:Audio_getActive)
+                  0000cb12    0000000e     buttons.obj (.text:Buttons_getButton1)
+                  0000cb20    0000000e     buttons.obj (.text:Buttons_getButton2)
+                  0000cb2e    0000000e     grlib.lib : display.o (.text:Graphics_drawPixelOnDisplay)
+                  0000cb3c    0000000e               : context.o (.text:Graphics_setBackgroundColor)
+                  0000cb4a    0000000e               : context.o (.text:Graphics_setForegroundColor)
+                  0000cb58    0000000e     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  0000cb66    0000000c     msp432p4xx_driverlib.lib : spi_MSP432P4XX.obj (.text:EUSCI_A_SPI_enable)
+                  0000cb72    0000000c                              : spi_MSP432P4XX.obj (.text:EUSCI_B_SPI_enable)
+                  0000cb7e    0000000c     startup_msp432p401r_ccs.obj (.text:Reset_Handler)
+                  0000cb8a    0000000c     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init)
+                  0000cb96    0000000a     grlib.lib : context.o (.text:Graphics_clearDisplay)
+                  0000cba0    0000000a               : display.o (.text:Graphics_clearDisplayOnDisplay)
+                  0000cbaa    0000000a               : display.o (.text:Graphics_fillRectangleOnDisplay)
+                  0000cbb4    0000000a               : display.o (.text:Graphics_flushOnDisplay)
+                  0000cbbe    0000000a               : display.o (.text:Graphics_translateColorOnDisplay)
+                  0000cbc8    0000000a     rtsv7M4_T_le_v4SPD16_eabi.lib : sprintf.c.obj (.text:_outc)
+                  0000cbd2    00000002     --HOLE-- [fill = 0]
+                  0000cbd4    00000008                                   : errno.c.obj (.text:__aeabi_errno_addr)
+                  0000cbdc    00000004                                   : exit.c.obj (.text:abort:abort)
+
+.cinit     0    0000cbe0    000000b0     
+                  0000cbe0    00000089     (.cinit..data.load) [load image, compression = lzss]
+                  0000cc69    00000003     --HOLE-- [fill = 0]
+                  0000cc6c    0000000c     (__TI_handler_table)
+                  0000cc78    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  0000cc80    00000010     (__TI_cinit_table)
+
+.const     0    0000d000    000092e0     
+                  0000d000    00008000     vcd_user.obj (.const:VCD_modelsMemory)
+                  00015000    00000578     vcd.a : vcd_frontend_memory.obj (.const:fb_coef_data)
+                  00015578    000002f8     fontfixed6x8.obj (.const:.string:g_pucFontFixed6x8Data)
+                  00015870    000001e0     vcd.a : vcd_frontend_memory.obj (.const:window_coef)
+                  00015a50    00000168           : vcd_models_memory.obj (.const:Filler_data)
+                  00015bb8    00000140           : vcd_frontend_memory.obj (.const:transform)
+                  00015cf8    00000104           : vcd_mathfunc.obj (.const:$O1$$)
+                  00015dfc    00000101     rtsv7M4_T_le_v4SPD16_eabi.lib : ctype.c.obj (.const:.string:_ctypes_)
+                  00015efd    00000003     --HOLE-- [fill = 0]
+                  00015f00    000000c8     fontfixed6x8.obj (.const:g_sFontFixed6x8)
+                  00015fc8    00000056     delete_menu.obj (.const:.string)
+                  0001601e    00000002     --HOLE-- [fill = 0]
+                  00016020    00000056     enroll_menu.obj (.const:.string)
+                  00016076    00000002     --HOLE-- [fill = 0]
+                  00016078    00000056     update_menu.obj (.const:.string)
+                  000160ce    00000002     --HOLE-- [fill = 0]
+                  000160d0    00000046     main_menu.obj (.const:.string)
+                  00016116    00000002     --HOLE-- [fill = 0]
+                  00016118    00000030     msp432p4xx_driverlib.lib : gpio_MSP432P4XX.obj (.const:GPIO_PORT_TO_BASE)
+                  00016148    00000024     recognize_menu.obj (.const:.string)
+                  0001616c    00000024     delete_menu.obj (.const:deleteItems)
+                  00016190    00000024     enroll_menu.obj (.const:enrollItems)
+                  000161b4    00000024     update_menu.obj (.const:updateItems)
+                  000161d8    00000020     Sharp96x96.obj (.const:g_sharp96x96LCD_funcs)
+                  000161f8    0000001c     Sharp96x96.obj (.const:$P$T0$1)
+                  00016214    00000018     audio_collect.obj (.const:$P$T0$1)
+                  0001622c    00000018     lcd.obj (.const:$P$T0$1)
+                  00016244    00000018     leds.obj (.const:$P$T0$1)
+                  0001625c    00000016     vcd.a : vcd_upd_gsp.obj (.const:oneoverx)
+                  00016272    00000002     --HOLE-- [fill = 0]
+                  00016274    00000010     buttons.obj (.const:$P$T0$1)
+                  00016284    00000010     audio_collect.obj (.const:$P$T1$2)
+                  00016294    00000010     leds.obj (.const:$P$T1$2)
+                  000162a4    00000010     leds.obj (.const:$P$T2$3)
+                  000162b4    00000010     main_menu.obj (.const:mainItems)
+                  000162c4    00000008     leds.obj (.const:.string:leds_mapping)
+                  000162cc    00000008     msp432p4xx_driverlib.lib : interrupt_MSP432P4XX.obj (.const:g_pulDisRegs)
+                  000162d4    00000008     recognize_menu.obj (.const:recognizeItems)
+                  000162dc    00000004     vcd.a : vcd_frontend_memory.obj (.const)
+
+.init_array 
+*          0    00000000    00000000     UNINITIALIZED
+
+.binit     0    00000000    00000000     
+
+.bss       0    20000000    00003a14     UNINITIALIZED
+                  20000000    00002638     (.common:VCD_memory16)
+                  20002638    000009ac     (.common:frontend_instance)
+                  20002fe4    00000480     (.common:DisplayBuffer)
+                  20003464    00000140     (.common:AudioBuffer1)
+                  200035a4    00000140     (.common:AudioBuffer2)
+                  200036e4    00000134     (.common:vcd_instance)
+                  20003818    00000048     (.common:VCD_memoryP)
+                  20003860    00000034     vad.a : vad.obj (.bss:VADObject)
+                  20003894    00000020     (.common:VCD_modelsList)
+                  200038b4    0000001c     (.common:g_sContext)
+                  200038d0    00000018     (.common:AudioGlobal)
+                  200038e8    00000014     (.common:models_instance)
+                  200038fc    00000004     buttons.obj (.bss:ButtonsGlobal)
+                  20003900    00000100     (.common:DmaControlTable)
+                  20003a00    00000008     msp432p4xx_driverlib.lib : cs_MSP432P4XX.obj (.bss)
+                  20003a08    00000004     (.common:Audio)
+                  20003a0c    00000004     (.common:Buttons)
+                  20003a10    00000004     (.common:VCD_handle)
+
+.data      0    20003a14    000000ca     UNINITIALIZED
+                  20003a14    00000018     vcd_user.obj (.data:VCDMemory)
+                  20003a2c    00000014     delete_menu.obj (.data:DeleteMenu)
+                  20003a40    00000014     enroll_menu.obj (.data:EnrollMenu)
+                  20003a54    00000014     main_menu.obj (.data:MainMenu)
+                  20003a68    00000014     recognize_menu.obj (.data:RecognizeMenu)
+                  20003a7c    00000014     update_menu.obj (.data:UpdateMenu)
+                  20003a90    00000010     Sharp96x96.obj (.data:g_sharp96x96LCD)
+                  20003aa0    00000009     delete_menu.obj (.data:itemState)
+                  20003aa9    00000009     enroll_menu.obj (.data:itemState)
+                  20003ab2    00000009     update_menu.obj (.data:itemState)
+                  20003abb    00000001     --HOLE--
+                  20003abc    00000008     enroll_menu.obj (.data:enrollState)
+                  20003ac4    00000008     update_menu.obj (.data:updateState)
+                  20003acc    00000005     main_menu.obj (.data:mainItemState)
+                  20003ad1    00000001     --HOLE--
+                  20003ad2    00000004     recognize_menu.obj (.data:recognizeState)
+                  20003ad6    00000002     Sharp96x96.obj (.data)
+                  20003ad8    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : errno.c.obj (.data)
+                  20003adc    00000002     recognize_menu.obj (.data:itemState)
+
+.stack     0    2000fe00    00000200     UNINITIALIZED
+                  2000fe00    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : boot_cortex_m.c.obj (.stack)
+                  2000fe04    000001fc     --HOLE--
+
+__llvm_prf_cnts 
+*          0    20000000    00000000     UNINITIALIZED
+
+MODULE SUMMARY
+
+       Module                        code    ro data   rw data
+       ------                        ----    -------   -------
+    .\
+       main.obj                      636     0         1304   
+       system_msp432p401r.obj        120     0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        756     0         1304   
+                                                              
+    .\LcdDriver\
+       Sharp96x96.obj                1738    60        2340   
+       Sharp96x96utils.obj           98      0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        1836    60        2340   
+                                                              
+    .\ccs\
+       startup_msp432p401r_ccs.obj   14      228       0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        14      228       0      
+                                                              
+    .\demo\
+       vcd_user.obj                  1268    32768     19824  
+       audio_collect.obj             1080    40        48     
+       lcd.obj                       1004    24        56     
+       buttons.obj                   980     16        8      
+       enroll_menu.obj               772     122       74     
+       update_menu.obj               616     122       74     
+       recognize_menu.obj            704     44        52     
+       leds.obj                      620     64        0      
+       dma_control_table.obj         0       0         512    
+       delete_menu.obj               264     122       58     
+       main_menu.obj                 152     86        50     
+       menus.obj                     66      0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        7526    33408     20756  
+                                                              
+    .\fonts\
+       fontfixed6x8.obj              0       960       0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        0       960       0      
+                                                              
+    C:/ti/simplelink_msp432p4_sdk_1_50_00_12/source/ti/devices/msp432p4xx/driverlib/ccs/msp432p4xx_driverlib.lib
+       cs_MSP432P4XX.obj             572     0         16     
+       spi_MSP432P4XX.obj            290     0         0      
+       gpio_MSP432P4XX.obj           156     48        0      
+       interrupt_MSP432P4XX.obj      140     8         0      
+       sysctl_a_MSP432P4XX.obj       84      0         0      
+       timer_a_MSP432P4XX.obj        66      0         0      
+       pcm_MSP432P4XX.obj            40      0         0      
+       cpu_MSP432P4XX.obj            4       0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        1352    56        16     
+                                                              
+    C:/ti/simplelink_msp432p4_sdk_1_50_00_12/source/ti/grlib/ccs/grlib.lib
+       string.o                      906     0         0      
+       rectangle.o                   132     0         0      
+       context.o                     98      0         0      
+       display.o                     76      0         0      
+       line.o                        74      0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        1286    0         0      
+                                                              
+    C:/ti/simplelink_sdk_voice_detection_plugin_1_50_00_15/source/ti/voice_detection/lib/ccs/m4/vad.a
+       vad.obj                       1046    0         104    
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        1046    0         104    
+                                                              
+    C:/ti/simplelink_sdk_voice_detection_plugin_1_50_00_15/source/ti/voice_detection/lib/ccs/m4/vcd.a
+       vcd_frontend_memory.obj       0       2204      4952   
+       vcd_common.obj                6516    0         0      
+       vcd_hmm_oov.obj               4434    0         0      
+       vcd_enroll.obj                3180    0         0      
+       vcd_models.obj                2836    0         0      
+       vcd_frontend.obj              2828    0         0      
+       vcd_upd_gsp.obj               2504    22        0      
+       vcd_trace.obj                 2370    0         0      
+       vcd_getrhofs.obj              1062    0         0      
+       vcd_reco.obj                  1016    0         0      
+       vcd_mathfunc.obj              726     260       0      
+       vcd_get_rhoa.obj              870     0         0      
+       vcd_get_gsf.obj               808     0         0      
+       vcd_memory.obj                0       0         616    
+       vcd_models_memory.obj         0       360       40     
+       vcd_get_fb.obj                364     0         0      
+       vcd_utt_det.obj               298     0         0      
+       vcd_get_rfe.obj               224     0         0      
+       vcd_level.obj                 152     0         0      
+       vcd_get_gsp.obj               148     0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        30336   2846      5608   
+                                                              
+    C:\ti\ccs1011\ccs\tools\compiler\ti-cgt-arm_20.2.2.LTS\lib\rtsv7M4_T_le_v4SPD16_eabi.lib
+       _printfi.c.obj                4851    0         0      
+       fd_add_t2.asm.obj             438     0         0      
+       fd_div_t2.asm.obj             310     0         0      
+       s_scalbn.c.obj                272     0         0      
+       fd_cmp_t2.asm.obj             268     0         0      
+       ctype.c.obj                   0       257       0      
+       fd_mul_t2.asm.obj             252     0         0      
+       memcpy_t2.asm.obj             156     0         0      
+       ull_div_t2.asm.obj            150     0         0      
+       memset_t2.asm.obj             122     0         0      
+       copy_decompress_lzss.c.obj    104     0         0      
+       s_frexp.c.obj                 100     0         0      
+       sprintf.c.obj                 98      0         0      
+       _ltoa.c.obj                   84      0         0      
+       atoi.c.obj                    76      0         0      
+       fd_toi_t2.asm.obj             72      0         0      
+       autoinit.c.obj                68      0         0      
+       boot_cortex_m.c.obj           52      0         0      
+       i_tofd_t2.asm.obj             46      0         0      
+       memmov.c.obj                  40      0         0      
+       strcat.c.obj                  30      0         0      
+       memccpy.c.obj                 28      0         0      
+       s_copysign.c.obj              26      0         0      
+       strchr.c.obj                  22      0         0      
+       strcpy.c.obj                  20      0         0      
+       strlen.c.obj                  20      0         0      
+       wcslen.c.obj                  18      0         0      
+       errno.c.obj                   8       0         8      
+       copy_decompress_none.c.obj    14      0         0      
+       copy_zero_init.c.obj          12      0         0      
+       exit.c.obj                    4       0         0      
+       pre_init.c.obj                4       0         0      
+       div0.asm.obj                  2       0         0      
+    +--+-----------------------------+-------+---------+---------+
+       Total:                        7767    257       8      
+                                                              
+       Stack:                        0       0         1024   
+       Linker Generated:             0       173       0      
+    +--+-----------------------------+-------+---------+---------+
+       Grand Total:                  51919   37988     31160  
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 0000cc80 records: 2, size/record: 8, table size: 16
+	.data: load addr=0000cbe0, load size=00000089 bytes, run addr=20003a14, run size=000000ca bytes, compression=lzss
+	.bss: load addr=0000cc78, load size=00000008 bytes, run addr=20000000, run size=00003a14 bytes, compression=zero_init
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 0000cc6c records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
+	index: 2, handler: __TI_zero_init
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                                       
+-------   ----                                       
+00006fd7  ADC14_IRQHandler                           
+00006fd7  AES256_IRQHandler                          
+20003a08  Audio                                      
+20003464  AudioBuffer1                               
+200035a4  AudioBuffer2                               
+200038d0  AudioGlobal                                
+0000cb05  Audio_getActive                            
+0000c911  Audio_getActiveBuffer                      
+0000cad5  Audio_resetActive                          
+0000bead  Audio_setupCollect                         
+0000c979  Audio_shutdownCollect                      
+000089e9  Audio_startCollect                         
+0000baf5  Audio_stopCollect                          
+00006fd7  BusFault_Handler                           
+20003a0c  Buttons                                    
+0000cae5  Buttons_clearButton1                       
+0000caf5  Buttons_clearButton2                       
+0000cb13  Buttons_getButton1                         
+0000cb21  Buttons_getButton2                         
+00009e01  Buttons_setup                              
+0000b74d  Buttons_shutdown                           
+0000cbdd  C$$EXIT                                    
+00006fd7  COMP_E0_IRQHandler                         
+00006fd7  COMP_E1_IRQHandler                         
+00001a5d  CPU_wfi                                    
+00006fd7  CS_IRQHandler                              
+0000c7f1  CS_clearInterruptFlag                      
+0000c991  CS_getACLK                                 
+0000b08d  CS_getDCOFrequency                         
+0000c9a9  CS_getSMCLK                                
+00006fd7  DMA_ERR_IRQHandler                         
+00006fd7  DMA_INT0_IRQHandler                        
+0000b7d9  DMA_INT1_IRQHandler                        
+0000b7d9  DMA_INT1_IRQHandler                        
+00006fd7  DMA_INT2_IRQHandler                        
+00006fd7  DMA_INT3_IRQHandler                        
+00006fd7  DebugMon_Handler                           
+00006fd7  Default_Handler                            
+20003a2c  DeleteMenu                                 
+0000a799  DeleteMenu_processEvent                    
+20002fe4  DisplayBuffer                              
+20003900  DmaControlTable                            
+00006fd7  EUSCIA0_IRQHandler                         
+00006fd7  EUSCIA1_IRQHandler                         
+00006fd7  EUSCIA2_IRQHandler                         
+00006fd7  EUSCIA3_IRQHandler                         
+00006fd7  EUSCIB0_IRQHandler                         
+00006fd7  EUSCIB1_IRQHandler                         
+00006fd7  EUSCIB2_IRQHandler                         
+00006fd7  EUSCIB3_IRQHandler                         
+0000cb67  EUSCI_A_SPI_enable                         
+00003825  EUSCI_A_SPI_transmitData                   
+0000cb73  EUSCI_B_SPI_enable                         
+0000c8bd  EUSCI_B_SPI_isBusy                         
+0000433d  EUSCI_B_SPI_transmitData                   
+20003a40  EnrollMenu                                 
+00007e79  EnrollMenu_processEvent                    
+00006fd7  FLCTL_IRQHandler                           
+00006fd7  FPU_IRQHandler                             
+00015a50  Filler_data                                
+00004e19  FrontEnd_GSPsetup                          
+000044e1  FrontEnd_calcRhoSil                        
+00004601  FrontEnd_calcSilGSP                        
+00007cd1  FrontEnd_calculateScore                    
+00004df9  FrontEnd_getBkgnd                          
+00004df1  FrontEnd_getDBLevel                        
+00004de9  FrontEnd_getDBNoise                        
+00004db9  FrontEnd_getGSF                            
+00004da9  FrontEnd_getGSP                            
+00004d91  FrontEnd_getSilGSP                         
+00004d89  FrontEnd_getUtt                            
+00004d81  FrontEnd_getVAD                            
+00004d61  FrontEnd_init                              
+00004c81  FrontEnd_processFrame                      
+00004bc1  FrontEnd_processGSPFrame                   
+000048e9  FrontEnd_processReco                       
+00004631  FrontEnd_processTrain                      
+000044d9  FrontEnd_reset                             
+000044b9  FrontEnd_resetUtt                          
+000044b1  FrontEnd_setDBLevel                        
+000044a9  FrontEnd_setDBNoise                        
+00004441  FrontEnd_setSilGSP                         
+00004349  FrontEnd_setup                             
+00004341  FrontEnd_shutdown                          
+0000c815  GPIO_setAsOutputPin                        
+0000c321  GPIO_setAsPeripheralModuleFunctionOutputPin
+0000ca4d  GPIO_setOutputHighOnPin                    
+0000c9c1  GPIO_setOutputLowOnPin                     
+0000cb97  Graphics_clearDisplay                      
+0000cba1  Graphics_clearDisplayOnDisplay             
+0000ca21  Graphics_drawHorizontalLineOnDisplay       
+0000c405  Graphics_drawLineH                         
+0000cb2f  Graphics_drawPixelOnDisplay                
+00008457  Graphics_drawString                        
+0000c62b  Graphics_drawStringCentered                
+0000b971  Graphics_fillRectangle                     
+0000cbab  Graphics_fillRectangleOnDisplay            
+00002bb3  Graphics_flushBuffer                       
+0000cbb5  Graphics_flushOnDisplay                    
+0000589b  Graphics_getDisplayHeight                  
+00006bab  Graphics_getDisplayWidth                   
+0000817d  Graphics_getFontHeight                     
+0000bf15  Graphics_getStringWidth                    
+0000c839  Graphics_initContext                       
+0000cb3d  Graphics_setBackgroundColor                
+000099e5  Graphics_setFont                           
+0000cb4b  Graphics_setForegroundColor                
+0000cbbf  Graphics_translateColorOnDisplay           
+00006fd7  HardFault_Handler                          
+0000bfe5  Interrupt_disableInterrupt                 
+0000ca61  Interrupt_disableSleepOnIsrExit            
+0000ca75  Interrupt_enableSleepOnIsrExit             
+0000ab79  LCD_setup                                  
+0000a99d  LCD_showMenu                               
+0000b591  LCD_showMessage                            
+0000c4e1  LCD_shutdown                               
+0000afc9  LCD_updateSelectedItem                     
+0000c9d9  Leds_off1                                  
+0000c9f1  Leds_on1                                   
+0000aef9  Leds_setColor2                             
+00009f45  Leds_setup                                 
+0000c751  Leds_shutdown                              
+20003a54  MainMenu                                   
+0000b331  MainMenu_processEvent                      
+00006fd7  MemManage_Handler                          
+0000c569  Menus_nextItem                             
+00004001  Models_addList                             
+00004271  Models_addTempModel                        
+00004211  Models_calcEnabledNumObs                   
+00003fe9  Models_checkAdd                            
+00003f79  Models_checkModel                          
+00003db9  Models_checkValidModel                     
+000041e9  Models_disableModel                        
+000041b9  Models_enableModel                         
+00003941  Models_fillModelData                       
+000041b1  Models_getMagicNum                         
+00003dd1  Models_getModelData                        
+000039a1  Models_getModelDataRaw                     
+000041a1  Models_getModelSize                        
+00004199  Models_getModelsMax                        
+00004191  Models_getNumModels                        
+00004101  Models_init                                
+00003d91  Models_registerModel                       
+00003b29  Models_removeModel                         
+000038b9  Models_setEnable                           
+00003831  Models_setEnableAllModels                  
+00003829  Models_shutdown                            
+00006fd7  NMI_Handler                                
+00006fd7  PCM_IRQHandler                             
+0000c779  PCM_gotoLPM0                               
+0000ac5d  PORT1_IRQHandler                           
+0000ac5d  PORT1_IRQHandler                           
+00006fd7  PORT2_IRQHandler                           
+00006fd7  PORT3_IRQHandler                           
+00006fd7  PORT4_IRQHandler                           
+00006fd7  PORT5_IRQHandler                           
+00006fd7  PORT6_IRQHandler                           
+00006fd7  PSS_IRQHandler                             
+00006fd7  PendSV_Handler                             
+00006fd7  RTC_C_IRQHandler                           
+20003a68  RecognizeMenu                              
+00008729  RecognizeMenu_processEvent                 
+0000cb7f  Reset_Handler                              
+0000c945  SPI_enableModule                           
+0000bb71  SPI_initMaster                             
+0000c85b  SPI_transmitData                           
+00006fd7  SVC_Handler                                
+0000bd5d  Sharp96x96_LCDInit                         
+0000ba75  Sharp96x96_SendToggleVCOMCommand           
+0000c225  SysCtl_A_getTLVInfo                        
+00006fd7  SysTick_Handler                            
+0000bce5  SystemInit                                 
+00006fd7  T32_INT1_IRQHandler                        
+00006fd7  T32_INT2_IRQHandler                        
+00006fd7  T32_INTC_IRQHandler                        
+00006fd7  TA0_0_IRQHandler                           
+00006fd7  TA0_N_IRQHandler                           
+00006fd7  TA1_0_IRQHandler                           
+00006fd7  TA1_N_IRQHandler                           
+0000c87d  TA2_0_IRQHandler                           
+0000c87d  TA2_0_IRQHandler                           
+00006fd7  TA2_N_IRQHandler                           
+00006fd7  TA3_0_IRQHandler                           
+0000aa91  TA3_N_IRQHandler                           
+0000aa91  TA3_N_IRQHandler                           
+0000c8d9  Timer_A_getCounterValue                    
+0000c7c9  Timer_A_initCompare                        
+20003a7c  UpdateMenu                                 
+00008ed1  UpdateMenu_processEvent                    
+00006fd7  UsageFault_Handler                         
+000073e9  VAD_getAlpha                               
+000073e1  VAD_getDelayFrames                         
+000073d9  VAD_getFastCoef                            
+000073d1  VAD_getInitFrames                          
+000073c9  VAD_getNoiseFloor                          
+000073c1  VAD_getNoiseRate                           
+000073b9  VAD_getSigSNRLimit                         
+000073b1  VAD_getSigSNRThresh                        
+000073a9  VAD_getSignalFloor                         
+000073a1  VAD_getSlowCoef                            
+00007081  VAD_run                                    
+00007079  VAD_setAlpha                               
+00007071  VAD_setDelayFrames                         
+00007069  VAD_setFastCoef                            
+00007061  VAD_setInitFrames                          
+00007059  VAD_setNoiseFloor                          
+00007051  VAD_setNoiseRate                           
+00007049  VAD_setSigSNRLimit                         
+00007041  VAD_setSigSNRThresh                        
+00007039  VAD_setSignalFloor                         
+00007031  VAD_setSlowCoef                            
+00006fd9  VAD_setup                                  
+20003a14  VCDMemory                                  
+00006269  VCD_addCandidate                           
+000036d9  VCD_addEnroll                              
+00001a49  VCD_addList                                
+000035d9  VCD_addUpdate                              
+000013b9  VCD_calcDifference                         
+00001a31  VCD_checkValidModel                        
+00009cb1  VCD_clearModel                             
+00001979  VCD_computeFillerScore                     
+00001941  VCD_computeScore                           
+00001921  VCD_disableModel                           
+00001901  VCD_enableModel                            
+000032e1  VCD_enrollFrame                            
+00001889  VCD_freeBegin                              
+00003239  VCD_getEnrollDifference                    
+00002fb1  VCD_getEnrollQuality                       
+00001799  VCD_getModelDifference                     
+00001359  VCD_getModelInfo                           
+000012d9  VCD_getParams                              
+00007759  VCD_getResult                              
+000012d1  VCD_getWaitCommit                          
+000012c9  VCD_getiMaxDelta                           
+20003a10  VCD_handle                                 
+00000d39  VCD_init                                   
+0000c049  VCD_initModelsList                         
+00006a61  VCD_initTrace                              
+20000000  VCD_memory16                               
+20003818  VCD_memoryP                                
+20003894  VCD_modelsList                             
+0000d000  VCD_modelsMemory                           
+00000cf9  VCD_processFrame                           
+00000cd1  VCD_removeModel                            
+00007731  VCD_resetSearch                            
+00001d29  VCD_runSearch                              
+000062e1  VCD_runTrace                               
+000000e9  VCD_scaleParam                             
+00007681  VCD_searchFrame                            
+00007601  VCD_searchGSPFrame                         
+000006a9  VCD_setParams                              
+000006a1  VCD_setWaitCommit                          
+00000699  VCD_setiMaxDelta                           
+00001a61  VCD_setupSearch                            
+00000689  VCD_shutdown                               
+00002ed9  VCD_startEnroll                            
+00007541  VCD_startGSPSearch                         
+00007461  VCD_startSearch                            
+00002de1  VCD_startUpdate                            
+00002db1  VCD_stopEnroll                             
+00007429  VCD_stopGSPSearch                          
+000073f1  VCD_stopSearch                             
+00002d81  VCD_stopUpdate                             
+00002bb9  VCD_updateFrame                            
+00005ae9  VCD_updateGSP                              
+00009865  VCD_updateModel                            
+00000229  VCD_updateParams                           
+000094ed  VCD_writeModel                             
+20003ad6  VCOMbit                                    
+4000480c  WDTCTL_SYM                                 
+00006fd7  WDT_A_IRQHandler                           
+20010000  __STACK_END                                
+00000200  __STACK_SIZE                               
+0000cc80  __TI_CINIT_Base                            
+0000cc90  __TI_CINIT_Limit                           
+0000cc6c  __TI_Handler_Table_Base                    
+0000cc78  __TI_Handler_Table_Limit                   
+0000c525  __TI_auto_init_nobinit_nopinit             
+0000bf7d  __TI_decompress_lzss                       
+0000cb59  __TI_decompress_none                       
+0000c279  __TI_ltoa                                  
+ffffffff  __TI_pprof_out_hndl                        
+00004e4d  __TI_printfi                               
+ffffffff  __TI_prof_data_size                        
+ffffffff  __TI_prof_data_start                       
+00000000  __TI_static_base__                         
+0000cb8b  __TI_zero_init                             
+0000b865  __aeabi_cdcmpeq                            
+0000b865  __aeabi_cdcmple                            
+0000b8eb  __aeabi_cdrcmple                           
+0000c497  __aeabi_d2iz                               
+000096b7  __aeabi_dadd                               
+0000a301  __aeabi_ddiv                               
+0000a8a1  __aeabi_dmul                               
+000096ad  __aeabi_dsub                               
+0000cbd5  __aeabi_errno_addr                         
+0000c6c9  __aeabi_i2d                                
+000073ef  __aeabi_idiv0                              
+000073ef  __aeabi_ldiv0                              
+0000bc69  __aeabi_memclr                             
+0000bc69  __aeabi_memclr4                            
+0000bc69  __aeabi_memclr8                            
+0000b295  __aeabi_memcpy                             
+0000b295  __aeabi_memcpy4                            
+0000b295  __aeabi_memcpy8                            
+0000bc6b  __aeabi_memset                             
+0000bc6b  __aeabi_memset4                            
+0000bc6b  __aeabi_memset8                            
+0000b4f9  __aeabi_uldivmod                           
+ffffffff  __binit__                                  
+ffffffff  __c_args__                                 
+UNDEFED   __mpu_init                                 
+2000fe00  __stack                                    
+20000000  __start___llvm_prf_cnts                    
+20000000  __stop___llvm_prf_cnts                     
+0000c665  _c_int00_noargs                            
+00015dfc  _ctypes_                                   
+UNDEFED   _system_post_cinit                         
+0000ad3d  _system_pre_init                           
+0000cbdd  abort                                      
+0000c3b9  atoi                                       
+ffffffff  binit                                      
+0000c95f  copysign                                   
+0000c95f  copysignl                                  
+00008321  div32                                      
+000082a1  egy_to_db                                  
+20003ad8  errno                                      
+00015000  fb_coef_data                               
+20003ad7  flagSendToggleVCOMCommand                  
+0000c0ad  frexp                                      
+0000c0ad  frexpl                                     
+20002638  frontend_instance                          
+200038b4  g_sContext                                 
+00015f00  g_sFontFixed6x8                            
+20003a90  g_sharp96x96LCD                            
+000161d8  g_sharp96x96LCD_funcs                      
+00009a51  get_fb                                     
+00007c49  get_gsf                                    
+0000b6b9  get_gsp                                    
+0000ad79  get_rfe                                    
+00006be1  get_rho                                    
+000077e9  get_rhoa                                   
+000162de  ham_egy_fac                                
+000162dc  ham_rms_fac                                
+0000ad61  init_db_rfe                                
+000099f9  init_fb                                    
+000099e9  init_fb_coef                               
+0000ad41  init_rfe                                   
+00006bc1  init_rho                                   
+0000a529  init_utt_det                               
+00006bb1  init_window                                
+00000000  interruptVectors                           
+0000a689  ldexp                                      
+0000a689  ldexpl                                     
+000162c4  leds_mapping                               
+0000b461  level_est                                  
+00009139  main                                       
+0000c8f5  memccpy                                    
+0000b295  memcpy                                     
+0000c7a1  memmove                                    
+0000bc71  memset                                     
+200038e8  models_instance                            
+00008271  mult32                                     
+00007bc1  nmc_model                                  
+0000c111  reverse                                    
+000081f9  rms_to_db                                  
+0000a689  scalbn                                     
+0000a689  scalbnl                                    
+0000c5ad  sprintf                                    
+00008181  sqrt_l                                     
+0000c89d  strcat                                     
+0000ca37  strchr                                     
+0000ca89  strcpy                                     
+0000ca9d  strlen                                     
+00015bb8  transform                                  
+00007b51  upd_sil                                    
+000058a1  updateState                                
+0000a439  utt_det                                    
+200036e4  vcd_instance                               
+0000cac3  wcslen                                     
+00015870  window_coef                                
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                                       
+-------   ----                                       
+00000000  __TI_static_base__                         
+00000000  interruptVectors                           
+000000e9  VCD_scaleParam                             
+00000200  __STACK_SIZE                               
+00000229  VCD_updateParams                           
+00000689  VCD_shutdown                               
+00000699  VCD_setiMaxDelta                           
+000006a1  VCD_setWaitCommit                          
+000006a9  VCD_setParams                              
+00000cd1  VCD_removeModel                            
+00000cf9  VCD_processFrame                           
+00000d39  VCD_init                                   
+000012c9  VCD_getiMaxDelta                           
+000012d1  VCD_getWaitCommit                          
+000012d9  VCD_getParams                              
+00001359  VCD_getModelInfo                           
+000013b9  VCD_calcDifference                         
+00001799  VCD_getModelDifference                     
+00001889  VCD_freeBegin                              
+00001901  VCD_enableModel                            
+00001921  VCD_disableModel                           
+00001941  VCD_computeScore                           
+00001979  VCD_computeFillerScore                     
+00001a31  VCD_checkValidModel                        
+00001a49  VCD_addList                                
+00001a5d  CPU_wfi                                    
+00001a61  VCD_setupSearch                            
+00001d29  VCD_runSearch                              
+00002bb3  Graphics_flushBuffer                       
+00002bb9  VCD_updateFrame                            
+00002d81  VCD_stopUpdate                             
+00002db1  VCD_stopEnroll                             
+00002de1  VCD_startUpdate                            
+00002ed9  VCD_startEnroll                            
+00002fb1  VCD_getEnrollQuality                       
+00003239  VCD_getEnrollDifference                    
+000032e1  VCD_enrollFrame                            
+000035d9  VCD_addUpdate                              
+000036d9  VCD_addEnroll                              
+00003825  EUSCI_A_SPI_transmitData                   
+00003829  Models_shutdown                            
+00003831  Models_setEnableAllModels                  
+000038b9  Models_setEnable                           
+00003941  Models_fillModelData                       
+000039a1  Models_getModelDataRaw                     
+00003b29  Models_removeModel                         
+00003d91  Models_registerModel                       
+00003db9  Models_checkValidModel                     
+00003dd1  Models_getModelData                        
+00003f79  Models_checkModel                          
+00003fe9  Models_checkAdd                            
+00004001  Models_addList                             
+00004101  Models_init                                
+00004191  Models_getNumModels                        
+00004199  Models_getModelsMax                        
+000041a1  Models_getModelSize                        
+000041b1  Models_getMagicNum                         
+000041b9  Models_enableModel                         
+000041e9  Models_disableModel                        
+00004211  Models_calcEnabledNumObs                   
+00004271  Models_addTempModel                        
+0000433d  EUSCI_B_SPI_transmitData                   
+00004341  FrontEnd_shutdown                          
+00004349  FrontEnd_setup                             
+00004441  FrontEnd_setSilGSP                         
+000044a9  FrontEnd_setDBNoise                        
+000044b1  FrontEnd_setDBLevel                        
+000044b9  FrontEnd_resetUtt                          
+000044d9  FrontEnd_reset                             
+000044e1  FrontEnd_calcRhoSil                        
+00004601  FrontEnd_calcSilGSP                        
+00004631  FrontEnd_processTrain                      
+000048e9  FrontEnd_processReco                       
+00004bc1  FrontEnd_processGSPFrame                   
+00004c81  FrontEnd_processFrame                      
+00004d61  FrontEnd_init                              
+00004d81  FrontEnd_getVAD                            
+00004d89  FrontEnd_getUtt                            
+00004d91  FrontEnd_getSilGSP                         
+00004da9  FrontEnd_getGSP                            
+00004db9  FrontEnd_getGSF                            
+00004de9  FrontEnd_getDBNoise                        
+00004df1  FrontEnd_getDBLevel                        
+00004df9  FrontEnd_getBkgnd                          
+00004e19  FrontEnd_GSPsetup                          
+00004e4d  __TI_printfi                               
+0000589b  Graphics_getDisplayHeight                  
+000058a1  updateState                                
+00005ae9  VCD_updateGSP                              
+00006269  VCD_addCandidate                           
+000062e1  VCD_runTrace                               
+00006a61  VCD_initTrace                              
+00006bab  Graphics_getDisplayWidth                   
+00006bb1  init_window                                
+00006bc1  init_rho                                   
+00006be1  get_rho                                    
+00006fd7  ADC14_IRQHandler                           
+00006fd7  AES256_IRQHandler                          
+00006fd7  BusFault_Handler                           
+00006fd7  COMP_E0_IRQHandler                         
+00006fd7  COMP_E1_IRQHandler                         
+00006fd7  CS_IRQHandler                              
+00006fd7  DMA_ERR_IRQHandler                         
+00006fd7  DMA_INT0_IRQHandler                        
+00006fd7  DMA_INT2_IRQHandler                        
+00006fd7  DMA_INT3_IRQHandler                        
+00006fd7  DebugMon_Handler                           
+00006fd7  Default_Handler                            
+00006fd7  EUSCIA0_IRQHandler                         
+00006fd7  EUSCIA1_IRQHandler                         
+00006fd7  EUSCIA2_IRQHandler                         
+00006fd7  EUSCIA3_IRQHandler                         
+00006fd7  EUSCIB0_IRQHandler                         
+00006fd7  EUSCIB1_IRQHandler                         
+00006fd7  EUSCIB2_IRQHandler                         
+00006fd7  EUSCIB3_IRQHandler                         
+00006fd7  FLCTL_IRQHandler                           
+00006fd7  FPU_IRQHandler                             
+00006fd7  HardFault_Handler                          
+00006fd7  MemManage_Handler                          
+00006fd7  NMI_Handler                                
+00006fd7  PCM_IRQHandler                             
+00006fd7  PORT2_IRQHandler                           
+00006fd7  PORT3_IRQHandler                           
+00006fd7  PORT4_IRQHandler                           
+00006fd7  PORT5_IRQHandler                           
+00006fd7  PORT6_IRQHandler                           
+00006fd7  PSS_IRQHandler                             
+00006fd7  PendSV_Handler                             
+00006fd7  RTC_C_IRQHandler                           
+00006fd7  SVC_Handler                                
+00006fd7  SysTick_Handler                            
+00006fd7  T32_INT1_IRQHandler                        
+00006fd7  T32_INT2_IRQHandler                        
+00006fd7  T32_INTC_IRQHandler                        
+00006fd7  TA0_0_IRQHandler                           
+00006fd7  TA0_N_IRQHandler                           
+00006fd7  TA1_0_IRQHandler                           
+00006fd7  TA1_N_IRQHandler                           
+00006fd7  TA2_N_IRQHandler                           
+00006fd7  TA3_0_IRQHandler                           
+00006fd7  UsageFault_Handler                         
+00006fd7  WDT_A_IRQHandler                           
+00006fd9  VAD_setup                                  
+00007031  VAD_setSlowCoef                            
+00007039  VAD_setSignalFloor                         
+00007041  VAD_setSigSNRThresh                        
+00007049  VAD_setSigSNRLimit                         
+00007051  VAD_setNoiseRate                           
+00007059  VAD_setNoiseFloor                          
+00007061  VAD_setInitFrames                          
+00007069  VAD_setFastCoef                            
+00007071  VAD_setDelayFrames                         
+00007079  VAD_setAlpha                               
+00007081  VAD_run                                    
+000073a1  VAD_getSlowCoef                            
+000073a9  VAD_getSignalFloor                         
+000073b1  VAD_getSigSNRThresh                        
+000073b9  VAD_getSigSNRLimit                         
+000073c1  VAD_getNoiseRate                           
+000073c9  VAD_getNoiseFloor                          
+000073d1  VAD_getInitFrames                          
+000073d9  VAD_getFastCoef                            
+000073e1  VAD_getDelayFrames                         
+000073e9  VAD_getAlpha                               
+000073ef  __aeabi_idiv0                              
+000073ef  __aeabi_ldiv0                              
+000073f1  VCD_stopSearch                             
+00007429  VCD_stopGSPSearch                          
+00007461  VCD_startSearch                            
+00007541  VCD_startGSPSearch                         
+00007601  VCD_searchGSPFrame                         
+00007681  VCD_searchFrame                            
+00007731  VCD_resetSearch                            
+00007759  VCD_getResult                              
+000077e9  get_rhoa                                   
+00007b51  upd_sil                                    
+00007bc1  nmc_model                                  
+00007c49  get_gsf                                    
+00007cd1  FrontEnd_calculateScore                    
+00007e79  EnrollMenu_processEvent                    
+0000817d  Graphics_getFontHeight                     
+00008181  sqrt_l                                     
+000081f9  rms_to_db                                  
+00008271  mult32                                     
+000082a1  egy_to_db                                  
+00008321  div32                                      
+00008457  Graphics_drawString                        
+00008729  RecognizeMenu_processEvent                 
+000089e9  Audio_startCollect                         
+00008ed1  UpdateMenu_processEvent                    
+00009139  main                                       
+000094ed  VCD_writeModel                             
+000096ad  __aeabi_dsub                               
+000096b7  __aeabi_dadd                               
+00009865  VCD_updateModel                            
+000099e5  Graphics_setFont                           
+000099e9  init_fb_coef                               
+000099f9  init_fb                                    
+00009a51  get_fb                                     
+00009cb1  VCD_clearModel                             
+00009e01  Buttons_setup                              
+00009f45  Leds_setup                                 
+0000a301  __aeabi_ddiv                               
+0000a439  utt_det                                    
+0000a529  init_utt_det                               
+0000a689  ldexp                                      
+0000a689  ldexpl                                     
+0000a689  scalbn                                     
+0000a689  scalbnl                                    
+0000a799  DeleteMenu_processEvent                    
+0000a8a1  __aeabi_dmul                               
+0000a99d  LCD_showMenu                               
+0000aa91  TA3_N_IRQHandler                           
+0000aa91  TA3_N_IRQHandler                           
+0000ab79  LCD_setup                                  
+0000ac5d  PORT1_IRQHandler                           
+0000ac5d  PORT1_IRQHandler                           
+0000ad3d  _system_pre_init                           
+0000ad41  init_rfe                                   
+0000ad61  init_db_rfe                                
+0000ad79  get_rfe                                    
+0000aef9  Leds_setColor2                             
+0000afc9  LCD_updateSelectedItem                     
+0000b08d  CS_getDCOFrequency                         
+0000b295  __aeabi_memcpy                             
+0000b295  __aeabi_memcpy4                            
+0000b295  __aeabi_memcpy8                            
+0000b295  memcpy                                     
+0000b331  MainMenu_processEvent                      
+0000b461  level_est                                  
+0000b4f9  __aeabi_uldivmod                           
+0000b591  LCD_showMessage                            
+0000b6b9  get_gsp                                    
+0000b74d  Buttons_shutdown                           
+0000b7d9  DMA_INT1_IRQHandler                        
+0000b7d9  DMA_INT1_IRQHandler                        
+0000b865  __aeabi_cdcmpeq                            
+0000b865  __aeabi_cdcmple                            
+0000b8eb  __aeabi_cdrcmple                           
+0000b971  Graphics_fillRectangle                     
+0000ba75  Sharp96x96_SendToggleVCOMCommand           
+0000baf5  Audio_stopCollect                          
+0000bb71  SPI_initMaster                             
+0000bc69  __aeabi_memclr                             
+0000bc69  __aeabi_memclr4                            
+0000bc69  __aeabi_memclr8                            
+0000bc6b  __aeabi_memset                             
+0000bc6b  __aeabi_memset4                            
+0000bc6b  __aeabi_memset8                            
+0000bc71  memset                                     
+0000bce5  SystemInit                                 
+0000bd5d  Sharp96x96_LCDInit                         
+0000bead  Audio_setupCollect                         
+0000bf15  Graphics_getStringWidth                    
+0000bf7d  __TI_decompress_lzss                       
+0000bfe5  Interrupt_disableInterrupt                 
+0000c049  VCD_initModelsList                         
+0000c0ad  frexp                                      
+0000c0ad  frexpl                                     
+0000c111  reverse                                    
+0000c225  SysCtl_A_getTLVInfo                        
+0000c279  __TI_ltoa                                  
+0000c321  GPIO_setAsPeripheralModuleFunctionOutputPin
+0000c3b9  atoi                                       
+0000c405  Graphics_drawLineH                         
+0000c497  __aeabi_d2iz                               
+0000c4e1  LCD_shutdown                               
+0000c525  __TI_auto_init_nobinit_nopinit             
+0000c569  Menus_nextItem                             
+0000c5ad  sprintf                                    
+0000c62b  Graphics_drawStringCentered                
+0000c665  _c_int00_noargs                            
+0000c6c9  __aeabi_i2d                                
+0000c751  Leds_shutdown                              
+0000c779  PCM_gotoLPM0                               
+0000c7a1  memmove                                    
+0000c7c9  Timer_A_initCompare                        
+0000c7f1  CS_clearInterruptFlag                      
+0000c815  GPIO_setAsOutputPin                        
+0000c839  Graphics_initContext                       
+0000c85b  SPI_transmitData                           
+0000c87d  TA2_0_IRQHandler                           
+0000c87d  TA2_0_IRQHandler                           
+0000c89d  strcat                                     
+0000c8bd  EUSCI_B_SPI_isBusy                         
+0000c8d9  Timer_A_getCounterValue                    
+0000c8f5  memccpy                                    
+0000c911  Audio_getActiveBuffer                      
+0000c945  SPI_enableModule                           
+0000c95f  copysign                                   
+0000c95f  copysignl                                  
+0000c979  Audio_shutdownCollect                      
+0000c991  CS_getACLK                                 
+0000c9a9  CS_getSMCLK                                
+0000c9c1  GPIO_setOutputLowOnPin                     
+0000c9d9  Leds_off1                                  
+0000c9f1  Leds_on1                                   
+0000ca21  Graphics_drawHorizontalLineOnDisplay       
+0000ca37  strchr                                     
+0000ca4d  GPIO_setOutputHighOnPin                    
+0000ca61  Interrupt_disableSleepOnIsrExit            
+0000ca75  Interrupt_enableSleepOnIsrExit             
+0000ca89  strcpy                                     
+0000ca9d  strlen                                     
+0000cac3  wcslen                                     
+0000cad5  Audio_resetActive                          
+0000cae5  Buttons_clearButton1                       
+0000caf5  Buttons_clearButton2                       
+0000cb05  Audio_getActive                            
+0000cb13  Buttons_getButton1                         
+0000cb21  Buttons_getButton2                         
+0000cb2f  Graphics_drawPixelOnDisplay                
+0000cb3d  Graphics_setBackgroundColor                
+0000cb4b  Graphics_setForegroundColor                
+0000cb59  __TI_decompress_none                       
+0000cb67  EUSCI_A_SPI_enable                         
+0000cb73  EUSCI_B_SPI_enable                         
+0000cb7f  Reset_Handler                              
+0000cb8b  __TI_zero_init                             
+0000cb97  Graphics_clearDisplay                      
+0000cba1  Graphics_clearDisplayOnDisplay             
+0000cbab  Graphics_fillRectangleOnDisplay            
+0000cbb5  Graphics_flushOnDisplay                    
+0000cbbf  Graphics_translateColorOnDisplay           
+0000cbd5  __aeabi_errno_addr                         
+0000cbdd  C$$EXIT                                    
+0000cbdd  abort                                      
+0000cc6c  __TI_Handler_Table_Base                    
+0000cc78  __TI_Handler_Table_Limit                   
+0000cc80  __TI_CINIT_Base                            
+0000cc90  __TI_CINIT_Limit                           
+0000d000  VCD_modelsMemory                           
+00015000  fb_coef_data                               
+00015870  window_coef                                
+00015a50  Filler_data                                
+00015bb8  transform                                  
+00015dfc  _ctypes_                                   
+00015f00  g_sFontFixed6x8                            
+000161d8  g_sharp96x96LCD_funcs                      
+000162c4  leds_mapping                               
+000162dc  ham_rms_fac                                
+000162de  ham_egy_fac                                
+20000000  VCD_memory16                               
+20000000  __start___llvm_prf_cnts                    
+20000000  __stop___llvm_prf_cnts                     
+20002638  frontend_instance                          
+20002fe4  DisplayBuffer                              
+20003464  AudioBuffer1                               
+200035a4  AudioBuffer2                               
+200036e4  vcd_instance                               
+20003818  VCD_memoryP                                
+20003894  VCD_modelsList                             
+200038b4  g_sContext                                 
+200038d0  AudioGlobal                                
+200038e8  models_instance                            
+20003900  DmaControlTable                            
+20003a08  Audio                                      
+20003a0c  Buttons                                    
+20003a10  VCD_handle                                 
+20003a14  VCDMemory                                  
+20003a2c  DeleteMenu                                 
+20003a40  EnrollMenu                                 
+20003a54  MainMenu                                   
+20003a68  RecognizeMenu                              
+20003a7c  UpdateMenu                                 
+20003a90  g_sharp96x96LCD                            
+20003ad6  VCOMbit                                    
+20003ad7  flagSendToggleVCOMCommand                  
+20003ad8  errno                                      
+2000fe00  __stack                                    
+20010000  __STACK_END                                
+4000480c  WDTCTL_SYM                                 
+ffffffff  __TI_pprof_out_hndl                        
+ffffffff  __TI_prof_data_size                        
+ffffffff  __TI_prof_data_start                       
+ffffffff  __binit__                                  
+ffffffff  __c_args__                                 
+ffffffff  binit                                      
+UNDEFED   __mpu_init                                 
+UNDEFED   _system_post_cinit                         
+
+[381 symbols]
