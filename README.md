@@ -2,10 +2,11 @@
 
 ## Folders
 
+- `ccs10-projects`: actual MSP432 code for this project
 - `documentation`: papers and small write-ups
 - `backup`: old folders with valuable code
 - `Matlab_tdoa_simulation`: TDOA simulation + algorithm validation
-- `tests-python-eso8266`: secondary method of recording audio (quick mic/hardware tests)
+- `tests-python-eso8266`: secondary method of recording audio with Python and ESP8266 (quick mic/hardware tests)
 
 ## ToDo list (tentatively sorted by priority)
 - [x] done

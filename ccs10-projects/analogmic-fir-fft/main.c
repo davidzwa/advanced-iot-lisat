@@ -29,9 +29,6 @@ uint32_t ifftFlag = 0;
 uint32_t doBitReverse = 1;
 volatile arm_status status;
 
-/* Graphic library context */
-Graphics_Context g_sContext;
-
 #define SMCLK_FREQUENCY     48000000
 #define SAMPLE_FREQUENCY    12000
 
