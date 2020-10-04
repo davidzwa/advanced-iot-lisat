@@ -6,6 +6,7 @@
  */
 
 #include <Timer/Timer.h>
+#include <ti/devices/msp432p4xx/inc/msp.h>
 
 void (*timer_task)(void);   // a hook for user defined function
 

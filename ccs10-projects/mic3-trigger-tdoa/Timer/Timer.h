@@ -6,7 +6,6 @@
  */
 
 #include <stdint.h>
-#include "msp.h"
 
 #ifndef TIMER_H_
 #define TIMER_H_
