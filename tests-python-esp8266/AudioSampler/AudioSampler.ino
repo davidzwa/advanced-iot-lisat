@@ -12,6 +12,11 @@ extern "C"
 #define os_timer_arm_us(a, b, c) ets_timer_arm_new(a, b, c, 0)
 }
 
+#include <ESP8266WiFi.h> // Include the Wi-Fi library
+
+const char *ssid = "Brus";         // The SSID (name) of the Wi-Fi network you want to connect to
+const char *password = "Paaswoord"; // The password of the Wi-Fi network
+
 // TODOS
 // - [ ] Parameter setting over serial or wireless
 // - [ ] Storing parameters on flash
@@ -19,7 +24,7 @@ extern "C"
 // - [ ] Better ping-pong buffer mechanism
 // - [ ] Bigger buffer > circular chunk sliding-window within buffer, f.e. 64 samples
 
-// #define NO_BUFFER
+#define NO_BUFFER
 
 #ifdef DEBUG
 const int sampling_period_us = 50000; // 50ms, 20 Hz;
@@ -29,12 +34,17 @@ const int sampling_period_us = 500; // 200us, 5 kHz;
 #define ADC_SAMPLES_COUNT 1000
 #endif
 
+const int ledPin = LED_BUILTIN;
+#define timeSecondsMs 20
+// https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
 const int analogInPin = A0;
+const int micTriggerPin = D5;
+const int wosModePin = 16;
 int analogBuffer[ADC_SAMPLES_COUNT];
 int analogBuffer_transmit[ADC_SAMPLES_COUNT];
 long lastMicros = 0;
 int16_t bufPosition = 0;
-const int serial_baud_rate = 1000000; // 2000000
+const int serial_baud_rate = 115200;  // 1000000; // 2000000
 
 // Jitter tracker (microseconds)
 long avg_jitter_us = 0;
@@ -48,10 +58,18 @@ void timerCallback(void *pArg)
 {
 #ifdef NO_BUFFER
     int value = analogRead(analogInPin);
-    // Serial.print("v =");
-    Serial.println(value);
+    
+    //https://forum.arduino.cc/index.php?topic=448426.0
+    // Serial.print(-300); // To freeze the lower limit
+    // Serial.print(" ");
+    // Serial.print(700); // To freeze the upper limit
+    // Serial.print(" ");
+    // // Serial.print("v =");
+    // Serial.print(value);
+
     // Serial.print("\t f =");
-    Serial.println(bandpassEMA(value));
+    // Serial.print(" ");
+    // Serial.println(bandpassEMA(value));
 #else
     // Stop recording if buffer is full! (Probably need circular buffer...)
     if (bufPosition < ADC_SAMPLES_COUNT)
@@ -101,30 +119,69 @@ void user_init(void)
     os_timer_arm_us(&samplingTimerUs, sampling_period_us, true);
 }
 
+// Timer: Auxiliary variables
+unsigned long now = millis();
+unsigned long lastTrigger = 0;
+boolean startTimer = false;
+// Checks if motion was detected, sets LED HIGH and starts a timer
+ICACHE_RAM_ATTR void interruptMicTriggered()
+{
+    Serial.println("Sound detected.");
+    digitalWrite(ledPin, HIGH);
+    startTimer = true;
+    lastTrigger = millis();
+}
+
 void setup()
 {
+    WiFi.disconnect();
+    // WiFi.begin(ssid, password); // Connect to the network
+
     Serial.begin(serial_baud_rate);
     tickOccured = false;
     user_init();
+
+    // Set LED to LOW
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, LOW);
+
+    // Start listening for wake-on-sound
+    // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
+    pinMode(wosModePin, OUTPUT);
+    digitalWrite(wosModePin, HIGH);
+    
+    pinMode(micTriggerPin, INPUT_PULLUP);
+    // https://randomnerdtutorials.com/interrupts-timers-esp8266-arduino-ide-nodemcu/
+    attachInterrupt(digitalPinToInterrupt(micTriggerPin), interruptMicTriggered, RISING);
 }
 
-String incoming = ""; // for incoming serial string data
+String incoming = "";
 void checkIncomingSerial()
 {
     if (Serial.available() > 0)
     {
-        // read the incoming:
         incoming = Serial.readString();
-        // say what you got:
-        // Serial.print("RX:");
         Serial.println(incoming);
 
         incoming = "";
     }
 }
 
+
 void loop()
 {
+    // Current time
+    now = millis();
+    // Turn off the LED after the number of seconds defined in the timeSeconds variable
+    if (startTimer && (now - lastTrigger > (timeSecondsMs)))
+    {
+        Serial.println("Motion stopped...");
+        digitalWrite(ledPin, LOW);
+        digitalWrite(wosModePin, LOW);
+        digitalWrite(wosModePin, HIGH);
+        startTimer = false;
+    }
+
 #ifndef NO_BUFFER
     // Transmitting = true => overflow? Shouldnt be possible in main routine.
     if (bufPosition >= ADC_SAMPLES_COUNT && transmitting == false)
