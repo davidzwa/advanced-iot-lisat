@@ -1,7 +1,7 @@
 {
     "board": "esp8266:esp8266:d1",
-    "configuration": "xtal=80,vt=flash,exception=enabled,eesz=4M,ip=lm2f,dbg=Serial,lvl=CORE,wipe=none,baud=921600",
+    "configuration": "xtal=80,vt=flash,exception=enabled,ssl=all,eesz=4M,ip=lm2f,dbg=Serial,lvl=CORE,wipe=none,baud=921600",
     "programmer": "AVR ISP",
-    "port": "COM4",
-    "sketch": "example-localization-arduino\\AudioSampler\\AudioSampler.ino"
+    "port": "COM5",
+    "sketch": "tests-python-esp8266\\AudioSampler\\AudioSampler.ino"
 }

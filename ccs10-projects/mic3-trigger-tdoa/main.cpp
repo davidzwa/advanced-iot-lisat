@@ -5,8 +5,14 @@
 class LedToggler {
 public:
     bool ledState = false;
+    void setupPort() {
+        P1DIR = 0x01; // set up bit 0 of P1 as output
+        P1OUT = 0x00; // intialize bit 0 of P1 to 0
+    }
     void toggle() {
         ledState = !ledState;
+        // toggle bit 0 of P1
+        P1OUT ^= 0x01;
     }
 } LedTogglers;
 
@@ -61,19 +67,16 @@ void main(void)
 	timerA0->init(timer_callback);
 
 	LedToggler* toggler = new LedToggler();
-	toggler->toggle();
-	toggler->toggle();
+	toggler->setupPort();
 
     port_3_pin_3_int_init();
 
-    P1DIR = 0x01; // set up bit 0 of P1 as output
-    P1OUT = 0x00; // intialize bit 0 of P1 to 0
     volatile int i = 0;
     while(1)
     {
-        // toggle bit 0 of P1
-        P1OUT ^= 0x01;
-//        // delay for a while
+
+        toggler->toggle();
+        // delay for a while
         for (i = 0; i < 0x10000; i++);
     }
 }

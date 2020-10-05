@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import pygame
 
 sampleRate = 44100
@@ -27,16 +27,34 @@ pygame.mixer.init(44100, -16, 2, 512)
 # to ensure playback never skips, but it will impose latency on sound playback.
 
 def get_sound(freq):
-    arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * freq * x / sampleRate)
-                    for x in range(0, sampleRate)]).astype(numpy.int16)
-    return numpy.c_[arr, arr]
+    arr = np.array([4096 * np.sin(2.0 * np.pi * freq * x / sampleRate)
+                    for x in range(0, sampleRate)]).astype(np.int16)
+    return np.c_[arr, arr]
 
-freq = 100
+
+x = np.arange(0, 100, 0.1)
+
+
+def triang(x, phase, length, amplitude):
+    alpha = (amplitude)/(length/2)
+    return -amplitude/2+amplitude*((x-phase) % length == length/2) \
+        + alpha*((x-phase) % (length/2))*((x-phase) % length <= length/2) \
+        + (amplitude-alpha*((x-phase) % (length/2))) * \
+        ((x-phase) % length > length/2)
+
+
+phase = -10
+length = 5  # should be positive
+amplitude = 10240
+tr = triang(x, phase, length, amplitude).astype(np.int16)
+
+freq = 1000
 while True:
-    sound = pygame.sndarray.make_sound(get_sound(freq))
+    snd = np.c_[tr, tr]
+    sound = pygame.sndarray.make_sound(snd)
     sound.play(-1)
-    pygame.time.delay(freq)
+    pygame.time.delay(50)
     sound.stop()
-    pygame.time.delay(freq)
+    pygame.time.delay(200)
 
     freq += 50
