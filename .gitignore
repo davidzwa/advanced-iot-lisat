@@ -40,3 +40,5 @@ examples-ccs-v10/voice_detection_MSP_EXP432P401R_nortos_ccs/Debug/
 
 
 ccs10-projects/.jxbrowser-data/
+
+.esp-build-output/
