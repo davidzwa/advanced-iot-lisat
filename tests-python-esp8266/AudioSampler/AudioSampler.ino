@@ -25,6 +25,7 @@ const char *password = "Paaswoord"; // The password of the Wi-Fi network
 // - [ ] Bigger buffer > circular chunk sliding-window within buffer, f.e. 64 samples
 
 #define NO_BUFFER
+// #define PRINT_TRIGGER_INTERRUPTS
 
 #ifdef DEBUG
 const int sampling_period_us = 50000; // 50ms, 20 Hz;
@@ -68,10 +69,10 @@ void timerCallback(void *pArg)
     int value = analogRead(analogInPin);
 
     //https://forum.arduino.cc/index.php?topic=448426.0
-    // Serial.print(-300); // To freeze the lower limit
-    // Serial.print(" ");
-    // Serial.print(700); // To freeze the upper limit
-    // Serial.print(" ");
+    Serial.print(-300); // To freeze the lower limit
+    Serial.print(" ");
+    Serial.print(700); // To freeze the upper limit
+    Serial.print(" ");
     // Serial.print("v =");
     if (averaging)
     {
@@ -80,6 +81,9 @@ void timerCallback(void *pArg)
         maxAmplitude = max(value, maxAmplitude);
         minAmplitude = min(value, minAmplitude);
     }
+    Serial.println(value);
+    Serial.println(" ");
+    Serial.println(bandpassEMA(value));
 #else
     // Stop recording if buffer is full! (Probably need circular buffer...)
     if (bufPosition < ADC_SAMPLES_COUNT)
@@ -147,15 +151,24 @@ ICACHE_RAM_ATTR void interruptMicTriggered()
     digitalWrite(ledPin, HIGH);
     startTimer = true;
     lastTrigger = micros();
+#ifdef PRINT_TRIGGER_INTERRUPTS
+    Serial.println("m3");
+#endif
 }
 
 ICACHE_RAM_ATTR void interruptMic2Triggered()
 {
+#ifdef PRINT_TRIGGER_INTERRUPTS
+    Serial.println("m2");
+#endif
     lastTrigger2 = micros();
 }
 
 ICACHE_RAM_ATTR void interruptMic3Triggered()
 {
+#ifdef PRINT_TRIGGER_INTERRUPTS
+    Serial.println("m3");
+#endif
     lastTrigger3 = micros();
 }
 
@@ -216,6 +229,7 @@ void loop()
         delay(100);
         averaging = false;
         digitalWrite(wosModePin, HIGH);
+#ifdef PRINT_TRIGGER_INTERRUPTS
         Serial.print(integratedAmplitude);
         Serial.print(" ");
         Serial.print(minAmplitude);
@@ -225,6 +239,7 @@ void loop()
         // Serial.print(maxAmplitude-minAmplitude);
         Serial.print(" ");
         Serial.println(averagedAmplitude); // Print the energy
+#endif
         startTimer = false;
     }
 
