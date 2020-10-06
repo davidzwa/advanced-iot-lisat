@@ -42,3 +42,8 @@ examples-ccs-v10/voice_detection_MSP_EXP432P401R_nortos_ccs/Debug/
 ccs10-projects/.jxbrowser-data/
 
 .esp-build-output/
+
+# Argos-3 ignore files
+argos3-lisat/build/
+argos3-lisat/cmake/
+argos3-lisat/embedding/
