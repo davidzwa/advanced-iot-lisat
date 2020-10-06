@@ -3,7 +3,11 @@
 
 #include <Arduino.h>
 
+extern bool transmitting;
+
 void transmitSerialData(int *buffer, int length);
+void transmitSerialValue(int value);
+
 void processIncomingSerial();
 
 

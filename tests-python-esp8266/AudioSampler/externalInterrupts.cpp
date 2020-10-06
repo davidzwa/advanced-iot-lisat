@@ -26,10 +26,17 @@ void disableMicTriggerInterrupts() {
     detachInterrupt(digitalPinToInterrupt(mic3TriggerPin));
 }
 
-void resetWosModeSlow() {
+// Set the mic to a new Wake-on-sound cycle, sadly needs some delay
+void resetWosMicModeSlow() {
     digitalWrite(wosModePin, LOW);
     delay(50);
     digitalWrite(wosModePin, HIGH);
+}
+
+// Set the mic to continuous listening
+void setNormalMicMode()
+{
+    digitalWrite(wosModePin, LOW);
 }
 
 void adcTimerDoneCallback() {
@@ -39,7 +46,7 @@ void adcTimerDoneCallback() {
     // long minTriggerVal = min(min(lastTrigger, lastTrigger2), min(lastTrigger2, lastTrigger3));
     
     transmitSerialData(analogBuffer, ADC_SAMPLES_COUNT);
-    resetWosModeSlow();
+    resetWosMicModeSlow();
     Serial.println("Reset WoS mode (50ms)!");
     startAdcSampling = false;
 }

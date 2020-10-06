@@ -7,18 +7,11 @@
 #include "externalInterrupts.h"
 #include "serialInterface.h"
 
-#ifdef MEASURE_ADCTIMER_JITTER
-extern long avg_jitter_us;
-#endif
-
-// Adc & serial states
-bool transmitting = false;
-
 void user_init(void)
 {
     // ADC timer
     initOsTimer(sampling_period_us);
-    
+
     // LED as visual tool
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
@@ -26,7 +19,7 @@ void user_init(void)
     // Start listening for wake-on-sound
     pinMode(micTriggerPin, INPUT_PULLUP);
     pinMode(wosModePin, OUTPUT); // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
-    digitalWrite(wosModePin, HIGH);   
+    digitalWrite(wosModePin, HIGH);
 }
 
 void setup()
@@ -34,24 +27,31 @@ void setup()
     WiFi.disconnect();
     Serial.begin(serial_baud_rate);
     user_init();
-    
+
     // Prepare runtime
+#ifndef NO_BUFFER
     enableMicTriggerInterrupts();
     initOsTimer(ADC_SAMPLING_PERIOD_US);
+#else
+    setNormalMicMode();
+#endif // NO_BUFFER
 }
 
-unsigned long now = millis();
 void loop()
 {
+#ifdef NO_BUFFER
+    transmitSerialValue(analogRead(analogInPin));
+#else
     // Current time
     if (startAdcSampling)
     {
         digitalWrite(ledPin, LOW);
     }
-    else {
+    else
+    {
         digitalWrite(ledPin, HIGH);
     }
-
+#endif
     processIncomingSerial();
     yield(); // or delay(0);
 }

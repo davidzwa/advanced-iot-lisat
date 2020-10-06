@@ -57,20 +57,17 @@ void timerCallback(void *pArg)
     // Serial.println(abs(micros() - lastMicros - sampling_period_us)); // Steady 200 - 500 us jitter
     // avg_jitter_us = (avg_jitter_us * (bufPosition) + abs(micros() - lastMicros - sampling_period_us)) / (bufPosition + 1); // Resort to jitter calc
 #endif
-#ifdef NO_BUFFER
-    int value = analogRead(analogInPin);
-    Serial.println(value); // Immediately stream value
-#else
     if (bufPosition < ADC_SAMPLES_COUNT)
     {
-        analogBuffer[bufPosition] = bandpassEMA(analogRead(analogInPin));
+        int16_t value = analogRead(analogInPin);
+        analogBuffer[bufPosition] = bandpassEMA(value);
         bufPosition++;
     }
     else {
         // Finished, report back
         stopOsTimer();
+        bufPosition = 0;
         timerDoneCallback();
         // throw std::overflow_error("Buffer overflow");
     }
-#endif
 }

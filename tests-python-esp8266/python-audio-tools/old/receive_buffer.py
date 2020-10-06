@@ -5,11 +5,11 @@ import time
 import traceback
 import string, random
 
-data_tag = 'v'
+data_tag = '[v]'
 end_tag = '-- Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
-ser = serial.Serial("COM5", 1000000)
+ser = serial.Serial("COM4", 1000000)
 ser.flushInput()
 data = []
 received_samples = 0

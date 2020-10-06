@@ -3,16 +3,14 @@
 #include <Arduino.h>
 
 // States
-extern bool transmitting;
+bool transmitting = false;
 
 void transmitSerialData(int *buffer, int length)
 {
     transmitting = true;
     for (int16_t i = 0; i < length; i++)
     {
-        Serial.print("v");
-        Serial.print(".");
-        Serial.println(buffer[i]);
+        transmitSerialValue(buffer[i]);
     }
     
 #ifdef MEASURE_ADCTIMER_JITTER
@@ -23,6 +21,17 @@ void transmitSerialData(int *buffer, int length)
     Serial.print("Period(us): ");
     Serial.println(sampling_period_us);
     transmitting = false;
+}
+
+void transmitSerialValue(int value) {
+#ifdef STREAM_PLOTTER
+    Serial.print("v = ");
+    Serial.println(value);
+#else
+    Serial.print("v");
+    Serial.print(".");
+    Serial.println(value);
+#endif
 }
 
 String incoming = "";

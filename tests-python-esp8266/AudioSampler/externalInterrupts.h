@@ -8,7 +8,8 @@ extern boolean startAdcSampling;
 
 // CASPER's PLAYGROUND
 long getCurrentPreciseTime();
-
+void resetWosMicModeSlow();
+void setNormalMicMode();
 void enableMicTriggerInterrupts();
 void disableMicTriggerInterrupts();
 
