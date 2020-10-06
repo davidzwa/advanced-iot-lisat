@@ -11,7 +11,7 @@ const int ledPin = LED_BUILTIN;
 // Mic analog input
 const int analogInPin = A0;
 // Mic wake-on-sound trigger inputs
-const int mic3TriggerPin = D7; // Mic 'right'
+const int mic3TriggerPin = D7; // Mic 'right' also on AnalogInput
 const int mic2TriggerPin = D6; // Mic 'mid' (needs to move into triangle position soon...)
 const int micTriggerPin = D5; // Mic 'left'
 

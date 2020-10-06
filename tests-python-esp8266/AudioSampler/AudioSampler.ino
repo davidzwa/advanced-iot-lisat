@@ -11,7 +11,7 @@
 extern long avg_jitter_us;
 #endif
 
-// States
+// Adc & serial states
 bool transmitting = false;
 
 void user_init(void)
@@ -19,17 +19,14 @@ void user_init(void)
     // ADC timer
     initOsTimer(sampling_period_us);
     
+    // LED as visual tool
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
 
     // Start listening for wake-on-sound
-    pinMode(wosModePin, OUTPUT); // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
-    digitalWrite(wosModePin, HIGH);
     pinMode(micTriggerPin, INPUT_PULLUP);
-    // https://randomnerdtutorials.com/interrupts-timers-esp8266-arduino-ide-nodemcu/
-    attachInterrupt(digitalPinToInterrupt(micTriggerPin), interruptMicTriggered, RISING);
-    attachInterrupt(digitalPinToInterrupt(mic2TriggerPin), interruptMic2Triggered, RISING);
-    attachInterrupt(digitalPinToInterrupt(mic3TriggerPin), interruptMic3Triggered, RISING);
+    pinMode(wosModePin, OUTPUT); // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
+    digitalWrite(wosModePin, HIGH);   
 }
 
 void setup()
@@ -37,37 +34,24 @@ void setup()
     WiFi.disconnect();
     Serial.begin(serial_baud_rate);
     user_init();
+    
+    // Prepare runtime
+    enableMicTriggerInterrupts();
+    initOsTimer(ADC_SAMPLING_PERIOD_US);
 }
 
+unsigned long now = millis();
 void loop()
 {
     // Current time
-    now = millis();
-    // Turn off the LED after the number of seconds defined in the timeSeconds variable
-    if (startTimer && (now - lastTrigger > (timeSecondsMs)))
+    if (startAdcSampling)
     {
-        // long minTriggerVal = min(min(lastTrigger, lastTrigger2), min(lastTrigger2, lastTrigger3));
         digitalWrite(ledPin, LOW);
-        digitalWrite(wosModePin, LOW);
-        delay(100);
-        digitalWrite(wosModePin, HIGH);
-        startTimer = false;
+    }
+    else {
+        digitalWrite(ledPin, HIGH);
     }
 
-#ifndef NO_BUFFER
-    if (transmitting == false)
-    {
-
-#ifdef MEASURE_ADCTIMER_JITTER
-        Serial.print("-- Done. Jitter: ");
-        Serial.print(avg_jitter_us);
-#endif
-        Serial.print(" Period(us): ");
-        Serial.print(sampling_period_us);
-        transmitting = false;
-    }
-    checkIncomingSerial();
-
-#endif       // !NO_BUFFER
+    processIncomingSerial();
     yield(); // or delay(0);
 }

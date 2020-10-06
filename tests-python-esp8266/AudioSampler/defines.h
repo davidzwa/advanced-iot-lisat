@@ -13,6 +13,7 @@
 // Arduino has 1000000 or even more unstable 2000000
 const int serial_baud_rate = 250000; // VS Code has max 250000 -_-
 #define timeSecondsMs 50
+#define ADC_SAMPLING_PERIOD_US 1000
 
 // Timer jitter tracker (microseconds)
 #ifdef MEASURE_ADCTIMER_JITTER

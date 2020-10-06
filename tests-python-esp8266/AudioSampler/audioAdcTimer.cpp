@@ -26,17 +26,22 @@ extern "C"
 //     minAmplitude = 10024;
 
 int16_t bufPosition = 0;
-int analogBuffer[ADC_SAMPLES_COUNT];
 int timerPeriodUs = 1000;
 os_timer_t samplingTimerUs;
+int analogBuffer[ADC_SAMPLES_COUNT];
 
-void initOsTimer(uint16_t periodUs) {
+void (*timerDoneCallback)(void);
+
+void initOsTimer(uint16_t periodUs)
+{
     timerPeriodUs = periodUs;
     system_timer_reinit();
     os_timer_setfn(&samplingTimerUs, timerCallback, analogBuffer);
 }
 
-void startOsTimer() {
+void startOsTimer(void(*finishingTask)(void))
+{
+    timerDoneCallback = finishingTask;
     os_timer_arm_us(&samplingTimerUs, timerPeriodUs, true);
 }
 
@@ -62,7 +67,10 @@ void timerCallback(void *pArg)
         bufPosition++;
     }
     else {
-        throw std::overflow_error("Buffer overflow");
+        // Finished, report back
+        stopOsTimer();
+        timerDoneCallback();
+        // throw std::overflow_error("Buffer overflow");
     }
 #endif
 }
