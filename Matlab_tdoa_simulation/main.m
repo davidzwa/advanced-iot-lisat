@@ -4,22 +4,23 @@ close all
 c = 345;    %m/s, speed of sound
 %%
 % Field setup
-field = [0, 4, 0, 4];
+field = [-2, 2, -2, 2];
 walls = false;   % for echos, not yet implemented
 
 % source setup 
-sources = [1.7,1.99];    % [x,y] in meters
+sources = [0,-1];    % [x,y] in meters
 
 % Robot setup
 %robots = [0,0,0];
-robots = [0,0,0; 2,0,0; 4,0,0; 4,2,0; 4,4,0; 2,4,0; 0,4,0; 0,2,0; 2,2,0];
+robots = [ -2,-2,0; -2,0,0; -2,2,0; 0,-2,0; 0,2,0; 2,-2,0; 2,0,0; 2,2,0; 0.5, 0,0];
 %robots =[zeros(20,2), (1:20)'/20*2*pi];    % [x,y,phi] with x and y in meters and phi in radians
 %mic = [-1,0; 1,0; 0,0; 0,-1; 0,1];    %locations of the microfons relative to the robot
 
-N_mic = 3;
-mic = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
+N_mic = 4;
+%mic = [-2, -2; 2,-2;-2,2];
+mic = .1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
 %mic = [0,0; mic];
-%mic = [0,5; 5,5; 5,0; 0,0];
+%mic = [0.20,0; 0, 0.10; 0, -0.10];
 
 % Generating environment
 env = gen_environment(sources, robots, mic, field, walls);

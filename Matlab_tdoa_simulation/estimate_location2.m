@@ -6,7 +6,7 @@ disp take_2
 % Chan-Ho model
 
 est_location = zeros(env.num_robots, 2);
-max_it = 50;
+max_it = 10;
 a = zeros(max_it,2);
 
 %  env.mics_relative(2:end,2)

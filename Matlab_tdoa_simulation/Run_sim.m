@@ -23,7 +23,7 @@ o_d = 1;        % order of analog filter
 %[b_d, a_d] = butter(o_d, [f1_d, f2_d]/Fs_d);
 
 %% Noise
-SNR = 0.1;
+SNR = 1;
 
 %% Run sim
 

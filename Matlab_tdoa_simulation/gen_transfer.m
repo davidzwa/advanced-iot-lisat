@@ -1,5 +1,6 @@
 function env = gen_transfer(env, Fs, c)
 %generate transfer functions [source, robot, mic]
+% source https://www.dsprelated.com/freebooks/pasp/Acoustic_Modeling_Digital_Delay.html
 % c = wave velocity in m/s
 
 for s = 1:env.num_sources
