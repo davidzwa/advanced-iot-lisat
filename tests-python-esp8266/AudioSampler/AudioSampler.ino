@@ -12,45 +12,18 @@ extern "C"
 #define os_timer_arm_us(a, b, c) ets_timer_arm_new(a, b, c, 0)
 }
 
-#include <ESP8266WiFi.h> // Include the Wi-Fi library
+#include "test/gheahder.h"
+#include "pindefs.h"
+#include "filter.h"
+#include "defines.h"
+#include "arduinoFFT.h"
 
-const char *ssid = "Brus";          // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "Paaswoord"; // The password of the Wi-Fi network
+extern long avg_jitter_us;
 
-// TODOS
-// - [ ] Parameter setting over serial or wireless
-// - [ ] Storing parameters on flash
-// - [ ] Customizing LPF/HPF
-// - [ ] Better ping-pong buffer mechanism
-// - [ ] Bigger buffer > circular chunk sliding-window within buffer, f.e. 64 samples
-
-#define NO_BUFFER
-// #define PRINT_TRIGGER_INTERRUPTS
-
-#ifdef DEBUG
-const int sampling_period_us = 50000; // 50ms, 20 Hz;
-#define ADC_SAMPLES_COUNT 100
-#else
-const int sampling_period_us = 500; // 200us, 5 kHz;
-#define ADC_SAMPLES_COUNT 1000
-#endif
-
-const int ledPin = LED_BUILTIN;
-#define timeSecondsMs 50
-// https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
-const int analogInPin = A0;
-const int micTriggerPin = D5;
-const int mic2TriggerPin = D6;
-const int mic3TriggerPin = D7;
-const int wosModePin = 16;
 int analogBuffer[ADC_SAMPLES_COUNT];
 int analogBuffer_transmit[ADC_SAMPLES_COUNT];
 long lastMicros = 0;
 int16_t bufPosition = 0;
-const int serial_baud_rate = 250000; // 1000000; // 2000000
-
-// Jitter tracker (microseconds)
-long avg_jitter_us = 0;
 
 // States
 bool transmitting = false;
@@ -85,7 +58,6 @@ void timerCallback(void *pArg)
     Serial.println(" ");
     Serial.println(bandpassEMA(value));
 #else
-    // Stop recording if buffer is full! (Probably need circular buffer...)
     if (bufPosition < ADC_SAMPLES_COUNT)
     {
         // Calculate jitter average (IIR filter)
@@ -102,27 +74,6 @@ void timerCallback(void *pArg)
     // }
 #endif
     lastMicros = micros();
-}
-
-// HPF EMA
-// https://www.norwegiancreations.com/2016/03/arduino-tutorial-simple-high-pass-band-pass-and-band-stop-filtering/
-float EMA_a = 0.2; //initialization of EMA alpha
-int EMA_S = 0;     //initialization of EMA S
-int filterValueEMA(int analogValue)
-{
-    EMA_S = (EMA_a * analogValue) + ((1 - EMA_a) * EMA_S); // run the EMA
-    return analogValue;                                    // - EMA_S; // calculate the high-pass signal
-}
-
-float EMA_a_low = 0.6; //initialization of EMA alpha
-float EMA_a_high = 0.9;
-int EMA_S_low = 0; //initialization of EMA S
-int EMA_S_high = 0;
-int bandpassEMA(int analogValue)
-{
-    EMA_S_low = (EMA_a_low * analogValue) + ((1 - EMA_a_low) * EMA_S_low); //run the EMA
-    EMA_S_high = (EMA_a_high * analogValue) + ((1 - EMA_a_high) * EMA_S_high);
-    return EMA_S_high - EMA_S_low; //find the band-pass
 }
 
 void user_init(void)
@@ -175,8 +126,9 @@ ICACHE_RAM_ATTR void interruptMic3Triggered()
 void setup()
 {
     WiFi.disconnect();
-
     Serial.begin(serial_baud_rate);
+    Serial.println(IMMACONST);
+
     tickOccured = false;
     user_init();
 
@@ -210,6 +162,10 @@ void checkIncomingSerial()
 
 void loop()
 {
+    Serial.println(getVal());
+    delay(1000);
+    return;
+    
     // Current time
     now = millis();
     // Turn off the LED after the number of seconds defined in the timeSeconds variable
@@ -257,8 +213,10 @@ void loop()
             Serial.print(".");
             Serial.println(analogBuffer_transmit[i]);
         }
+#ifdef MEASURE_ADCTIMER_JITTER
         Serial.print("-- Done. Jitter: ");
         Serial.print(avg_jitter_us);
+#endif
         Serial.print(" Period(us): ");
         Serial.print(sampling_period_us);
         Serial.print(" bufPosition last: ");
