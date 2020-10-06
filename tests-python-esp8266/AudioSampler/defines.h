@@ -3,8 +3,6 @@
 
 // WiFi/AP config ESP
 #include <ESP8266WiFi.h>            // Include the Wi-Fi library
-const char *ssid = "Brus";          // The SSID (name) of the Wi-Fi network you want to connect to
-const char *password = "Paaswoord"; // The password of the Wi-Fi network
 
 // Runtime debug definitions (do we print over 'expensive' Serial)
 // #define NO_BUFFER

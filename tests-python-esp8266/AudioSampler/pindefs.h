@@ -1,5 +1,4 @@
-// Import if you need debug defines to define pins
-// #include "defines.h"
+#include "defines.h"
 
 #ifndef PINDEFS__H
 #define PINDEFS__H
