@@ -6,6 +6,7 @@ import traceback
 import string, random
 
 data_tag = 'v'
+param_tag = 'M'
 end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
@@ -61,10 +62,7 @@ def normalize_integer(value_list):
     mapped_list = [map_value_8bit_unsigned(i, min(value_list), max(value_list)) for i in value_list]
     return mapped_list
 
-index_vector = list()
-time_vector = list()
 sound_vector = list()
-
 while True:
     serial_line = ser.readline()
     if data_tag in str(serial_line):
@@ -77,6 +75,8 @@ while True:
             print(traceback.format_exc())
             handle_parsing_error(serial_line)
             pass
+    elif param_tag in str(serial_line):
+        print('param', serial_line)
     elif end_tag in str(serial_line):
         received_samples = 0
         rng_filename = "audio/" + get_random_string(3) + base_filename
@@ -89,7 +89,9 @@ while True:
         
         sound_vector = []
         time_vector = []
-        ser.write(bytes("ati", 'utf-8'))
+
+        # Answer back
+        # ser.write(bytes("ati", 'utf-8'))
         # ser.writelines("V".encode());
     # elif overflow_tag in str(serial_line): # wont occur anymore
     #     print('Buffer overflow exception!')

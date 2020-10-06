@@ -18,17 +18,14 @@ void transmitSerialData(transmittedData_t *data)
         transmitSerialValue(data->buffer[i]);
     }
 
-    transmitSerialParam("m1", data->deltaMic1);
-    transmitSerialParam("m2", data->deltaMic2);
-    transmitSerialParam("m3", data->deltaMic3);
+    transmitSerialParam("M1", data->deltaMic1);
+    transmitSerialParam("M2", data->deltaMic2);
+    transmitSerialParam("M3", data->deltaMic3);
 #ifdef MEASURE_ADCTIMER_JITTER
-    Serial.print("-- Done. Jitter: ");
-    Serial.print(avg_jitter_us);
+    transmitSerialParam("J", avg_jitter_us);
 #endif
     transmitEndSymbol(); // End of data separator
-
-    Serial.print("Period(us): ");
-    Serial.println(sampling_period_us);
+    transmitSerialParam("P", sampling_period_us);
     transmitting = false;
 }
 
