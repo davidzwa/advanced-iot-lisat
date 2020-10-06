@@ -3,12 +3,22 @@
 
 #include <Arduino.h>
 
+struct transmittedData_t
+{
+    int deltaMic1;
+    int deltaMic2;
+    int deltaMic3;
+    int length;
+    int *buffer;
+    // Add any metadata here
+};
+
 extern bool transmitting;
 
-void transmitSerialData(int *buffer, int length);
+void transmitSerialData(transmittedData_t *data);
+void transmitSerialParam(String identifier, int value);
 void transmitSerialValue(int value);
 
 void processIncomingSerial();
-
 
 #endif // !SERIAL_INTERFACE__H

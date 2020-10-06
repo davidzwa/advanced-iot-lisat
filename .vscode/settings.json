@@ -2,5 +2,13 @@
     "files.associations": {
         "exception": "cpp",
         "stdexcept": "cpp"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/.esp-*": true
     }
 }

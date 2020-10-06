@@ -17,9 +17,11 @@ void user_init(void)
     digitalWrite(ledPin, LOW);
 
     // Start listening for wake-on-sound
-    pinMode(micTriggerPin, INPUT_PULLUP);
-    pinMode(wosModePin, OUTPUT); // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
-    digitalWrite(wosModePin, HIGH);
+    pinMode(mic1LTriggerPin, INPUT_PULLUP);
+    pinMode(wosModePin1L, OUTPUT); // https://www.puiaudio.com/media/SpecSheet/PMM-3738-VM1010-R.pdf
+    pinMode(wosModePin2M, OUTPUT);
+    pinMode(wosModePin3R, OUTPUT);
+    resetWosMicMode();
 }
 
 void setup()
@@ -30,6 +32,7 @@ void setup()
 
     // Prepare runtime
 #ifndef NO_BUFFER
+    resetWosMicMode();
     enableMicTriggerInterrupts();
     initOsTimer(ADC_SAMPLING_PERIOD_US);
 #else

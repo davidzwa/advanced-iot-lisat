@@ -6,10 +6,10 @@ import traceback
 import string, random
 
 data_tag = 'v'
-end_tag = '-- Done'
+end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
-ser = serial.Serial("COM5", 1000000)
+ser = serial.Serial('COM5', 250000) # 1000000
 ser.flushInput()
 data = []
 received_samples = 0
@@ -77,15 +77,13 @@ while True:
             print(traceback.format_exc())
             handle_parsing_error(serial_line)
             pass
-        
-        # index_vector.append(values[0])
-        # time_vector.append(time_value)
     elif end_tag in str(serial_line):
         received_samples = 0
         rng_filename = "audio/" + get_random_string(3) + base_filename
-        sound_vector = normalize_integer(sound_vector)
+        # sound_vector = normalize_integer(sound_vector)
+        print(sound_vector)
         # Perform tasks
-        frequency = 1 / (500 * 1E-6)
+        frequency = 2000
         # write_audio(sound_vector, 1, frequency, rng_filename)
         # playsound(rng_filename)
         
@@ -93,8 +91,8 @@ while True:
         time_vector = []
         ser.write(bytes("ati", 'utf-8'))
         # ser.writelines("V".encode());
-    elif overflow_tag in str(serial_line):
-        print('Buffer overflow exception!')
+    # elif overflow_tag in str(serial_line): # wont occur anymore
+    #     print('Buffer overflow exception!')
     else:
         if not any(ext in str(serial_line) for ext in ignore_tags):
             print('Unrecognized reception: ', serial_line)
