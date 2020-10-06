@@ -3,5 +3,6 @@
     "configuration": "xtal=160,vt=flash,exception=enabled,ssl=all,eesz=4M,ip=lm2f,dbg=Serial,lvl=CORE,wipe=none,baud=3000000",
     "programmer": "AVR ISP",
     "port": "COM5",
-    "sketch": "tests-python-esp8266\\AudioSampler\\AudioSampler.ino"
+    "sketch": "tests-python-esp8266\\AudioSampler\\AudioSampler.ino",
+    "output": "./.esp-build-output"
 }
