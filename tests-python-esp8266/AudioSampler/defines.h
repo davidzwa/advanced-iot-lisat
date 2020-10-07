@@ -1,8 +1,7 @@
+#include <Esp.h>
+
 #ifndef DEFINES__H
 #define DEFINES__H
-
-// WiFi/AP config ESP
-#include <ESP8266WiFi.h>            // Include the Wi-Fi library
 
 // Runtime debug definitions (do we print over 'expensive' Serial)
 // #define NO_BUFFER // Direct stream values
@@ -10,6 +9,7 @@
 // #define PRINT_TRIGGER_INTERRUPTS
 // #define DEBUG
 // #define MEASURE_ADCTIMER_JITTER
+// #define MQTT_CLIENT
 
 // Arduino has 1000000 or even more unstable 2000000
 const int serial_baud_rate = 250000; // VS Code has max 250000 -_-

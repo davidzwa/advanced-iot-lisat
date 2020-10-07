@@ -6,7 +6,13 @@
 #include "audioAdcTimer.h"
 #include "externalInterrupts.h"
 #include "serialInterface.h"
+#include <ESP8266WiFi.h>
+
+#ifdef MQTT_CLIENT
 #include "mqttClient.h"
+WiFiClient espClient;
+PubSubClient client(espClient);
+#endif
 
 void user_init(void)
 {
@@ -23,20 +29,27 @@ void user_init(void)
     pinMode(wosModePin2M, OUTPUT);
     pinMode(wosModePin3R, OUTPUT);
     resetWosMicMode();
+
+#ifdef MQTT_CLIENT
+    // Setup WiFi & MQTT pubsub client
+    setup_wifi();
+    client.setServer(mqtt_server, 1883);
+    client.setCallback(callback);
+#else
+    WiFi.disconnect();
+#endif
 }
 
 void setup()
 {
-    // WiFi.disconnect();
-    WiFi.begin("Brus", "Tackle1963");
     Serial.begin(serial_baud_rate);
 
     user_init();
 
     // Prepare runtime
 #ifndef NO_BUFFER
-    resetWosMicMode();
-    enableMicTriggerInterrupts();
+    // resetWosMicMode();
+    // enableMicTriggerInterrupts();
 #else
     setNormalMicMode();
 #endif // NO_BUFFER
@@ -57,6 +70,26 @@ void loop()
         digitalWrite(ledPin, HIGH);
     }
 #endif
+
+#ifdef MQTT_CLIENT
+    if (!client.connected())
+    {
+        reconnect();
+    }
+    client.loop();
+
+    unsigned long now = millis();
+    if (now - lastMsg > 2000)
+    {
+        lastMsg = now;
+        ++value;
+        snprintf(mqqt_msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+        Serial.print("Publish message: ");
+        Serial.println(mqqt_msg);
+        client.publish("outTopic", mqqt_msg);
+    }
+#endif
+
     processIncomingSerial();
     yield(); // or delay(0);
 }

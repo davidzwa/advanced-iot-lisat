@@ -1,4 +1,5 @@
 #include "defines.h"
+#include <Esp.h>
 
 #ifndef AUDIO_ADC_TIMER__H
 #define AUDIO_ADC_TIMER__H
