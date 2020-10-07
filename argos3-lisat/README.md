@@ -12,7 +12,7 @@ In order to run the code follow the steps below:
 - After cloning, make a build dir in the repo folder ```mkdir build```  
 - Go into the build dir ```cd build``` and execute ```cmake ..```
 - Then, execute ```make all``` to compile the source code  
-- Finally, to run the lisat code, go back to the ```argos3-lisat``` directory and run ```argos3 -c experiments/lisat.argos   
+- Finally, to run the lisat code, go back to the ```argos3-lisat``` directory and run ```argos3 -c experiments/lisat.argos```  
 
 
 
