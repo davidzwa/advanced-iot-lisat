@@ -8,6 +8,8 @@ struct transmittedData_t
     int deltaMic1;
     int deltaMic2;
     int deltaMic3;
+    float tdoaDir1;
+    float tdoaDir2;
     int length;
     int *buffer;
     // Add any metadata here
