@@ -21,11 +21,13 @@ void transmitSerialData(transmittedData_t *data)
     transmitSerialParam("M1", data->deltaMic1);
     transmitSerialParam("M2", data->deltaMic2);
     transmitSerialParam("M3", data->deltaMic3);
+    transmitSerialParam("D1", data->tdoaDir1);
+    transmitSerialParam("D2", data->tdoaDir2);
 #ifdef MEASURE_ADCTIMER_JITTER
     transmitSerialParam("J", avg_jitter_us);
 #endif
-    transmitEndSymbol(); // End of data separator
     transmitSerialParam("P", sampling_period_us);
+    transmitEndSymbol(); // End of data separator
     transmitting = false;
 }
 

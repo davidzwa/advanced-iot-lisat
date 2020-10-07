@@ -17,6 +17,7 @@ import simpleaudio as sa
 
 data_tag = 'v'
 measure_tag = 'M'
+algo_tag_dir = 'D'  # Direction output of TDOA inversion
 param_tag = 'P'  # Can be made generic to specify 'what parameter'
 separator = '.'
 end_tag = '--Done'
@@ -31,8 +32,8 @@ received_sample_exceptions_limit = 100
 last_sample = ''
 base_filename = 'output2.wav'
 dirname = os.path.dirname(__file__)
-outputfile = 'output/' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
-    '/dataset.json'
+outputfile = 'output/dataset-' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
+    '.json'
 print(outputfile)
 if not os.path.exists(os.path.dirname(outputfile)):
     try:
@@ -44,9 +45,8 @@ if not os.path.exists(os.path.dirname(outputfile)):
 
 def split_data(serial_line, tag):
     decoded_line = serial_line.decode().rstrip()
-    values = decoded_line.split(tag)[1]
-    return values.split('.')
-
+    split = decoded_line.split(tag + '.')
+    return int(split[1])
 
 def handle_parsing_error(serial_line):
     global received_sample_exceptions
@@ -115,13 +115,22 @@ while True:
         if data_tag in str(serial_line):
             received_samples += 1
             try:
-                values = split_data(serial_line, data_tag)
-                sound_value = int(values[1])
+                sound_value = split_data(serial_line, data_tag)
                 sound_vector.append(sound_value)
             except Exception as e:
                 print(traceback.format_exc())
                 handle_parsing_error(serial_line)
                 pass
+        elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
+            if algo_tag_dir + '1' in str(serial_line):
+                lastEspData.algoTdoaDir1 = split_data(
+                    serial_line, algo_tag_dir + '1')
+            elif algo_tag_dir + '2' in str(serial_line):
+                lastEspData.algoTdoaDir2 = split_data(
+                    serial_line, algo_tag_dir + '2')
+            elif algo_tag_dir + '3' in str(serial_line): # only in 4 mic config!
+                lastEspData.algoTdoaDir3 = split_data(
+                    serial_line, algo_tag_dir + '3')
         elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
             if measure_tag + '1' in str(serial_line):
                 lastEspData.mic1LTimeUs = split_data(
@@ -147,13 +156,12 @@ while True:
 
             rms = np.sqrt(np.mean(sound_array**2))
             # print(sound_array, rms)
-            print(sound_array)
+            # print(sound_array)
             plt.plot(sound_array)
             # plt.plot(np.fft.fft(sound_array).real**2 +
             #          np.fft.fft(sound_array).imag**2)
             plt.draw()
-            plt.pause(3)
-
+            plt.pause(0.01)
 
             # input("Press [enter] to continue.")
             # Perform tasks
@@ -174,8 +182,8 @@ while True:
             if not any(ext in str(serial_line) for ext in ignore_tags):
                 print('Unrecognized reception: ', serial_line)
     else:
-        print("Playing sound")
-        wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
-        play_obj = wave_obj.play()
-        play_obj.wait_done()
-        recording=True
+        # print("Playing sound")
+        # wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
+        # play_obj = wave_obj.play()
+        # play_obj.wait_done()
+        recording = True

@@ -4,6 +4,9 @@ import numpy as np
 
 @dataclass
 class EspData(object):
+    algoTdoaDir1: float = None
+    algoTdoaDir2: float = None
+    algoTdoaDir3: float = None
     samplingRate: int = None
     soundData: np.ndarray = None
     mic1LTimeUs: int = None
