@@ -6,6 +6,7 @@
 #include "audioAdcTimer.h"
 #include "externalInterrupts.h"
 #include "serialInterface.h"
+#include "mqttClient.h"
 
 void user_init(void)
 {
@@ -26,8 +27,10 @@ void user_init(void)
 
 void setup()
 {
-    WiFi.disconnect();
+    // WiFi.disconnect();
+    WiFi.begin("Brus", "Tackle1963");
     Serial.begin(serial_baud_rate);
+
     user_init();
 
     // Prepare runtime
