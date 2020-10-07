@@ -1,5 +1,4 @@
-// Import if you need debug defines to define pins
-// #include "defines.h"
+#include "defines.h"
 
 #ifndef PINDEFS__H
 #define PINDEFS__H
@@ -12,12 +11,14 @@ const int ledPin = LED_BUILTIN;
 // Mic analog input
 const int analogInPin = A0;
 // Mic wake-on-sound trigger inputs
-const int mic3TriggerPin = D7; // Mic 'right'
-const int mic2TriggerPin = D6; // Mic 'mid' (needs to move into triangle position soon...)
-const int micTriggerPin = D5; // Mic 'left'
+const int mic1LTriggerPin = D5; // Mic 'left'
+const int mic2MTriggerPin = D6; // Mic 'mid' (needs to move into triangle position soon...)
+const int mic3RTriggerPin = D7; // Mic 'right' also on AnalogInput
 
 // Mic mode output bus
 // TODO Need to split up instead of driving all mics, might be cause for multiple interrupts?
-const int wosModePin = 16; // D0, but define points to 0... so set to GPIO16 directly
+const int wosModePin1L = 5; // D1
+const int wosModePin2M = 16; // D0
+const int wosModePin3R = 4; // D2
 
 #endif // !PINDEFS__H
