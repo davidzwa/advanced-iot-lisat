@@ -7,7 +7,7 @@
 In order to run the code follow the steps below:  
 
 - Download the Argos3 package for your OS: http://argos-sim.info/core.php  
-- Then in the folder where you download the package type ```sudo apt install ./argos3_simulator*``` replacing the start with your version  
+- Then in the folder where you download the package type ```sudo apt install ./argos3_simulator*``` replacing the star with your version  
 - Now argos3 is installed, clone this repository into a folder  
 - After cloning, make a build dir in the repo folder ```mkdir build```  
 - Go into the build dir ```cd build``` and execute ```cmake ..```
