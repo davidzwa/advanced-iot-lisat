@@ -13,15 +13,14 @@
 
 // Arduino has 1000000 or even more unstable 2000000
 const int serial_baud_rate = 250000; // VS Code has max 250000 -_-
-#define ADC_SAMPLING_PERIOD_US 500
 
 #ifdef DEBUG
 // Slow mode sampling and small size buffer so Serial can keep up
 const int sampling_period_us = 50000; // 50ms, 20 Hz;
 #define ADC_SAMPLES_COUNT 100
 #else
-const int sampling_period_us = 500; // 200us, 5 kHz;
-#define ADC_SAMPLES_COUNT 500
+const int sampling_period_us = 250; // 250us, 4 kHz;
+#define ADC_SAMPLES_COUNT 250
 #endif
 
 // Timer jitter tracker (microseconds)
