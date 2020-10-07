@@ -34,7 +34,6 @@ void setup()
 #ifndef NO_BUFFER
     resetWosMicMode();
     enableMicTriggerInterrupts();
-    initOsTimer(ADC_SAMPLING_PERIOD_US);
 #else
     setNormalMicMode();
 #endif // NO_BUFFER
