@@ -35,16 +35,36 @@
       <sensors>
         <footbot_proximity implementation="default" show_rays="true" />
       </sensors>
-      <!-- number_of_robots in including the robot itself and the leader -->
-      <params alpha="7.5" delta="0.1" velocity="5" number_of_robots="3"/>
+      <!-- number_of_robots -->
+      <params alpha="7.5" delta="0.1" velocity="5" number_of_robots="2"/>
     </footbot_lisat_leader_controller>
 
   </controllers>
+
+  <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/loop_functions/lisat_loop_functions/liblisat_loop_functions"
+                  label="lisat_loop_functions">
+    <!-- <foraging  
+              items="15"
+              radius="0.1"
+              energy_per_item="1000"
+              energy_per_walking_robot="1"
+              output="foraging.txt" /> -->
+    <lisat_parameters 
+              output="lisat_output.txt" />
+  </loop_functions>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
   <arena size="5, 5, 1" center="0,0,0.5">
+
+    <floor id="floor"
+       source="loop_functions"
+       pixels_per_meter="50" />
+
 
     <box id="wall_north" size="4,0.1,0.5" movable="false">
       <body position="0,2,0" orientation="0,0,0" />
@@ -80,11 +100,11 @@
         </foot-bot>
       </entity>
     </distribute>
-
+<!-- 
     <foot-bot id="fb_leader">
       <body position="1,1,0" orientation="0,0,0" />
       <controller config="flc_leader"/>
-    </foot-bot>
+    </foot-bot> -->
 
     <!--
         We distribute 5 boxes uniformly in position and rotation around Z.

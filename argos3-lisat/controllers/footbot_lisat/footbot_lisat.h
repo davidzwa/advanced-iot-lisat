@@ -94,6 +94,12 @@ public:
     */
    virtual void Destroy() {}
 
+   virtual void GiveLeaderStatus();
+   virtual void RemoveLeaderStatus();
+   virtual bool hasLeaderStatus();
+
+   void ReceiveLocationMessage(RobotRelativeLocation relativeLocation); 
+
 private:
 
    /* Pointer to the differential steering actuator */
@@ -127,6 +133,8 @@ private:
 
    // The total number of robots in the experiment
    int m_number_of_robots;
+
+   bool m_isLeader;
 
 };
 

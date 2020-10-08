@@ -1,4 +1,4 @@
-add_library(footbot_lisat MODULE footbot_lisat.h footbot_lisat.cpp footbot_lisat_leader.h footbot_lisat_leader.cpp)
+add_library(footbot_lisat SHARED footbot_lisat.h footbot_lisat.cpp)
 target_link_libraries(footbot_lisat
   argos3core_simulator
   argos3plugin_simulator_footbot

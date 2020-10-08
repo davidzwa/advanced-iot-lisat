@@ -71,7 +71,7 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
 /* The line correction algorithm */
 WheelVelocities LineCorrectionAlgorithm() {
 
-    WheelVelocities wheelVelocities
+    WheelVelocities wheelVelocities = {5,5};
 
     // robotsCloserToStartpoint = CalculateRobotsCloserToStartpoint();
 
@@ -98,6 +98,9 @@ WheelVelocities LineCorrectionAlgorithm() {
 }
 
 void CFootBotLisat::ControlStep() {
+
+  // If the robot is a leader it remains stationary
+  if (m_isLeader) return;
 
    /* Get readings from proximity sensor */
    const CCI_FootBotProximitySensor::TReadings& tProxReads = m_pcProximity->GetReadings();
@@ -130,6 +133,23 @@ void CFootBotLisat::ControlStep() {
       }
    }
 }
+
+void ReceiveLocationMessage(RobotRelativeLocation relativeLocation) { //todo: add robot id
+
+};
+
+void CFootBotLisat::GiveLeaderStatus() {
+  m_isLeader = true;
+}
+
+void CFootBotLisat::RemoveLeaderStatus() {
+  m_isLeader = false;
+}
+
+bool CFootBotLisat::hasLeaderStatus() {
+  return m_isLeader;
+}
+
 
 /****************************************/
 /****************************************/
