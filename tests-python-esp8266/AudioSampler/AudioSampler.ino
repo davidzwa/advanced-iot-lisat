@@ -48,8 +48,8 @@ void setup()
 
     // Prepare runtime
 #ifndef NO_BUFFER
-    // resetWosMicMode();
-    // enableMicTriggerInterrupts();
+    resetWosMicMode();
+    enableMicTriggerInterrupts(); // Interrupts arm the timer
 #else
     setNormalMicMode();
 #endif // NO_BUFFER

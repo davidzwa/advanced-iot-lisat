@@ -23,7 +23,7 @@ separator = '.'
 end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
-ser = serial.Serial('COM5', 250000)  # 1000000
+ser = serial.Serial('COM4', 250000)  # 1000000
 ser.flushInput()
 data = []
 received_samples = 0
@@ -108,6 +108,8 @@ plt.show()
 recording = False
 lastEspData = EspData()
 espDataSet = list()
+num_rounds = 0
+num_rounds_max = 30
 
 while True:
     if recording is True:
@@ -149,19 +151,24 @@ while True:
             # sound_vector = normalize_integer(sound_vector)
 
             lastEspData.soundData = sound_vector
+
+            # Calculate RMS
             sound_array = np.array(sound_vector)
+            lastEspData.rms = np.sqrt(np.mean(sound_array**2))
+            print('RMS:', lastEspData.rms)
 
             espDataSet.append(dataclasses.asdict(lastEspData))
             dump_dataset(espDataSet, outputfile)
+            num_rounds += 1
 
-            rms = np.sqrt(np.mean(sound_array**2))
             # print(sound_array, rms)
             # print(sound_array)
             plt.plot(sound_array)
             # plt.plot(np.fft.fft(sound_array).real**2 +
             #          np.fft.fft(sound_array).imag**2)
             plt.draw()
-            plt.pause(0.01)
+            # plt.pause(0.01)
+            plt.pause(0.01) # speakertest
 
             # input("Press [enter] to continue.")
             # Perform tasks
@@ -176,14 +183,18 @@ while True:
             # ser.write(bytes("ati", 'utf-8'))
             # ser.writelines("V".encode());
             recording = False
+            print(num_rounds)
+            if num_rounds == num_rounds_max:
+                print("Enough rounds were performed. Done")
+                break
         # elif overflow_tag in str(serial_line): # wont occur anymore
         #     print('Buffer overflow exception!')
         else:
             if not any(ext in str(serial_line) for ext in ignore_tags):
                 print('Unrecognized reception: ', serial_line)
     else:
-        # print("Playing sound")
-        # wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
-        # play_obj = wave_obj.play()
-        # play_obj.wait_done()
+        print("Playing sound")
+        wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
         recording = True

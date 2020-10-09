@@ -48,6 +48,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/tests-python-esp8266/python-audio-tools/receive_buffer.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Processor file",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests-python-esp8266/python-audio-tools/process_rms.py",
+            "console": "integratedTerminal"
         }
     ]
 }
