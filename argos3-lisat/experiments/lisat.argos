@@ -90,7 +90,7 @@
     -->
 
 
-
+<!-- 
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
@@ -99,7 +99,23 @@
           <controller config="flc" />
         </foot-bot>
       </entity>
-    </distribute>
+    </distribute> -->
+
+
+    <foot-bot id="fb_0">
+      <body position="-1,1,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot>
+
+    <foot-bot id="fb_1">
+      <body position="1,-1,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot>
+
+    <cylinder id="c" height="0.2" radius="0.1" mass="0.1" movable="false">
+      <body position="1,1,0" orientation="0,0,0" />
+    </cylinder>
+
 <!-- 
     <foot-bot id="fb_leader">
       <body position="1,1,0" orientation="0,0,0" />

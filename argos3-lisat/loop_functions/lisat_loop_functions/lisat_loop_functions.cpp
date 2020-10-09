@@ -110,9 +110,59 @@ float CalculateDistanceTwoRobots(CVector2 point1, CVector2 point2) {
 }
 
 float CalculateAngleTwoRobots(CRadians rob1Heading, CVector2 rob1, CVector2 rob2) {
-   float northToTarget = atan( abs(rob1.GetY() - rob2.GetY()) / abs(rob1.GetX() - rob2.GetX()) ) * 180 / M_PI; //degrees
-   float northToHeading = rob1Heading.SignedNormalize().GetAbsoluteValue() * 180 / M_PI; 
-   return 90 - (northToHeading - northToTarget);
+   float atanResult = atan( abs(rob1.GetX() - rob2.GetX()) / abs(rob1.GetY() - rob2.GetY()) ) * 180 / M_PI; //degrees, should always be between 0 and 90
+   float northToHeading = rob1Heading.GetValue() *180 / M_PI; //ranges from 0 to 180 (clockwise) and 0 to -180 (counterclockwise)
+   //normalize north to heading to range: 0-360 (increasing clockwise)
+   if (northToHeading < 0) {
+      northToHeading = 360 + northToHeading;
+   }
+   northToHeading = 360 - northToHeading; //reverse to increase clockwise
+
+   argos::LOG << "atan: " << atanResult << std::endl;  
+   argos::LOG << "heading: " << northToHeading << std::endl;  
+
+   /* 
+    * IMPORTANT: this value indicates how many
+    * degrees robot has to turn clockwise
+    * to make his heading point straight
+    * to the target
+    */
+   float totalAngle;
+
+   if (atanResult == 0) {
+      atanResult = 90;
+   }
+
+   float base_fomula; // depends on orientation of robot in relation to target
+   if (rob1.GetX() < rob2.GetX()) { // target to the right of robot
+      if(rob1.GetY() < rob2.GetY()) { // target to the north of robot
+         base_fomula = atanResult;
+      }
+      else {                          // target to the south of robot
+         base_fomula = 180 - atanResult;
+      }
+   } else {                           // target to the left of robot
+      if(rob1.GetY() < rob2.GetY()) { // target to the north of robot
+         base_fomula = 360 - atanResult;
+      }
+      else {                          // target to the south of robot
+         base_fomula = 180 + atanResult;
+      }     
+   }
+
+   if (northToHeading > base_fomula) { // determine whether heading should be positive or negative term
+      totalAngle = (360 - northToHeading) + atanResult;
+   } else {
+      totalAngle = atanResult - northToHeading;
+   }
+
+   if (rob1.GetX() > rob2.GetX()) {
+      totalAngle = atanResult - northToHeading;
+   } else {
+      totalAngle = atanResult - northToHeading;
+   }
+   //argos::LOG << "heading: " << northToHeading << std::endl;  
+   return (totalAngle + 180);
 
 }
 
@@ -154,9 +204,11 @@ void CLisatLoopFunctions::PreStep() {
          CRadians zAngle;
          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
          //argos::LOG << "zangle: " << zAngle << std::endl;
-
+         argos::LOG << "X: " << cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX() << std::endl;         
+         argos::LOG << "Y: " << cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY() << std::endl;         
          float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, robotPosition, leaderPosition);
-         argos::LOG << "angle: " << angleRelativeToLeader << std::endl;         
+         argos::LOG << "angle: " << angleRelativeToLeader << std::endl;    
+
       
       }
       //cController.ReceiveLocationMessage();

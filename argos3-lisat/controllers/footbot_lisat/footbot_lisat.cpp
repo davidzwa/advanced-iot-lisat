@@ -71,7 +71,7 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
 /* The line correction algorithm */
 WheelVelocities LineCorrectionAlgorithm() {
 
-    WheelVelocities wheelVelocities = {5,5};
+    WheelVelocities wheelVelocities = {3,-3};
 
     // robotsCloserToStartpoint = CalculateRobotsCloserToStartpoint();
 
