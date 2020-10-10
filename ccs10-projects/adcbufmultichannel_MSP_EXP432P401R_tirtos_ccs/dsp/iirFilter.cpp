@@ -22,8 +22,8 @@ void IirFilter::FilterBuffer(int16_t* buffer, int16_t* outputBuffer)
 }
 
 void IirFilter::ResetEMAState() {
-    EMA_a_low = 0.3; //initialization of EMA alpha
-    EMA_a_high = 0.9;
+    EMA_a_low = 0.1; //initialization of EMA alpha
+    EMA_a_high = 0.8;
     EMA_S_low = 4000; //initialization of EMA S
     EMA_S_high = 4000;
 }

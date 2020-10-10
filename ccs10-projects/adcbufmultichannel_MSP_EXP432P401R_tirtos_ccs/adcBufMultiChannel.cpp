@@ -22,12 +22,14 @@
 // Our common defines
 #include "common.h"
 #include "dsp/iirfilter.h"
+#include "dsp/fft.h"
 
 #define NUM_ADC_CHANNELS (1)
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
 
 int16_t sampleBuffer1a[ADCBUFFERSIZE];
 int16_t sampleBuffer1b[ADCBUFFERSIZE];
+int16_t fftOutput[ADCBUFFERSIZE];
 #if NUM_ADC_CHANNELS >= 2
 int16_t sampleBuffer2a[ADCBUFFERSIZE];
 int16_t sampleBuffer2b[ADCBUFFERSIZE];
@@ -39,6 +41,7 @@ int16_t sampleBuffer3b[ADCBUFFERSIZE];
 int32_t buffersCompletedCounter = 0;
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
+int16_t rms;
 
 /* Display Driver Handle */
 Display_Handle displayHandle;
@@ -115,7 +118,6 @@ void *mainThread(void *arg0)
     continuousConversion[0].sampleBuffer = sampleBuffer1a;
     continuousConversion[0].sampleBufferTwo = sampleBuffer1b;
     continuousConversion[0].samplesRequestedCount = ADCBUFFERSIZE;
-
 #if NUM_ADC_CHANNELS >= 2
     continuousConversion[1].arg = NULL;
     continuousConversion[1].adcChannel = CONFIG_ADCBUF0CHANNEL_1;
@@ -138,7 +140,6 @@ void *mainThread(void *arg0)
     // Enable IirFilter
     filter = new IirFilter();
     filter->InitFilterState();
-
 
     /* Start converting sequencer 0. */
     if (ADCBuf_convert(adcBuf, continuousConversion, NUM_ADC_CHANNELS) !=
@@ -164,17 +165,24 @@ void *mainThread(void *arg0)
 //         filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
         filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
 
-        int16_t rms;
-        arm_rms_q15(outputBuffer_filtered, CHUNK_LENGTH, &rms);
+//        doFFT(outputBuffer_filtered, fftOutput);
+//        fftOutput[0] = 0;
+        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE, &rms);
 
-//        for (i = 0; i < ADCBUFFERSIZE; i++) {
-//            Display_printf(displayHandle, 0, 0, "v.%d", outputBuffer_filtered[i]);
-//        }
-        if (rms > 0) {
-            Display_printf(displayHandle, 0, 0, "R.%d", rms);
-
-            Display_printf(displayHandle, 0, 0, "--Done");
+        for (i = 0; i < ADCBUFFERSIZE; i++) {
+            Display_printf(displayHandle, 0, 0, "v.%d", outputBuffer_filtered[i]);
         }
+        Display_printf(displayHandle, 0, 0, "R.%d", rms);
+//        if (rms > 0) {
+//
+//        }
+//        int16_t maxValue;
+//        uint32_t maxIndex;
+//        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
+
+//        outputBuffer_filtered[]
+//        Display_printf(displayHandle, 0, 0, "%d", maxValue);
+        Display_printf(displayHandle, 0, 0, "--Done");
         numBufsSent++;
     }
 
