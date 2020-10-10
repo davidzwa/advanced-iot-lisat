@@ -12,6 +12,10 @@ const Display  = scripting.addModule("/ti/display/Display");
 const Display1 = Display.addInstance();
 const ADCBuf   = scripting.addModule("/ti/drivers/ADCBuf");
 const ADCBuf1  = ADCBuf.addInstance();
+const GPIO     = scripting.addModule("/ti/drivers/GPIO", {}, false);
+const GPIO1    = GPIO.addInstance();
+const GPIO2    = GPIO.addInstance();
+const GPIO3    = GPIO.addInstance();
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
 
 /**
@@ -32,6 +36,21 @@ ADCBuf1.adcBufChannel1.adc.adcPin.$assign = "boosterpack.29";
 ADCBuf1.adcBufChannel2.$name              = "CHANNEL_2";
 ADCBuf1.adcBufChannel2.adc.adcPin.$assign = "boosterpack.28";
 
+GPIO1.$name              = "CONFIG_GPIO_0";
+GPIO1.mode               = "Output";
+GPIO1.initialOutputState = "High";
+GPIO1.outputStrength     = "High";
+GPIO1.pull               = "Pull Down";
+GPIO1.gpioPin.$assign    = "boosterpack.9";
+
+GPIO2.interruptTrigger = "Rising Edge";
+GPIO2.$name            = "INTERRUPT_D_OUT2";
+GPIO2.gpioPin.$assign  = "boosterpack.10";
+
+GPIO3.$hardware          = system.deviceData.board.components.LED1_RED;
+GPIO3.$name              = "CONFIG_GPIO_LED_1";
+GPIO3.initialOutputState = "High";
+
 const Power                   = scripting.addModule("/ti/drivers/Power", {}, false);
 Power.performanceLevel3.$name = "ti_drivers_power_PowerMSP432PerfLevels0";
 Power.performanceLevel2.$name = "ti_drivers_power_PowerMSP432PerfLevels1";
@@ -49,7 +68,8 @@ Display1.uart.uart.txPin.$suggestSolution   = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI
 Display1.uart.uart.rxPin.$suggestSolution   = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
 ADCBuf1.timer.$suggestSolution              = "Timer_A1";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution = "ADC14";
-ADCBuf1.adcBufChannel1.adc.$suggestSolution = "ADC14";
 ADCBuf1.adc.$suggestSolution                = "ADC14";
+ADCBuf1.adcBufChannel1.adc.$suggestSolution = "ADC14";
 ADCBuf1.adcBufChannel2.adc.$suggestSolution = "ADC14";
+GPIO3.gpioPin.$suggestSolution              = "P1.0.GPIO/EUSCI_A0_SPI.STE";
 RTOS.timer0.resource.$suggestSolution       = "Timer_A0";

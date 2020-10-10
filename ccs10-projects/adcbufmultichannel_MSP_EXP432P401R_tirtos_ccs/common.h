@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <arm_const_structs.h>
 
-#define CHUNK_LENGTH     256
+#define CHUNK_LENGTH     512
 #define SAMPLE_FREQUENCY (10000)
 
 #endif // COMMON__H
