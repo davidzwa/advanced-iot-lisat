@@ -26,15 +26,19 @@
 #define NUM_ADC_CHANNELS (1)
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
 
-uint16_t sampleBuffer1a[ADCBUFFERSIZE];
-uint16_t sampleBuffer1b[ADCBUFFERSIZE];
-uint16_t sampleBuffer2a[ADCBUFFERSIZE];
-uint16_t sampleBuffer2b[ADCBUFFERSIZE];
-uint16_t sampleBuffer3a[ADCBUFFERSIZE];
-uint16_t sampleBuffer3b[ADCBUFFERSIZE];
-uint32_t buffersCompletedCounter = 0;
-uint16_t outputBuffer[ADCBUFFERSIZE];
-//uint16_t outputBuffer_filtered[ADCBUFFERSIZE];
+int16_t sampleBuffer1a[ADCBUFFERSIZE];
+int16_t sampleBuffer1b[ADCBUFFERSIZE];
+#if NUM_ADC_CHANNELS >= 2
+int16_t sampleBuffer2a[ADCBUFFERSIZE];
+int16_t sampleBuffer2b[ADCBUFFERSIZE];
+#endif
+#if NUM_ADC_CHANNELS >= 3
+int16_t sampleBuffer3a[ADCBUFFERSIZE];
+int16_t sampleBuffer3b[ADCBUFFERSIZE];
+#endif
+int32_t buffersCompletedCounter = 0;
+int16_t outputBuffer[ADCBUFFERSIZE];
+int16_t outputBuffer_filtered[ADCBUFFERSIZE];
 
 /* Display Driver Handle */
 Display_Handle displayHandle;
@@ -43,7 +47,7 @@ Display_Handle displayHandle;
 sem_t adcbufSem;
 
 /* DSP LPF Filter */
-//IirFilter* filter;
+IirFilter* filter;
 
 /*
  * This function is called whenever a buffer is full.
@@ -132,8 +136,8 @@ void *mainThread(void *arg0)
     }
 
     // Enable IirFilter
-//    filter = new IirFilter();
-//    filter->InitFilterState();
+    filter = new IirFilter();
+    filter->InitFilterState();
 
 
     /* Start converting sequencer 0. */
@@ -157,14 +161,20 @@ void *mainThread(void *arg0)
 //        Display_printf(displayHandle, 0, 0, "\r\n", //Buffer %u finished:
 //            (unsigned int)buffersCompletedCounter++);
 
-        // filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
+//         filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
+        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
 
-        for (i = 0; i < ADCBUFFERSIZE; i++) {
-            ;
-            Display_printf(displayHandle, 0, 0, "v.%u\r\n", outputBuffer[i]);
+        int16_t rms;
+        arm_rms_q15(outputBuffer_filtered, CHUNK_LENGTH, &rms);
+
+//        for (i = 0; i < ADCBUFFERSIZE; i++) {
+//            Display_printf(displayHandle, 0, 0, "v.%d", outputBuffer_filtered[i]);
+//        }
+        if (rms > 0) {
+            Display_printf(displayHandle, 0, 0, "R.%d", rms);
+
+            Display_printf(displayHandle, 0, 0, "--Done");
         }
-
-        Display_printf(displayHandle, 0, 0, "--Done\r\n");
         numBufsSent++;
     }
 
