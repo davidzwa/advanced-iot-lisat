@@ -1,31 +1,17 @@
-#include <ti/devices/msp432p4xx/inc/msp.h>
-#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+#include "common.h"
 #include "Timer/timer.h"
-
-class LedToggler {
-public:
-    bool ledState = false;
-    void setupPort() {
-        P1DIR = 0x01; // set up bit 0 of P1 as output
-        P1OUT = 0x00; // intialize bit 0 of P1 to 0
-    }
-    void toggle() {
-        ledState = !ledState;
-        // toggle bit 0 of P1
-        P1OUT ^= 0x01;
-    }
-} LedTogglers;
+#include "Utils/LedDebug.h"
 
 void timer_callback() {
     return;
 }
 
 void adc_init_channel_2(void) {
-    ADC14->CTL0 &= ~ADC14_CTL0_ENC;        // to allow programming
-    while(ADC14->CTL0&0x00010000){};          // wait for BUSY to be zero
+    ADC14->CTL0 &= ~ADC14_CTL0_ENC;             // to allow programming
+    while(ADC14->CTL0&0x00010000){};            // wait for BUSY to be zero
     ADC14->CTL0 = ADC14_CTL0_ON | ADC14_CTL0_MSC | ADC14_CTL0_SHT0__32 | ADC14_CTL0_SHT1__32 | ADC14_CTL0_CONSEQ_1 |
                 ADC14_CTL0_SSEL__SMCLK | ADC14_CTL0_DIV__1 | ADC14_CTL0_SHP ;          //  single, SMCLK, on, disabled, /1, 32 SHM
-    ADC14->CTL1 = 0x00000030;                 // ADC14MEM0, 14-bit, ref on, regular power
+    ADC14->CTL1 = 0x00000030;                   // ADC14MEM0, 14-bit, ref on, regular power
     ADC14->MCTL[3] = ADC14_MCTLN_INCH_2;          // 0 to 3.3V, channel 17
     ADC14->IER0 = 0; // no interrupts
     ADC14->IER1 = 0; // no interrupts
@@ -66,8 +52,8 @@ void main(void)
 	Timer *timerA0 = new Timer();
 	timerA0->init(timer_callback);
 
-	LedToggler* toggler = new LedToggler();
-	toggler->setupPort();
+	LedDebug* toggler = new LedDebug();
+	toggler->setupPort1();
 
     port_3_pin_3_int_init();
 
