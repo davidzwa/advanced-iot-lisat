@@ -23,7 +23,7 @@ separator = '.'
 end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
-ser = serial.Serial('COM4', 250000)  # 1000000
+ser = serial.Serial('COM6', 115200)  # 1000000
 ser.flushInput()
 data = []
 received_samples = 0
@@ -109,7 +109,7 @@ recording = False
 lastEspData = EspData()
 espDataSet = list()
 num_rounds = 0
-num_rounds_max = 30
+num_rounds_max = 300
 
 while True:
     if recording is True:
@@ -193,8 +193,8 @@ while True:
             if not any(ext in str(serial_line) for ext in ignore_tags):
                 print('Unrecognized reception: ', serial_line)
     else:
-        print("Playing sound")
-        wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
-        play_obj = wave_obj.play()
-        play_obj.wait_done()
+        # print("Playing sound")
+        # wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
+        # play_obj = wave_obj.play()
+        # play_obj.wait_done()
         recording = True

@@ -1,0 +1,55 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --board "/ti/boards/MSP_EXP432P401R" --product "simplelink_msp432p4_sdk@3.40.01.02"
+ * @versions {"data":"2020090214","timestamp":"2020090214","tool":"1.6.0+1543","templates":"2020090214"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const Display  = scripting.addModule("/ti/display/Display");
+const Display1 = Display.addInstance();
+const ADCBuf   = scripting.addModule("/ti/drivers/ADCBuf");
+const ADCBuf1  = ADCBuf.addInstance();
+const RTOS     = scripting.addModule("/ti/drivers/RTOS");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+Display1.$name      = "CONFIG_Display_0";
+Display1.$hardware  = system.deviceData.board.components.XDS110UART;
+Display1.uart.$name = "CONFIG_UART_0";
+
+ADCBuf1.$name                             = "CONFIG_ADCBUF0";
+ADCBuf1.enableDMA                         = false;
+ADCBuf1.channels                          = 3;
+ADCBuf1.interruptPriority                 = "6";
+ADCBuf1.adcBufChannel0.$name              = "CHANNEL_0";
+ADCBuf1.adcBufChannel0.adc.adcPin.$assign = "boosterpack.30";
+ADCBuf1.adcBufChannel1.$name              = "CHANNEL_1";
+ADCBuf1.adcBufChannel1.adc.adcPin.$assign = "boosterpack.29";
+ADCBuf1.adcBufChannel2.$name              = "CHANNEL_2";
+ADCBuf1.adcBufChannel2.adc.adcPin.$assign = "boosterpack.28";
+
+const Power                   = scripting.addModule("/ti/drivers/Power", {}, false);
+Power.performanceLevel3.$name = "ti_drivers_power_PowerMSP432PerfLevels0";
+Power.performanceLevel2.$name = "ti_drivers_power_PowerMSP432PerfLevels1";
+Power.performanceLevel1.$name = "ti_drivers_power_PowerMSP432PerfLevels2";
+Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
+
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+Display1.uart.uart.$suggestSolution         = "EUSCI_A0";
+Display1.uart.uart.txPin.$suggestSolution   = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
+Display1.uart.uart.rxPin.$suggestSolution   = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
+ADCBuf1.timer.$suggestSolution              = "Timer_A1";
+ADCBuf1.adcBufChannel0.adc.$suggestSolution = "ADC14";
+ADCBuf1.adcBufChannel1.adc.$suggestSolution = "ADC14";
+ADCBuf1.adc.$suggestSolution                = "ADC14";
+ADCBuf1.adcBufChannel2.adc.$suggestSolution = "ADC14";
+RTOS.timer0.resource.$suggestSolution       = "Timer_A0";

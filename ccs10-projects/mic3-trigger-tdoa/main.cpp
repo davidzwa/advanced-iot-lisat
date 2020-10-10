@@ -1,6 +1,8 @@
 #include "common.h"
+#include <stdio.h>
 #include "Timer/timer.h"
 #include "Utils/LedDebug.h"
+#include <ti/drivers/UART.h>
 
 void timer_callback() {
     return;
@@ -56,6 +58,8 @@ void main(void)
 	toggler->setupPort1();
 
     port_3_pin_3_int_init();
+
+    printf("asd");
 
     volatile int i = 0;
     while(1)
