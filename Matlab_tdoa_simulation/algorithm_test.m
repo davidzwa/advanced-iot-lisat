@@ -6,8 +6,8 @@ field = [-1, 1, -1, 1];
 walls = false;   % for echos, not yet implemented
 
 % source setup 
-sources_per_ring = 100;
-ring_distances = 0.11:0.01:1;
+sources_per_ring = 2000;
+ring_distances = 0.11:0.010:1;
 sources = zeros(sources_per_ring * length(ring_distances), 2);
 
 for i =  1:length(ring_distances)
@@ -24,10 +24,10 @@ robots = [0,0,0];
 %mic = [-1,0; 1,0; 0,0; 0,-1; 0,1];    %locations of the microfons relative to the robot
 
 N_mic = 4;
-mic = 0.05*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
+mic = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
 % mic = [0,0; mic];
 %mic = [0,5; 5,5; 5,0; 0,0];
-%mic = [0,0;0,0.1;0,-0.1];
+%mic = [0,0.1;0.1,0;-0.1,0];
 
 est_loc = zeros(sources_per_ring * length(ring_distances),2);
 err = zeros(sources_per_ring * length(ring_distances),2);
@@ -49,5 +49,7 @@ parfor i = 1:sources_per_ring * length(ring_distances)
 end
 
 env = gen_environment(sources, robots, mic, field, walls);
-%fig = plot_env(env);
+
+plot_est(sources_per_ring, ring_distances, est_loc, env);
+
 plot_err(sources_per_ring, ring_distances, err, env);

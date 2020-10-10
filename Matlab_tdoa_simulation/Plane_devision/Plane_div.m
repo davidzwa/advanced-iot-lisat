@@ -5,8 +5,8 @@ close all
 
 
 N_mic = 3;
-mic_locs = [1,0; 0,1; 0,-1];
-%mic_locs = 1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
+%mic_locs = [1,0; 0,1; 0,-1];
+mic_locs = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
 
 
 %% comute unit distance vectors
@@ -23,7 +23,7 @@ end
 
 %% source
 
-source = [3,-3];
+source = [-3,-2];
 
 %% TOA from mic to source 
 
@@ -53,7 +53,7 @@ for i = 1:length(mic_locs)
     end
 end
 
-ang = ang/norm(ang);
+ang = ang/norm(ang)
 
 
 
@@ -65,8 +65,8 @@ scatter(source(1), source(2),'k^','filled');
 grid
 
 
-scatter(mic_locs(:,1),mic_locs(:,2),'r+');
-k = 1
+scatter(mic_locs(:,1),mic_locs(:,2),'ro', 'filled');
+k = 1;
 for i = 1:length(mic_locs)
     for j = i+1:length(mic_locs)
         cent = (mic_locs(i,:)+mic_locs(j,:))./2;
