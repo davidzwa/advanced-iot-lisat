@@ -30,12 +30,12 @@ int16_t rms;
 sem_t adcbufSem;
 
 extern bool startAdcSampling;
-extern unsigned long lastTriggerMic1;
-extern unsigned long lastTriggerMic2;
-extern unsigned long lastTriggerMic3;
+extern uint32_t lastTriggerMic1;
+extern uint32_t lastTriggerMic2;
+extern uint32_t lastTriggerMic3;
 
 // CASPER's TDOA PLAYGROUND
-long getCurrentPreciseTime(); // Timer difference method
+uint32_t getCurrentPreciseTime(); // Timer difference method
 void resetWosMicMode();
 void setWosMode(MIC micType);
 void setNormalMicMode(MIC micType);

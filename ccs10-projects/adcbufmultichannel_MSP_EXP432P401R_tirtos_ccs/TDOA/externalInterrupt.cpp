@@ -1,4 +1,5 @@
 #include <TDOA/externalInterrupt.h>
+#include "TDOA/diffTimer.h"
 #include "tdoaAlgorithm.h"
 #include "SerialInterface/serialInterface.h"
 
@@ -12,6 +13,7 @@ unsigned long lastTriggerMic1L = 0;
 unsigned long lastTriggerMic2M = 0;
 unsigned long lastTriggerMic3R = 0;
 bool startAdcSampling = false;
+bool timerStarted = false;
 
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
@@ -55,6 +57,20 @@ void closeADCBuf() {
     ADCBuf_close(adcBuf);
 }
 
+void startTimerIfStopped() {
+    if (timerStarted == false) {
+        startTimer();
+        timerStarted = true;
+    }
+}
+
+void stopTimerIfStarted() {
+    if (timerStarted == false) {
+        stopTimer();
+        timerStarted = false;
+    }
+}
+
 void testADCBufOpened() {
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
@@ -70,12 +86,11 @@ void testADCBufOpened() {
 }
 
 // CASPER's PLAYGROUND
-long getCurrentPreciseTime()
+uint32_t getCurrentPreciseTime()
 {
-    // Timer peripheral needs to be setup
-    // Do that first, using this example
+    // Timer example
     // https://dev.ti.com/tirex/explore/node?node=AKyVym.I2F89E.1HEd4gnA__z-lQYNj__LATEST
-    return 100; // return time in us
+    return getTimerUs(); // return time in us
 }
 
 void enableMicTriggerInterrupts()
@@ -146,6 +161,7 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
         outputBuffer
     };
 
+    stopTimer();
     transmitSerialData(&serialData);
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
@@ -156,6 +172,7 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
 void interruptMic1LTriggered(uint_least8_t index)
 {
+    startTimerIfStopped();
     lastTriggerMic1L = getCurrentPreciseTime();
     setNormalMicMode(MIC_LEFT); // Disable interrupt externally
     GPIO_disableInt(MIC1L_D_OUT_INTRPT);
@@ -163,6 +180,7 @@ void interruptMic1LTriggered(uint_least8_t index)
 
 void interruptMic2MTriggered(uint_least8_t index)
 {
+    startTimerIfStopped();
     lastTriggerMic2M = getCurrentPreciseTime();
     setNormalMicMode(MIC_MID); // Disable interrupt externally
     GPIO_disableInt(MIC2M_D_OUT_INTRPT);
@@ -170,6 +188,7 @@ void interruptMic2MTriggered(uint_least8_t index)
 
 void interruptMic3RTriggered(uint_least8_t index)
 {
+    startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();
     startAdcSampling = true;
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
