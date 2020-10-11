@@ -47,7 +47,7 @@ void initADCBuf() {
 void openADCBuf() {
     // Start ADCBuf here for measurements
     ADCBuf_open(CONFIG_ADCBUF0CHANNEL_0, &adcBufParams);
-    ADCBuf_convert(adcBuf, continuousConversion, 1);
+    ADCBuf_convert(adcBuf, continuousConversion, NUM_ADC_CHANNELS);
 }
 
 void closeADCBuf() {
@@ -72,6 +72,9 @@ void testADCBufOpened() {
 // CASPER's PLAYGROUND
 long getCurrentPreciseTime()
 {
+    // Timer peripheral needs to be setup
+    // Do that first, using this example
+    // https://dev.ti.com/tirex/explore/node?node=AKyVym.I2F89E.1HEd4gnA__z-lQYNj__LATEST
     return 100; // return time in us
 }
 

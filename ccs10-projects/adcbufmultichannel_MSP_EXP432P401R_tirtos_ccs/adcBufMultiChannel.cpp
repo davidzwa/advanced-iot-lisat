@@ -48,12 +48,13 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     Display_printf(display, 0, 0, "ADCBuf initialized. Testing.");
-    testADCBufOpened();
+//    testADCBufOpened();
+    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
     enableMicTriggerInterrupts();
 
     // Enable IirFilter
-    filter = new IirFilter();
-    filter->InitFilterState();
+//    filter = new IirFilter();
+//    filter->InitFilterState();
 
     /*
      * Go to sleep in the foreground thread forever. The data will be collected
@@ -69,7 +70,7 @@ void *mainThread(void *arg0)
 //        Display_printf(display, 0, 0, "\r\n", //Buffer %u finished:
 //            (unsigned int)buffersCompletedCounter++);
 
-         filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
+//         filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
 //        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
 
 //        doFFT(outputBuffer_filtered, fftOutput);
@@ -78,8 +79,8 @@ void *mainThread(void *arg0)
 //        for (i = 0; i < ADCBUFFERSIZE; i++) {
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer_filtered[i]);
 //        }
-        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE, &rms);
-        Display_printf(display, 0, 0, "R.%d", rms);
+//        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE, &rms);
+//        Display_printf(display, 0, 0, "R.%d", rms);
 //        if (rms > 0) {
 //
 //        }
@@ -89,7 +90,7 @@ void *mainThread(void *arg0)
 
 //        outputBuffer_filtered[]
 //        Display_printf(display, 0, 0, "%d", maxValue);
-        Display_printf(display, 0, 0, "--Done");
+        Display_printf(display, 0, 0, "Sem++");
         numBufsSent++;
     }
 
