@@ -192,7 +192,10 @@ while True:
 
             # Calculate RMS
             sound_array = np.array(sound_vector)
-            lastEspData.rms = np.sqrt(np.mean(sound_array**2))
+            lastEspData.rms = np.sqrt(np.mean(sound_array ** 2))
+            # arm_rms_q15 => vergelijken
+            # arm_max_q15 => vergelijken
+
             print('RMS:', lastEspData.rms)
 
             espDataSet.append(dataclasses.asdict(lastEspData))
@@ -234,8 +237,8 @@ while True:
             if not any(ext in str(serial_line) for ext in ignore_tags):
                 print('Unrecognized reception: ', serial_line)
     else:
-        # print("Playing sound")
-        # wave_obj = sa.WaveObject.from_wave_file("audio/fingers.wav")
-        # play_obj = wave_obj.play()
-        # play_obj.wait_done()
+        print("Playing sound")
+        wave_obj = sa.WaveObject.from_wave_file("audio/fingers_shortest2.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
         recording = True

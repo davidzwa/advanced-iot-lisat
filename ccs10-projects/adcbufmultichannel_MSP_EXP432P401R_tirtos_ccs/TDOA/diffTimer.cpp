@@ -4,14 +4,11 @@
 void initTimerParams(){
     Timer_Params_init(&params);
 //    params.period = 1000000;
-    params.periodUnits = Timer_PERIOD_COUNTS;
+    params.periodUnits = Timer_PERIOD_US;
     params.timerMode = Timer_FREE_RUNNING;
 }
 
 void initTimer() {
-    /* Turn off user LED */
-    GPIO_write(LED_TRIGGER_1, 0);
-
     /* Setting up the timer in continuous callback mode that calls the callback
      * function every 1,000,000 microseconds, or 1 second.
      */

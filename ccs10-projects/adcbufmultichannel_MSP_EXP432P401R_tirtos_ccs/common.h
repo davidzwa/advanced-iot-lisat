@@ -21,8 +21,8 @@
 #include "ti_drivers_config.h"
 
 #define NUM_ADC_CHANNELS (1)
-#define CHUNK_LENGTH     512
+#define CHUNK_LENGTH     1024
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
-#define SAMPLE_FREQUENCY (2000)
+#define SAMPLE_FREQUENCY (5000)
 
 #endif // COMMON__H

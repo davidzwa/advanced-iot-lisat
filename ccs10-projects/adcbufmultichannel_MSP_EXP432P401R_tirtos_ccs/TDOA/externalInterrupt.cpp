@@ -22,7 +22,7 @@ bool timerStarted = false;
 void initADCBuf() {
     ADCBuf_Params_init(&adcBufParams);
     adcBufParams.callbackFxn = adcBufCallback;
-    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_CONTINUOUS;
+    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_ONE_SHOT; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
     adcBuf = ADCBuf_open(CONFIG_ADCBUF0, &adcBufParams);
@@ -41,17 +41,17 @@ void initADCBuf() {
     continuousConversion[1].samplesRequestedCount = ADCBUFFERSIZE;
 #endif
 #if NUM_ADC_CHANNELS == 3
-    continuousConversion[1].arg = NULL;
-    continuousConversion[1].adcChannel = CONFIG_ADCBUF0CHANNEL_2;
-    continuousConversion[1].sampleBuffer = sampleBuffer3a;
-    continuousConversion[1].sampleBufferTwo = sampleBuffer3b;
-    continuousConversion[1].samplesRequestedCount = ADCBUFFERSIZE;
+    continuousConversion[2].arg = NULL;
+    continuousConversion[2].adcChannel = CONFIG_ADCBUF0CHANNEL_2;
+    continuousConversion[2].sampleBuffer = sampleBuffer3a;
+    continuousConversion[2].sampleBufferTwo = sampleBuffer3b;
+    continuousConversion[2].samplesRequestedCount = ADCBUFFERSIZE;
 #endif
 }
 
 void openADCBuf() {
     // Start ADCBuf here for measurements
-    ADCBuf_open(CONFIG_ADCBUF0CHANNEL_0, &adcBufParams);
+//    ADCBuf_open(CONFIG_ADCBUF0CHANNEL_0, &adcBufParams);
     ADCBuf_convert(adcBuf, continuousConversion, NUM_ADC_CHANNELS);
 }
 
@@ -142,8 +142,6 @@ void setWosMode(MIC pinNumber)
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
 
-    ADCBuf_close(handle);
-
     // Transfer buffer to our own
     uint_fast16_t i;
     uint16_t *completedBuffer = (uint16_t *) completedADCBuffer;
@@ -168,7 +166,7 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     };
 
     stopTimer();
-    transmitSerialData(&serialData);
+//    transmitSerialData(&serialData);
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
 
@@ -177,6 +175,7 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     mic3RTriggered = false;
 
     /* post adcbuf semaphore */
+    GPIO_write(LED_TRIGGER_1, 0);
     sem_post(&adcbufSem);
 }
 
@@ -203,9 +202,9 @@ void interruptMic3RTriggered(uint_least8_t index)
     mic3RTriggered = true;
     startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();
-    startAdcSampling = true;
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
     GPIO_disableInt(MIC3R_D_OUT_INTRPT);
 
+    GPIO_write(LED_TRIGGER_1, 1);
     openADCBuf();
 }

@@ -21,6 +21,7 @@ const GPIO4    = GPIO.addInstance();
 const GPIO5    = GPIO.addInstance();
 const GPIO6    = GPIO.addInstance();
 const GPIO7    = GPIO.addInstance();
+const Power    = scripting.addModule("/ti/drivers/Power");
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
 const Timer    = scripting.addModule("/ti/drivers/Timer", {}, false);
 const Timer1   = Timer.addInstance();
@@ -71,14 +72,15 @@ GPIO7.$name     = "LED_TRIGGER_1";
 GPIO7.mode      = "Output";
 GPIO7.$hardware = system.deviceData.board.components.LED1_RED;
 
-const Power                   = scripting.addModule("/ti/drivers/Power", {}, false);
+Power.advancedConfiguration   = true;
 Power.performanceLevel3.$name = "ti_drivers_power_PowerMSP432PerfLevels0";
 Power.performanceLevel2.$name = "ti_drivers_power_PowerMSP432PerfLevels1";
 Power.performanceLevel1.$name = "ti_drivers_power_PowerMSP432PerfLevels2";
 Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
 
 
-Timer1.$name = "CONFIG_TIMER_0_US_MEASURE";
+Timer1.$name             = "CONFIG_TIMER_0_US_MEASURE";
+Timer1.interruptPriority = "1";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
