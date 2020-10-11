@@ -24,3 +24,35 @@ void TDOA_direction_estimation(int TDOA[2], float dir[2])
     dir[0] = dir[0] / mag;
     dir[1] = dir[1] / mag;
 }
+
+void plane_cutting_direction_estimation(unsigned long TOA[3], float dir[2])
+{
+    float X_pair[3][2] =  {{ 0.866f, -0.5f},{ 0.0f, -1.0f},{ -0.866f, -0.5f}};
+    float mag;
+    int k = 0;
+
+    dir[0] = dir[1] = 0;
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = i + 1; j < 3; j++)
+        {
+            if (TOA[i] > TOA[j])
+            {
+                dir[0] += X_pair[k][0];
+                dir[1] += X_pair[k][1];
+            }
+            else
+            {
+                dir[0] -= X_pair[k][0];
+                dir[1] -= X_pair[k][1];
+            }
+            k++;
+        }
+    }
+
+    // normalize vector
+    mag = sqrt(dir[0] * dir[0] + dir[1] * dir[1]);
+    dir[0] = dir[0] / mag;
+    dir[1] = dir[1] / mag;
+}

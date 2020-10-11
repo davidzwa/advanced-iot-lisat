@@ -25,6 +25,7 @@ int16_t sampleBuffer3b[ADCBUFFERSIZE];
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
 int16_t rms;
+int16_t rms_filt;
 
 /* ADCBuf semaphore */
 sem_t adcbufSem;

@@ -4,7 +4,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.MSP432P401R.ccxml.Texas Instruments XDS110 USB Debug Probe/CORTEX_M4_0" value="${build_artifact:adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.MSP432P401R.ccxml.Texas Instruments XDS110 USB Debug Probe/CORTEX_M4_0" value="adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP432P401R.ccxml.Texas Instruments XDS110 USB Debug Probe/CORTEX_M4_0" value="C:\Users\david\Projects\advanced-iot-lisat\ccs10-projects\adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs\Debug\adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP432P401R.ccxml.Texas Instruments XDS110 USB Debug Probe/CORTEX_M4_0" value="C:\Users\caspe\Documents\TU_Delft\Master\Y2\Q5\advanced_IoT\advanced-iot-lisat\ccs10-projects\adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs\Debug\adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs"/>
 </listAttribute>
