@@ -1,4 +1,8 @@
 eclipse.preferences.version=1
+encoding//Debug/SerialInterface/subdir_rules.mk=UTF-8
+encoding//Debug/SerialInterface/subdir_vars.mk=UTF-8
+encoding//Debug/TDOA/subdir_rules.mk=UTF-8
+encoding//Debug/TDOA/subdir_vars.mk=UTF-8
 encoding//Debug/dsp/subdir_rules.mk=UTF-8
 encoding//Debug/dsp/subdir_vars.mk=UTF-8
 encoding//Debug/dsp2/subdir_rules.mk=UTF-8
