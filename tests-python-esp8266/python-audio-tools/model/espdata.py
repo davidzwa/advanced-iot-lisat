@@ -8,6 +8,7 @@ class EspData(object):
     algoTdoaDir2: float = None
     algoTdoaDir3: float = None
     samplingRate: int = None
+    rms: float = None
     soundData: np.ndarray = None
     mic1LTimeUs: int = None
     mic2MTimeUs: int = None
