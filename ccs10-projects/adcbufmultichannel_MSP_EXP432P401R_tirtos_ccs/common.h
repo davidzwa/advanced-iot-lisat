@@ -11,6 +11,7 @@
 #include <ti/display/DisplayUart.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/ADCBuf.h>
+#include <ti/drivers/Timer.h>
 
 /* Advanced dsp math */
 #include <arm_math.h>
@@ -21,6 +22,6 @@
 #define NUM_ADC_CHANNELS (1)
 #define CHUNK_LENGTH     512
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
-#define SAMPLE_FREQUENCY (10000)
+#define SAMPLE_FREQUENCY (2000)
 
 #endif // COMMON__H
