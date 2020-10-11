@@ -28,6 +28,8 @@
 #include <argos3/plugins/robots/generic/control_interface/ci_differential_steering_actuator.h>
 /* Definition of the foot-bot proximity sensor */
 #include <argos3/plugins/robots/foot-bot/control_interface/ci_footbot_proximity_sensor.h>
+/* Definition of the LEDs actuator */
+#include <argos3/plugins/robots/generic/control_interface/ci_leds_actuator.h>
 
 #define INTER_ROBOT_DISTANCE_THRESHOLD 0.5 // in meters
 
@@ -100,6 +102,13 @@ public:
    virtual void RemoveLeaderStatus();
    virtual bool hasLeaderStatus();
 
+   virtual void SetFinishedStatus();
+   virtual void UnsetFinishedStatus();
+
+   virtual bool checkBroadcastFinishedStatus();
+   virtual void confirmBroadcastFinishedStatus();
+   virtual void updateRobotsFinishedCount(int count);
+
    virtual WheelVelocities LineCorrectionAlgorithm();
 
    virtual void ReceiveLocationMessage(float distance, float angle, bool fromLeader); 
@@ -139,8 +148,20 @@ private:
    int m_number_of_robots;
 
    bool m_isLeader;
+   bool m_isFinished; // indicates whether the robot is finished and at desired location
+   /* indicates whether the robot recently finished 
+    * meaning the loop controller still needs to 
+    * broacast this to the other robots */
+   bool m_broadcastFinishedFlag;
 
    RobotRelativeLocation* m_otherRobotLocations;
+
+    /* Pointer to the LEDs actuator */
+   CCI_LEDsActuator* m_pcLEDs;
+
+   /* Number of other finished robots (excluding leader) */
+   int m_finishedRobotsCount;
+
 
 };
 

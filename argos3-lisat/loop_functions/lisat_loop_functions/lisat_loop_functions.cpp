@@ -4,6 +4,8 @@
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
 #include <controllers/footbot_lisat/footbot_lisat.h>
 
+
+
 #include <math.h> 
 
 #define _USE_MATH_DEFINES
@@ -17,9 +19,8 @@ CLisatLoopFunctions::CLisatLoopFunctions() :
    // m_unEnergyPerFoodItem(1),
    // m_unEnergyPerWalkingRobot(1)
    m_pcFloor(NULL),
-   m_pcRNG(NULL) {
-
-}
+   m_pcRNG(NULL),
+   m_robotCount(0) {}
 
 /****************************************/
 /****************************************/
@@ -30,8 +31,9 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       /* Get a pointer to the floor entity */
       m_pcFloor = &GetSpace().GetFloorEntity();
       /* Get the number of food items we want to be scattered from XML */
-      // UInt32 unFoodItems;
-      // GetNodeAttribute(tForaging, "items", unFoodItems);
+      
+      // get robot count from .argos configuration file
+      GetNodeAttribute(tLisat, "number_of_robots", m_robotCount);
 
       // /* Create a new RNG */
       // m_pcRNG = CRandom::CreateRNG("argos");
@@ -85,6 +87,10 @@ void CLisatLoopFunctions::Reset() {
 void CLisatLoopFunctions::Destroy() {
    /* Close the file */
    m_cOutput.close();
+}
+
+void CLisatLoopFunctions::BroadcastRobotFinished() {
+   argos::LOG << "Robot finished!" << std::endl;
 }
 
 /****************************************/
@@ -163,27 +169,50 @@ float CalculateAngleTwoRobots(CRadians rob1Heading, CVector2 rob1, CVector2 rob2
 
 }
 
+int StringIDtoInt(std::string strid) {
+   strid.std::string::erase(0, 2);
+   return std::stoi(strid);
+}
+
 void CLisatLoopFunctions::PreStep() {
+
    // Get all footbots
    CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
 
    CVector2 leaderPosition;
 
+   CVector2 robotPositions[m_robotCount];
 
-   // Iterate over all robots to find leader position
+   int broadcastFinishedCount = 0;
+
+   // Iterate over all robots 
    for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
       
       /* Get handle to foot-bot entity and controller */
       CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
       CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
 
+      /* find leader position */
       if (cController.hasLeaderStatus()) {
          leaderPosition.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
                             cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());   
+      } else {
+         int id = StringIDtoInt(cController.GetId());
+         CVector2 position;
+         position.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
+                            cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());
+         robotPositions[id] = position;
+         argos::LOG << "int id:: " << id << std::endl;  
+      }
+
+      /* Check if any broadcasts of a robot's finished status are required */
+      if (cController.checkBroadcastFinishedStatus()) {
+         broadcastFinishedCount++;
+         cController.confirmBroadcastFinishedStatus();
       }
    }
 
-   // Iterate over all robots to broadcast leader position
+   /* Iterate over all robots to broadcast leader position and any finished robots */ //TODO: leader position actually only needs to be broadcasted once?
    for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
       
       /* Get handle to foot-bot entity and controller */
@@ -191,24 +220,42 @@ void CLisatLoopFunctions::PreStep() {
       CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
       CVector2 robotPosition;
       if (!cController.hasLeaderStatus()) {
+
          robotPosition.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
                            cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());   
          float distanceToLeader = CalculateDistanceTwoRobots(leaderPosition, robotPosition);
-         argos::LOG << "distance: " << distanceToLeader << std::endl;
 
-         CRadians xAngle;
-         CRadians yAngle;
-         CRadians zAngle;
+         CRadians xAngle; CRadians yAngle; CRadians zAngle;
          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
-         
-         float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, robotPosition, leaderPosition);
-         argos::LOG << "angle: " << angleRelativeToLeader << std::endl;    
-
-         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, true);
       
+         float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, robotPosition, leaderPosition);
+         argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
+         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, true);
+
+         /* Let every robot loop over all other robots to forward its location */
+         for (int robot = 0; robot < m_robotCount; robot++) {
+            if (robot == StringIDtoInt(cController.GetId())) { //skip itself
+               continue;
+            }
+            CVector2 targetPosition;
+            targetPosition = robotPositions[robot];
+
+            float distanceToRobot = CalculateDistanceTwoRobots(robotPosition, targetPosition);
+            CRadians xAngle; CRadians yAngle; CRadians zAngle;
+            cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
+            
+            float angleRelativeToTarget = CalculateAngleTwoRobots(zAngle, robotPosition, targetPosition);
+            argos::LOG << "angle to target: " << angleRelativeToLeader << std::endl;    
+            cController.ReceiveLocationMessage(distanceToRobot, angleRelativeToTarget, false);
+         }
+
+         /* Update if another robot recently finished */
+         if (broadcastFinishedCount > 0) {
+            cController.updateRobotsFinishedCount(broadcastFinishedCount);            
+         }
       }
-      //cController.ReceiveLocationMessage();
    }   
+   broadcastFinishedCount = 0;
 
       //argos::LOG << cController.m_isLeader; << std::endl;
 

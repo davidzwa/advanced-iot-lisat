@@ -5,6 +5,7 @@
 #include <argos3/core/simulator/entity/floor_entity.h>
 #include <argos3/core/utility/math/range.h>
 #include <argos3/core/utility/math/rng.h>
+#include <chrono>
 
 using namespace argos;
 
@@ -21,6 +22,8 @@ public:
    //virtual CColor GetFloorColor(const CVector2& c_position_on_plane);
    virtual void PreStep();
 
+   virtual void BroadcastRobotFinished();
+
 private:
 
    //std::vector<CVector2> m_cFoodPos;
@@ -30,6 +33,8 @@ private:
    std::string m_strOutput;
    std::ofstream m_cOutput;
 
+
+   int m_robotCount;
    //UInt32 m_unCollectedFood;
 };
 
