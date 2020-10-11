@@ -5,6 +5,8 @@
 /* 2D vector definition */
 #include <argos3/core/utility/math/vector2.h>
 
+#include <argos3/core/utility/logging/argos_log.h>
+
 /****************************************/
 /****************************************/
 
@@ -61,7 +63,7 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
    GetNodeAttributeOrDefault(t_node, "number_of_robots", m_number_of_robots, m_number_of_robots);
 
    /* Contains location information about other robots */
-   RobotRelativeLocation m_otherRobotLocations[m_number_of_robots-1];
+   m_otherRobotLocations = new RobotRelativeLocation[2]; //TODO: make dynamic (number_of_robots gives bad alloc)
 
 }
 
@@ -69,10 +71,31 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
 /****************************************/
 
 /* The line correction algorithm */
-WheelVelocities LineCorrectionAlgorithm() {
+WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 
-    WheelVelocities wheelVelocities = {5,5};
+    WheelVelocities wheelVelocities;
 
+    RobotRelativeLocation leaderLocation = m_otherRobotLocations[0];
+    float distanceToLeader = leaderLocation.distance;
+    float angleToLeader = leaderLocation.angle;
+
+
+    argos::RLOG << "leader distance: " << distanceToLeader << std::endl;
+    argos::RLOG << "leader angle: " << angleToLeader << std::endl;
+
+    if (distanceToLeader > INTER_ROBOT_DISTANCE_THRESHOLD) { //0.25
+      if (angleToLeader < 5) {
+        wheelVelocities = {3, 3};
+      }
+      else if (angleToLeader < 180) {
+        wheelVelocities = {3, 1};
+
+      } else {
+        wheelVelocities = {1, 3};
+      }
+    } else {
+      wheelVelocities = {0, 0};
+    }
     // robotsCloserToStartpoint = CalculateRobotsCloserToStartpoint();
 
     // // If close to startpoint
@@ -134,8 +157,12 @@ void CFootBotLisat::ControlStep() {
    }
 }
 
-void ReceiveLocationMessage(RobotRelativeLocation relativeLocation) { //todo: add robot id
-
+void CFootBotLisat::ReceiveLocationMessage(float distance, float angle, bool fromLeader) { //todo: add robot id, // use: RobotRelativeLocation relativeLocation instead?
+  RobotRelativeLocation relativeLocation = {distance, angle};
+  if (fromLeader) { // for leader use id 0
+    m_otherRobotLocations[0] = relativeLocation;
+  } else { // not leader so use robot_id
+  }
 };
 
 void CFootBotLisat::GiveLeaderStatus() {

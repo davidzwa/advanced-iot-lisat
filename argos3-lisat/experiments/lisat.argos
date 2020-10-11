@@ -36,7 +36,7 @@
         <footbot_proximity implementation="default" show_rays="true" />
       </sensors>
       <!-- number_of_robots -->
-      <params alpha="7.5" delta="0.1" velocity="5" number_of_robots="2"/>
+      <params alpha="7.5" delta="0.1" velocity="5" number_of_robots="5"/>
     </footbot_lisat_leader_controller>
 
   </controllers>
@@ -59,7 +59,7 @@
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="5, 5, 1" center="0,0,0.5">
+  <arena size="10, 10, 1" center="0,0,0.5">
 
     <floor id="floor"
        source="loop_functions"
@@ -90,17 +90,17 @@
     -->
 
 
-<!-- 
+
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2,0" />
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="2" max_trials="100">
+      <entity quantity="5" max_trials="100">
         <foot-bot id="fb">
           <controller config="flc" />
         </foot-bot>
       </entity>
-    </distribute> -->
-
+    </distribute>
+<!-- 
 
     <foot-bot id="fb_0">
       <body position="1,1,0" orientation="0,0,0" />
@@ -110,7 +110,7 @@
     <foot-bot id="fb_1">
       <body position="0,0,0" orientation="0,0,0" />
       <controller config="flc"/>
-    </foot-bot>
+    </foot-bot> -->
 
 <!--     <cylinder id="c" height="0.2" radius="0.1" mass="0.1" movable="false">
       <body position="1,1,0" orientation="0,0,0" />

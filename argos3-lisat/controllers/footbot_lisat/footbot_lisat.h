@@ -29,6 +29,8 @@
 /* Definition of the foot-bot proximity sensor */
 #include <argos3/plugins/robots/foot-bot/control_interface/ci_footbot_proximity_sensor.h>
 
+#define INTER_ROBOT_DISTANCE_THRESHOLD 0.5 // in meters
+
 /*
  * All the ARGoS stuff in the 'argos' namespace.
  * With this statement, you save typing argos:: every time.
@@ -98,7 +100,9 @@ public:
    virtual void RemoveLeaderStatus();
    virtual bool hasLeaderStatus();
 
-   void ReceiveLocationMessage(RobotRelativeLocation relativeLocation); 
+   virtual WheelVelocities LineCorrectionAlgorithm();
+
+   virtual void ReceiveLocationMessage(float distance, float angle, bool fromLeader); 
 
 private:
 
@@ -135,6 +139,8 @@ private:
    int m_number_of_robots;
 
    bool m_isLeader;
+
+   RobotRelativeLocation* m_otherRobotLocations;
 
 };
 

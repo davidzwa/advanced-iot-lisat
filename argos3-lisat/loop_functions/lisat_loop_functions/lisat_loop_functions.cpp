@@ -200,12 +200,11 @@ void CLisatLoopFunctions::PreStep() {
          CRadians yAngle;
          CRadians zAngle;
          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
-         //argos::LOG << "zangle: " << zAngle << std::endl;
-         argos::LOG << "X: " << cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX() << std::endl;         
-         argos::LOG << "Y: " << cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY() << std::endl;         
+         
          float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, robotPosition, leaderPosition);
          argos::LOG << "angle: " << angleRelativeToLeader << std::endl;    
 
+         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, true);
       
       }
       //cController.ReceiveLocationMessage();
