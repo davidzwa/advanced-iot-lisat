@@ -10,8 +10,11 @@ ADCBuf_Conversion continuousConversion[2];
 
 // Timer: Auxiliary variables
 unsigned long lastTriggerMic1L = 0;
+bool mic1LTriggered = false;
 unsigned long lastTriggerMic2M = 0;
+bool mic2MTriggered = false;
 unsigned long lastTriggerMic3R = 0;
+bool mic3RTriggered = false;
 bool startAdcSampling = false;
 bool timerStarted = false;
 
@@ -169,12 +172,17 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
 
+    mic1LTriggered = false;
+    mic2MTriggered = false;
+    mic3RTriggered = false;
+
     /* post adcbuf semaphore */
     sem_post(&adcbufSem);
 }
 
 void interruptMic1LTriggered(uint_least8_t index)
 {
+    mic1LTriggered = true;
     startTimerIfStopped();
     lastTriggerMic1L = getCurrentPreciseTime();
     setNormalMicMode(MIC_LEFT); // Disable interrupt externally
@@ -183,6 +191,7 @@ void interruptMic1LTriggered(uint_least8_t index)
 
 void interruptMic2MTriggered(uint_least8_t index)
 {
+    mic2MTriggered = true;
     startTimerIfStopped();
     lastTriggerMic2M = getCurrentPreciseTime();
     setNormalMicMode(MIC_MID); // Disable interrupt externally
@@ -191,6 +200,7 @@ void interruptMic2MTriggered(uint_least8_t index)
 
 void interruptMic3RTriggered(uint_least8_t index)
 {
+    mic3RTriggered = true;
     startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();
     startAdcSampling = true;
