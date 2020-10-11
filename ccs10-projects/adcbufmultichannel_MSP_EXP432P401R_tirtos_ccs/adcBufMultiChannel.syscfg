@@ -12,7 +12,8 @@ const Display  = scripting.addModule("/ti/display/Display");
 const Display1 = Display.addInstance();
 const ADCBuf   = scripting.addModule("/ti/drivers/ADCBuf");
 const ADCBuf1  = ADCBuf.addInstance();
-const GPIO     = scripting.addModule("/ti/drivers/GPIO", {}, false);
+const DMA      = scripting.addModule("/ti/drivers/DMA");
+const GPIO     = scripting.addModule("/ti/drivers/GPIO");
 const GPIO1    = GPIO.addInstance();
 const GPIO2    = GPIO.addInstance();
 const GPIO3    = GPIO.addInstance();
@@ -35,6 +36,10 @@ ADCBuf1.$name                = "CONFIG_ADCBUF0";
 ADCBuf1.enableDMA            = false;
 ADCBuf1.interruptPriority    = "6";
 ADCBuf1.adcBufChannel0.$name = "CHANNEL_0";
+
+DMA.interruptPriority = "2";
+
+GPIO.interruptPriority = "1";
 
 GPIO1.mode               = "Output";
 GPIO1.initialOutputState = "High";
@@ -84,9 +89,9 @@ Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
 ADCBuf1.timer.$suggestSolution                     = "Timer_A2";
-ADCBuf1.adc.$suggestSolution                       = "ADC14";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.30";
+ADCBuf1.adc.$suggestSolution                       = "ADC14";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P1.0.GPIO/EUSCI_A0_SPI.STE";
 RTOS.timer0.resource.$suggestSolution              = "Timer_A0";

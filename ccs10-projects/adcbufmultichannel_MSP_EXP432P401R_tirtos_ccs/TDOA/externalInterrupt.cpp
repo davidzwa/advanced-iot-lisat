@@ -93,11 +93,14 @@ uint32_t getCurrentPreciseTime()
     return getTimerUs(); // return time in us
 }
 
-void enableMicTriggerInterrupts()
-{
+void initInterruptCallbacks() {
     GPIO_setCallback(MIC1L_D_OUT_INTRPT, interruptMic1LTriggered);
     GPIO_setCallback(MIC2M_D_OUT_INTRPT, interruptMic2MTriggered);
     GPIO_setCallback(MIC3R_D_OUT_INTRPT, interruptMic3RTriggered);
+}
+
+void enableMicTriggerInterrupts()
+{
     GPIO_enableInt(MIC1L_D_OUT_INTRPT);
     GPIO_enableInt(MIC2M_D_OUT_INTRPT);
     GPIO_enableInt(MIC3R_D_OUT_INTRPT);

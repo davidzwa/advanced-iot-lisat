@@ -15,15 +15,11 @@ void transmitSerialData(transmittedData_t *data)
     {
         transmitSerialValue(data->buffer[i]);
     }
-
     transmitSerialParam('M', '1', data->deltaMic1);
     transmitSerialParam('M', '2', data->deltaMic2);
     transmitSerialParam('M', '3', data->deltaMic3);
     transmitSerialParam('D', '1', data->tdoaDir1);
     transmitSerialParam('D', '2', data->tdoaDir2);
-#ifdef MEASURE_ADCTIMER_JITTER
-    transmitSerialParam('J', avg_jitter_us);
-#endif
     transmitSerialParam('F', 's', SAMPLE_FREQUENCY);
     transmitEndSymbol(); // End of data separator
     transmitting = false;
@@ -42,6 +38,6 @@ void transmitSerialValue(int value)
 #ifdef STREAM_PLOTTER
     Display_printf(display, 0, 0, "v = %d", value);
 #else
-    Display_printf(display, 0, 0, "v.%d", value);
+    Display_printf(display, 0, 0, "v.%d\r\n", value);
 #endif
 }

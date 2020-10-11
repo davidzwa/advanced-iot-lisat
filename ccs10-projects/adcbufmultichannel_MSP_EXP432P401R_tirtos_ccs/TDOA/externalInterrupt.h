@@ -44,6 +44,7 @@ void initADCBuf();
 void testADCBufOpened();
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
                     void *completedADCBuffer, uint32_t completedChannel);
+void initInterruptCallbacks();
 void enableMicTriggerInterrupts();
 void disableMicTriggerInterrupts();
 void interruptMic1LTriggered(uint_least8_t index);

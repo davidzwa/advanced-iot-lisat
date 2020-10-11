@@ -53,6 +53,7 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "ADCBuf & timer initialized. Testing.");
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
+    initInterruptCallbacks();
     enableMicTriggerInterrupts();
 
     // Fill one ADC buf: not required for functioning

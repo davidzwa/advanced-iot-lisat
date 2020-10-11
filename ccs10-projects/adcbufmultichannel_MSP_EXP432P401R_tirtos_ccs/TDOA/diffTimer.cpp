@@ -4,9 +4,8 @@
 void initTimerParams(){
     Timer_Params_init(&params);
 //    params.period = 1000000;
-    params.periodUnits = Timer_PERIOD_US;
+    params.periodUnits = Timer_PERIOD_COUNTS;
     params.timerMode = Timer_FREE_RUNNING;
-//    params.timerCallback = timerCallback;
 }
 
 void initTimer() {

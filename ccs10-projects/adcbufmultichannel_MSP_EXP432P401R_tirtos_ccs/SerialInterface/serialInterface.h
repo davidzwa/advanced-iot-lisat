@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include "common.h"
 
 #ifndef SERIAL_INTERFACE__H
@@ -9,9 +8,9 @@ Display_Handle display;
 
 struct transmittedData_t
 {
-    int deltaMic1;
-    int deltaMic2;
-    int deltaMic3;
+    uint32_t deltaMic1;
+    uint32_t deltaMic2;
+    uint32_t deltaMic3;
     float tdoaDir1;
     float tdoaDir2;
     int length;
