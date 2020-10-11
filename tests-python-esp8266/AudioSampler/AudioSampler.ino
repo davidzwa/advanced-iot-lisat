@@ -55,6 +55,7 @@ void user_init(void)
 void setup()
 {
     Serial.begin(serial_baud_rate);
+    Serial1.begin(9600);
 
     user_init();
 }
