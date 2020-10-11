@@ -5,8 +5,8 @@
  *      Author: david
  */
 
-#include <dsp/iirFilter.h>
 #include <arm_math.h>
+#include <dsp/iirFilter.h>
 
 IirFilter::IirFilter()
 {

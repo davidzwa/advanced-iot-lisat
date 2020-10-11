@@ -3,6 +3,8 @@
  */
 
 /* DriverLib Includes */
+#include <dsp/fft.h>
+#include <dsp/iirFilter.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -21,8 +23,6 @@
 
 // Our common defines
 #include "common.h"
-#include "dsp/iirfilter.h"
-#include "dsp/fft.h"
 #include "corrAudio.h"
 
 #define NUM_ADC_CHANNELS (1)

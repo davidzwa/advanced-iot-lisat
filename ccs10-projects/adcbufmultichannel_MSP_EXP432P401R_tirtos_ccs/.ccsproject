@@ -15,4 +15,5 @@
 	<templateProperties value="id=adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs.projectspec.adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs,buildProfile=release,isHybrid=true"/>
 	<origin value="C:\ti\simplelink_msp432p4_sdk_3_40_01_02\examples\rtos\MSP_EXP432P401R\drivers\adcbufmultichannel\tirtos\ccs\adcbufmultichannel_MSP_EXP432P401R_tirtos_ccs.projectspec"/>
 	<filesToOpen value=""/>
+	<isTargetManual value="false"/>
 </projectOptions>
