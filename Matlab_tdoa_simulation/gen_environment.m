@@ -13,18 +13,18 @@ end
 if size(mic_setting,2) ~= 2
     error("mics should contain the 2D corodinates of the mics in a colum [x1,y1; x2,y2; etd]")
 end
-if any(size(field) ~= [1,2])
-    error("field sould contain the size of the field as a row vector [x, y]")
+if any(size(field) ~= [1,4])
+    error("field sould contain the size of the field as a row vector [xmin, xmax, ymin, ymax]")
 end
 if ~islogical(walls)
     error("walls must be a logical value")
 end
 
 
-if any(sources < 0, 'all') || any(sources(:,1) > field(1)) || any(sources(:,2) > field(2))
+if any(sources(:,1) < field(1)) || any(sources(:,1) > field(2)) || any(sources(:,2) < field(3)) || any(sources(:,2) > field(4))
     error("sources outside of field")
 end
-if any(robots(:,1:2) < 0, 'all') || any(robots(:,1) > field(1)) || any(robots(:,2) > field(2))
+if any(robots(:,1) < field(1)) || any(robots(:,1) > field(2)) || any(robots(:,2) < field(3)) || any(robots(:,2) > field(4))
     error("robots outside of field")
 end
 
