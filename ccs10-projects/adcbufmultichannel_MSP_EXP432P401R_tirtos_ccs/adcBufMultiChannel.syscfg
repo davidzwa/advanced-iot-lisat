@@ -12,11 +12,19 @@ const Display  = scripting.addModule("/ti/display/Display");
 const Display1 = Display.addInstance();
 const ADCBuf   = scripting.addModule("/ti/drivers/ADCBuf");
 const ADCBuf1  = ADCBuf.addInstance();
-const GPIO     = scripting.addModule("/ti/drivers/GPIO", {}, false);
+const DMA      = scripting.addModule("/ti/drivers/DMA");
+const GPIO     = scripting.addModule("/ti/drivers/GPIO");
 const GPIO1    = GPIO.addInstance();
 const GPIO2    = GPIO.addInstance();
 const GPIO3    = GPIO.addInstance();
+const GPIO4    = GPIO.addInstance();
+const GPIO5    = GPIO.addInstance();
+const GPIO6    = GPIO.addInstance();
+const GPIO7    = GPIO.addInstance();
+const Power    = scripting.addModule("/ti/drivers/Power");
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
+const Timer    = scripting.addModule("/ti/drivers/Timer", {}, false);
+const Timer1   = Timer.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -25,51 +33,68 @@ Display1.$name      = "CONFIG_Display_0";
 Display1.$hardware  = system.deviceData.board.components.XDS110UART;
 Display1.uart.$name = "CONFIG_UART_0";
 
-ADCBuf1.$name                             = "CONFIG_ADCBUF0";
-ADCBuf1.enableDMA                         = false;
-ADCBuf1.channels                          = 3;
-ADCBuf1.interruptPriority                 = "6";
-ADCBuf1.adcBufChannel0.$name              = "CHANNEL_0";
-ADCBuf1.adcBufChannel0.adc.adcPin.$assign = "boosterpack.30";
-ADCBuf1.adcBufChannel1.$name              = "CHANNEL_1";
-ADCBuf1.adcBufChannel1.adc.adcPin.$assign = "boosterpack.29";
-ADCBuf1.adcBufChannel2.$name              = "CHANNEL_2";
-ADCBuf1.adcBufChannel2.adc.adcPin.$assign = "boosterpack.28";
+ADCBuf1.$name                = "CONFIG_ADCBUF0";
+ADCBuf1.interruptPriority    = "6";
+ADCBuf1.enableDMA            = false;
+ADCBuf1.adcBufChannel0.$name = "CHANNEL_0";
 
-GPIO1.$name              = "CONFIG_GPIO_0";
+DMA.interruptPriority = "2";
+
+GPIO.interruptPriority = "1";
+
 GPIO1.mode               = "Output";
 GPIO1.initialOutputState = "High";
-GPIO1.outputStrength     = "High";
-GPIO1.pull               = "Pull Down";
+GPIO1.$name              = "MIC1L_MODE_WOS";
 GPIO1.gpioPin.$assign    = "boosterpack.9";
 
 GPIO2.interruptTrigger = "Rising Edge";
-GPIO2.$name            = "INTERRUPT_D_OUT2";
+GPIO2.$name            = "MIC1L_D_OUT_INTRPT";
 GPIO2.gpioPin.$assign  = "boosterpack.10";
 
-GPIO3.$hardware          = system.deviceData.board.components.LED1_RED;
-GPIO3.$name              = "CONFIG_GPIO_LED_1";
+GPIO3.$name              = "MIC2M_MODE_WOS";
+GPIO3.mode               = "Output";
 GPIO3.initialOutputState = "High";
+GPIO3.gpioPin.$assign    = "boosterpack.6";
 
-const Power                   = scripting.addModule("/ti/drivers/Power", {}, false);
+GPIO4.$name            = "MIC2M_D_OUT_INTRPT";
+GPIO4.interruptTrigger = "Rising Edge";
+
+GPIO5.$name              = "MIC3R_MODE_WOS";
+GPIO5.mode               = "Output";
+GPIO5.initialOutputState = "High";
+GPIO5.gpioPin.$assign    = "boosterpack.28";
+
+GPIO6.$name            = "MIC3R_D_OUT_INTRPT";
+GPIO6.interruptTrigger = "Rising Edge";
+GPIO6.gpioPin.$assign  = "boosterpack.8";
+
+GPIO7.$name     = "LED_TRIGGER_1";
+GPIO7.mode      = "Output";
+GPIO7.$hardware = system.deviceData.board.components.LED1_RED;
+
+Power.advancedConfiguration   = true;
 Power.performanceLevel3.$name = "ti_drivers_power_PowerMSP432PerfLevels0";
 Power.performanceLevel2.$name = "ti_drivers_power_PowerMSP432PerfLevels1";
 Power.performanceLevel1.$name = "ti_drivers_power_PowerMSP432PerfLevels2";
 Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
 
 
+Timer1.$name             = "CONFIG_TIMER_0_US_MEASURE";
+Timer1.interruptPriority = "1";
+
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-Display1.uart.uart.$suggestSolution         = "EUSCI_A0";
-Display1.uart.uart.txPin.$suggestSolution   = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
-Display1.uart.uart.rxPin.$suggestSolution   = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution              = "Timer_A1";
-ADCBuf1.adcBufChannel0.adc.$suggestSolution = "ADC14";
-ADCBuf1.adc.$suggestSolution                = "ADC14";
-ADCBuf1.adcBufChannel1.adc.$suggestSolution = "ADC14";
-ADCBuf1.adcBufChannel2.adc.$suggestSolution = "ADC14";
-GPIO3.gpioPin.$suggestSolution              = "P1.0.GPIO/EUSCI_A0_SPI.STE";
-RTOS.timer0.resource.$suggestSolution       = "Timer_A0";
+Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
+Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
+Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A2";
+ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
+ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.30";
+ADCBuf1.adc.$suggestSolution                       = "ADC14";
+GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
+GPIO7.gpioPin.$suggestSolution                     = "P1.0.GPIO/EUSCI_A0_SPI.STE";
+RTOS.timer0.resource.$suggestSolution              = "Timer_A0";
+Timer1.timer.$suggestSolution                      = "Timer_A1";

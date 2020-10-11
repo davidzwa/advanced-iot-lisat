@@ -4,11 +4,11 @@ a_a = 1;
 b_a = 1;
 
 f1_a = 100;     % lower cutoff frequency analog filter[Hz]
-f2_a = 1000;     % upper cutoff frequency analog filter[Hz]
+f2_a = 500;     % upper cutoff frequency analog filter[Hz]
 
 o_a = 1;        % order of analog filter
 
-[b_a, a_a] = butter(o_a, [f1_a, f2_a]/Fs_a);
+%[b_a, a_a] = butter(o_a, [f1_a, f2_a]/Fs_a);
 
 %% Digital filter
 
@@ -23,7 +23,7 @@ o_d = 1;        % order of analog filter
 %[b_d, a_d] = butter(o_d, [f1_d, f2_d]/Fs_d);
 
 %% Noise
-SNR = 10;
+SNR = 1;
 
 %% Run sim
 
@@ -39,7 +39,7 @@ for r = 1:env.num_robots
             
         end
         
-        prop = awgn(prop,SNR, 'measured');  %adding noise to the signal
+        %prop = awgn(prop,SNR, 'measured');  %adding noise to the signal
         
         analog_in = filter(b_a, a_a, prop); %simulating hardware filtering
         
