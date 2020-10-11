@@ -33,8 +33,8 @@ Display1.$hardware  = system.deviceData.board.components.XDS110UART;
 Display1.uart.$name = "CONFIG_UART_0";
 
 ADCBuf1.$name                = "CONFIG_ADCBUF0";
-ADCBuf1.enableDMA            = false;
 ADCBuf1.interruptPriority    = "6";
+ADCBuf1.enableDMA            = false;
 ADCBuf1.adcBufChannel0.$name = "CHANNEL_0";
 
 DMA.interruptPriority = "2";
