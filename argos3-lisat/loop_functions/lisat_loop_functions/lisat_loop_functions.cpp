@@ -116,10 +116,12 @@ float CalculateAngleTwoRobots(CRadians rob1Heading, CVector2 rob1, CVector2 rob2
    if (northToHeading < 0) {
       northToHeading = 360 + northToHeading;
    }
-   northToHeading = 360 - northToHeading; //reverse to increase clockwise
 
-   argos::LOG << "atan: " << atanResult << std::endl;  
-   argos::LOG << "heading: " << northToHeading << std::endl;  
+   /* Reverse heading angle direction and account for ARgos3 x-axis being reversed (hence + 90 degrees) */
+   northToHeading = fmod(360 - northToHeading + 90, 360);
+
+   //argos::LOG << "atan: " << atanResult << std::endl;  
+   //argos::LOG << "heading: " << northToHeading << std::endl;  
 
    /* 
     * IMPORTANT: this value indicates how many
@@ -129,40 +131,35 @@ float CalculateAngleTwoRobots(CRadians rob1Heading, CVector2 rob1, CVector2 rob2
     */
    float totalAngle;
 
-   if (atanResult == 0) {
-      atanResult = 90;
-   }
-
-   float base_fomula; // depends on orientation of robot in relation to target
+   /* Calculate base angle depending on orientation of robot in relation to target */
+   float base_formula;
    if (rob1.GetX() < rob2.GetX()) { // target to the right of robot
       if(rob1.GetY() < rob2.GetY()) { // target to the north of robot
-         base_fomula = atanResult;
+         base_formula = atanResult;   
       }
       else {                          // target to the south of robot
-         base_fomula = 180 - atanResult;
+         base_formula = 180 - atanResult;
       }
    } else {                           // target to the left of robot
       if(rob1.GetY() < rob2.GetY()) { // target to the north of robot
-         base_fomula = 360 - atanResult;
+         base_formula = 360 - atanResult;
       }
       else {                          // target to the south of robot
-         base_fomula = 180 + atanResult;
+         base_formula = 180 + atanResult;
       }     
    }
+      
+   //argos::LOG << "base_formula: " << base_formula << std::endl;  
 
-   if (northToHeading > base_fomula) { // determine whether heading should be positive or negative term
-      totalAngle = (360 - northToHeading) + atanResult;
+   /* Incorporate heading of robot into total angle calculation */
+   if (northToHeading < base_formula) {
+      totalAngle = base_formula - northToHeading;
    } else {
-      totalAngle = atanResult - northToHeading;
+      totalAngle = base_formula + (360 - northToHeading);
    }
 
-   if (rob1.GetX() > rob2.GetX()) {
-      totalAngle = atanResult - northToHeading;
-   } else {
-      totalAngle = atanResult - northToHeading;
-   }
    //argos::LOG << "heading: " << northToHeading << std::endl;  
-   return (totalAngle + 180);
+   return (totalAngle);
 
 }
 
@@ -186,7 +183,7 @@ void CLisatLoopFunctions::PreStep() {
       }
    }
 
-   // Iterate over all robots ro broadcast leader position
+   // Iterate over all robots to broadcast leader position
    for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
       
       /* Get handle to foot-bot entity and controller */

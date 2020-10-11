@@ -103,18 +103,18 @@
 
 
     <foot-bot id="fb_0">
-      <body position="-1,1,0" orientation="0,0,0" />
+      <body position="1,1,0" orientation="0,0,0" />
       <controller config="flc"/>
     </foot-bot>
 
     <foot-bot id="fb_1">
-      <body position="1,-1,0" orientation="0,0,0" />
+      <body position="0,0,0" orientation="0,0,0" />
       <controller config="flc"/>
     </foot-bot>
 
-    <cylinder id="c" height="0.2" radius="0.1" mass="0.1" movable="false">
+<!--     <cylinder id="c" height="0.2" radius="0.1" mass="0.1" movable="false">
       <body position="1,1,0" orientation="0,0,0" />
-    </cylinder>
+    </cylinder> -->
 
 <!-- 
     <foot-bot id="fb_leader">
