@@ -29,12 +29,20 @@ CFootBotLisat::CFootBotLisat() :
    m_isFinished(false),
    m_broadcastFinishedFlag(false),
    m_fDelta(0.5f),
+   m_convergedToLeader(false),
+   m_nearestFinishedRobot({0,0,0}),
    m_fWheelVelocity(2.5f),
    m_cGoStraightAngleRange(-ToRadians(m_cAlpha),
                            ToRadians(m_cAlpha)) {}
 
 /****************************************/
 /****************************************/
+
+int StringIDtoInt(std::string strid) {
+   strid.std::string::erase(0, 2);
+   return std::stoi(strid);
+}
+
 
 void CFootBotLisat::Init(TConfigurationNode& t_node) {
    /*
@@ -81,6 +89,10 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
 
    m_pcLEDs   = GetActuator<CCI_LEDsActuator                          >("leds");
 
+   if(this->GetId() == "fb2") { // for debugging purposes
+      m_pcLEDs->SetAllColors(CColor::GREEN);
+   }
+
 }
 
 /****************************************/
@@ -103,7 +115,7 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
     if (this->m_isFinished) {
       return wheelVelocities;
     }
-    if (distanceToLeader > INTER_ROBOT_DISTANCE_THRESHOLD) { //0.25
+    if ( (distanceToLeader > INTER_ROBOT_DISTANCE_THRESHOLD) && !m_convergedToLeader) { //0.25
       if (angleToLeader < 5) {
         wheelVelocities = {3, 3};
       }
@@ -113,15 +125,48 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
       } else {
         wheelVelocities = {1, 3};
       }
+      return wheelVelocities;
     } else {
-
-      if (m_finishedRobotsCount < 1) { // If robot is the first one to arrive just stay stationary 
+      m_convergedToLeader = true;
+          if(this->GetId() == "fb1") { // for debugging purposes
+            argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
+          }      if (m_finishedRobotsCount < 1) { // If robot is the first one to arrive just stay stationary 
         this->SetFinishedStatus();
         wheelVelocities = {0, 0};
         return wheelVelocities;
       } else {
-        wheelVelocities = {2.5, -2.5};
-        return wheelVelocities;      }
+          if(this->GetId() == "fb1") { // for debugging purposes
+            argos::RLOG << "Compare nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
+            argos::RLOG << "Compare leader  angle: " << angleToLeader << std::endl;
+            //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
+          }
+        if (m_nearestFinishedRobot.angle - angleToLeader < 0.5) { // angle margin // remove id hack
+          this->SetFinishedStatus();
+          wheelVelocities = {0, 0};
+          return wheelVelocities;
+        } 
+        //todo:  push and pull to nearest robot 
+        if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD) { // distance margin?
+            if (m_nearestFinishedRobot.angle < 180) {
+              wheelVelocities = {3, 2};
+              return wheelVelocities;
+            } else {
+              wheelVelocities  = {2, 3};
+              return wheelVelocities;
+            }
+        }
+        else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD) {
+            if (m_nearestFinishedRobot.angle < 180) {
+              wheelVelocities = {2, 3};
+              return wheelVelocities;
+            } else {
+              wheelVelocities  = {3, 2};
+              return wheelVelocities;
+            }
+        }
+        wheelVelocities = {1, 1};
+        return wheelVelocities;      
+      }
 
     }
     // robotsCloserToStartpoint = CalculateRobotsCloserToStartpoint();
@@ -149,9 +194,14 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 }
 
 void CFootBotLisat::ControlStep() {
+  if(this->GetId() == "fb1") { // for debugging purposes
+    argos::RLOG << "nearest robot id: " << m_nearestFinishedRobot.id << std::endl;
+    //argos::RLOG << "nearest robot distance: " << m_nearestFinishedRobot.distance << std::endl;
+    //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
+  }
 
   // If the robot is a leader it remains stationary
-  if (m_isLeader) return;
+  if (m_isLeader || m_isFinished) return;
 
    /* Get readings from proximity sensor */
    const CCI_FootBotProximitySensor::TReadings& tProxReads = m_pcProximity->GetReadings();
@@ -168,7 +218,6 @@ void CFootBotLisat::ControlStep() {
    if(m_cGoStraightAngleRange.WithinMinBoundIncludedMaxBoundIncluded(cAngle) &&
       cAccumulator.Length() < m_fDelta ) {
 
-
       /* Set wheel velocity for target location */
       WheelVelocities targetWheelVelocities = LineCorrectionAlgorithm();
       m_pcWheels->SetLinearVelocity(targetWheelVelocities.leftWheelVelocity, targetWheelVelocities.rightWheelVelocity);
@@ -184,21 +233,23 @@ void CFootBotLisat::ControlStep() {
       }
    }
 
-  /* select on robot for debugging messages */
-  std::string id = this->GetId(); 
-  if (id == "fb2") {
+  /* select one robot for debugging messages */
     //argos::RLOG << "Robot id: " << id << std::endl;
-    argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
-  }
-
 }
 
-void CFootBotLisat::ReceiveLocationMessage(float distance, float angle, bool fromLeader) { //todo: add robot id, // use: RobotRelativeLocation relativeLocation instead?
+void CFootBotLisat::ReceiveLocationMessage(float distance, float angle, int senderId, bool fromLeader, bool isFinished) { //todo: use RobotRelativeLocation relativeLocation instead?
   RobotRelativeLocation relativeLocation = {distance, angle};
   if (fromLeader) { // for leader use id 0
     m_otherRobotLocations[0] = relativeLocation;
-  } else { // not leader so use robot_id
+  } 
+  else {          // not leader so use robot_id
+    m_otherRobotLocations[senderId] = relativeLocation;
+    //argos::RLOG << "is finished: " << isFinished << std::endl;
+    if ( (isFinished && distance < m_nearestFinishedRobot.distance) || m_nearestFinishedRobot.distance == 0) { // if sender is finished and currently closest robot, update m_nearestFinishedRobot
+      m_nearestFinishedRobot = {senderId, distance, angle};
+    } 
   }
+
 };
 
 void CFootBotLisat::GiveLeaderStatus() {
@@ -227,6 +278,10 @@ void CFootBotLisat::UnsetFinishedStatus() {
   m_pcLEDs->SetAllColors(CColor::BLACK);
 }
 
+bool CFootBotLisat::IsFinished() {
+  return m_isFinished;
+}
+
 bool CFootBotLisat::checkBroadcastFinishedStatus() {
   return m_broadcastFinishedFlag;
 }
@@ -237,7 +292,6 @@ void CFootBotLisat::confirmBroadcastFinishedStatus() {
 }
 
 void CFootBotLisat::updateRobotsFinishedCount(int count) {
-  //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
   m_finishedRobotsCount += count;
 }
 

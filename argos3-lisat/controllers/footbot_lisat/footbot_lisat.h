@@ -54,6 +54,12 @@ typedef struct {
   float rightWheelVelocity;
 } WheelVelocities;
 
+typedef struct {
+  int id;
+  float distance;
+  float angle;
+} NearestFinishedRobot;
+
 /*
  * A controller is simply an implementation of the CCI_Controller class.
  */
@@ -104,6 +110,7 @@ public:
 
    virtual void SetFinishedStatus();
    virtual void UnsetFinishedStatus();
+   virtual bool IsFinished();
 
    virtual bool checkBroadcastFinishedStatus();
    virtual void confirmBroadcastFinishedStatus();
@@ -111,7 +118,7 @@ public:
 
    virtual WheelVelocities LineCorrectionAlgorithm();
 
-   virtual void ReceiveLocationMessage(float distance, float angle, bool fromLeader); 
+   virtual void ReceiveLocationMessage(float distance, float angle, int senderId, bool fromLeader, bool isFinished); 
 
 private:
 
@@ -161,6 +168,11 @@ private:
 
    /* Number of other finished robots (excluding leader) */
    int m_finishedRobotsCount;
+
+   NearestFinishedRobot m_nearestFinishedRobot;
+
+   // Whether robot has converged to leader at least once
+   bool m_convergedToLeader;
 
 
 };

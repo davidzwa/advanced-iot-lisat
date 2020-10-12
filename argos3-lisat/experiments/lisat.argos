@@ -6,11 +6,11 @@
   <!-- ************************* -->
   <framework>
     <system threads="0" />
-<!--     <experiment length="0"
-                ticks_per_second="10"
-                random_seed="124" /> -->
     <experiment length="0"
-                ticks_per_second="10" />
+                ticks_per_second="10"
+                random_seed="126" />
+    <!--  <experiment length="0"
+                ticks_per_second="10" /> -->
   </framework>
 
   <!-- *************** -->

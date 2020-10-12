@@ -183,6 +183,8 @@ void CLisatLoopFunctions::PreStep() {
 
    CVector2 robotPositions[m_robotCount];
 
+   bool finishedRobots[m_robotCount];
+
    int broadcastFinishedCount = 0;
 
    // Iterate over all robots 
@@ -192,17 +194,17 @@ void CLisatLoopFunctions::PreStep() {
       CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
       CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
 
+      CVector3 truePosition = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
+
       /* find leader position */
       if (cController.hasLeaderStatus()) {
-         leaderPosition.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
-                            cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());   
+         leaderPosition.Set(truePosition.GetX(), truePosition.GetY());   
       } else {
          int id = StringIDtoInt(cController.GetId());
          CVector2 position;
-         position.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
-                            cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());
+         position.Set(truePosition.GetX(), truePosition.GetY());
          robotPositions[id] = position;
-         argos::LOG << "int id:: " << id << std::endl;  
+         finishedRobots[id] = cController.IsFinished();
       }
 
       /* Check if any broadcasts of a robot's finished status are required */
@@ -210,6 +212,8 @@ void CLisatLoopFunctions::PreStep() {
          broadcastFinishedCount++;
          cController.confirmBroadcastFinishedStatus();
       }
+      /* Update if another robot recently finished */
+
    }
 
    /* Iterate over all robots to broadcast leader position and any finished robots */ //TODO: leader position actually only needs to be broadcasted once?
@@ -218,44 +222,48 @@ void CLisatLoopFunctions::PreStep() {
       /* Get handle to foot-bot entity and controller */
       CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
       CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
-      CVector2 robotPosition;
+      CVector2 selfPosition;
       if (!cController.hasLeaderStatus()) {
 
-         robotPosition.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
-                           cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());   
-         float distanceToLeader = CalculateDistanceTwoRobots(leaderPosition, robotPosition);
+         if (broadcastFinishedCount > 0) {
+            cController.updateRobotsFinishedCount(broadcastFinishedCount);            
+         }
+
+         //argos::LOG << "robot id: " << StringIDtoInt(cController.GetId()) << std::endl;    
+         CVector3 truePosition = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
+         selfPosition.Set(truePosition.GetX(), truePosition.GetY());   
+         float distanceToLeader = CalculateDistanceTwoRobots(leaderPosition, selfPosition);
 
          CRadians xAngle; CRadians yAngle; CRadians zAngle;
          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
       
-         float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, robotPosition, leaderPosition);
-         argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
-         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, true);
+         float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, selfPosition, leaderPosition);
+         if (StringIDtoInt(cController.GetId()) == 1) { // for testing purposes
+            argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
+         }
+         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true, false);
 
          /* Let every robot loop over all other robots to forward its location */
-         for (int robot = 0; robot < m_robotCount; robot++) {
-            if (robot == StringIDtoInt(cController.GetId())) { //skip itself
+         for (int senderId = 1; senderId < m_robotCount; senderId++) {
+            if (senderId == StringIDtoInt(cController.GetId())) { //skip itself
                continue;
             }
-            CVector2 targetPosition;
-            targetPosition = robotPositions[robot];
+            CVector2 senderPosition;
+            senderPosition = robotPositions[senderId];
 
-            float distanceToRobot = CalculateDistanceTwoRobots(robotPosition, targetPosition);
+            float distanceToSender = CalculateDistanceTwoRobots(selfPosition, senderPosition);
             CRadians xAngle; CRadians yAngle; CRadians zAngle;
             cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
-            
-            float angleRelativeToTarget = CalculateAngleTwoRobots(zAngle, robotPosition, targetPosition);
-            argos::LOG << "angle to target: " << angleRelativeToLeader << std::endl;    
-            cController.ReceiveLocationMessage(distanceToRobot, angleRelativeToTarget, false);
+            float angleRelativeToSender = CalculateAngleTwoRobots(zAngle, selfPosition, senderPosition);
+
+            //argos::LOG << "distance to sender " << senderId << ": " << distanceToSender << std::endl;    
+            //argos::LOG << "angle to sender " << senderId << ": " << angleRelativeToSender << std::endl;         
+            cController.ReceiveLocationMessage(distanceToSender, angleRelativeToSender, senderId, false, finishedRobots[senderId]);        
          }
 
-         /* Update if another robot recently finished */
-         if (broadcastFinishedCount > 0) {
-            cController.updateRobotsFinishedCount(broadcastFinishedCount);            
-         }
+
       }
    }   
-   broadcastFinishedCount = 0;
 
       //argos::LOG << cController.m_isLeader; << std::endl;
 
