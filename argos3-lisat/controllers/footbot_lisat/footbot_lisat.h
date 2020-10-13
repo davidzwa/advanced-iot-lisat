@@ -118,7 +118,7 @@ public:
 
    virtual WheelVelocities LineCorrectionAlgorithm();
 
-   virtual void ReceiveLocationMessage(float distance, float angle, int senderId, bool fromLeader, bool isFinished); 
+   virtual void ReceiveLocationMessage(float distance, float angle, int senderId, bool isFinished); 
 
 private:
 
@@ -170,6 +170,7 @@ private:
    int m_finishedRobotsCount;
 
    NearestFinishedRobot m_nearestFinishedRobot;
+   NearestFinishedRobot m_secondNearestFinishedRobot;
 
    // Whether robot has converged to leader at least once
    bool m_convergedToLeader;

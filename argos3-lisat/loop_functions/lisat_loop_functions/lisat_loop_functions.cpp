@@ -198,8 +198,10 @@ void CLisatLoopFunctions::PreStep() {
 
       /* find leader position */
       if (cController.hasLeaderStatus()) {
-         leaderPosition.Set(truePosition.GetX(), truePosition.GetY());   
-      } else {
+         leaderPosition.Set(truePosition.GetX(), truePosition.GetY());  
+         finishedRobots[0] = 1;         
+      } 
+      else {
          int id = StringIDtoInt(cController.GetId());
          CVector2 position;
          position.Set(truePosition.GetX(), truePosition.GetY());
@@ -238,10 +240,10 @@ void CLisatLoopFunctions::PreStep() {
          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(zAngle, yAngle, xAngle);
       
          float angleRelativeToLeader = CalculateAngleTwoRobots(zAngle, selfPosition, leaderPosition);
-         if (StringIDtoInt(cController.GetId()) == 1) { // for testing purposes
-            argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
-         }
-         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true, false);
+         // if (StringIDtoInt(cController.GetId()) == 1) { // for testing purposes
+         //    argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
+         // }
+         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true);
 
          /* Let every robot loop over all senders to receive their location */
          for (int senderId = 1; senderId < m_robotCount; senderId++) {
@@ -258,7 +260,7 @@ void CLisatLoopFunctions::PreStep() {
 
             //argos::LOG << "distance to sender " << senderId << ": " << distanceToSender << std::endl;    
             //argos::LOG << "angle to sender " << senderId << ": " << angleRelativeToSender << std::endl;         
-            cController.ReceiveLocationMessage(distanceToSender, angleRelativeToSender, senderId, false, finishedRobots[senderId]);        
+            cController.ReceiveLocationMessage(distanceToSender, angleRelativeToSender, senderId, finishedRobots[senderId]);        
          }
 
 

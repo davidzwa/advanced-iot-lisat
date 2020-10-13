@@ -30,7 +30,8 @@ CFootBotLisat::CFootBotLisat() :
    m_broadcastFinishedFlag(false),
    m_fDelta(0.5f),
    m_convergedToLeader(false),
-   m_nearestFinishedRobot({0,0,0}),
+   m_nearestFinishedRobot({-1,-1,-1}),
+   m_secondNearestFinishedRobot({-1,-1,-1}),
    m_fWheelVelocity(2.5f),
    m_cGoStraightAngleRange(-ToRadians(m_cAlpha),
                            ToRadians(m_cAlpha)) {}
@@ -128,18 +129,15 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
       return wheelVelocities;
     } else {
       m_convergedToLeader = true;
-          if(this->GetId() == "fb1") { // for debugging purposes
-            argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
-          }      if (m_finishedRobotsCount < 1) { // If robot is the first one to arrive just stay stationary 
+      argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
+        if (m_finishedRobotsCount < 1) { // If robot is the first one to arrive just stay stationary 
         this->SetFinishedStatus();
         wheelVelocities = {0, 0};
         return wheelVelocities;
       } else {
-          if(this->GetId() == "fb1") { // for debugging purposes
-            //argos::RLOG << "Compare leader  angle: " << angleToLeader << std::endl;
-            //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
-          }
-          if (abs(m_nearestFinishedRobot.angle - angleToLeader) < 0.5) { // angle margin // remove id hack
+            argos::RLOG << "1st nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
+            argos::RLOG << "2nd nearest angle: " << m_secondNearestFinishedRobot.angle << std::endl;
+          if (abs(m_nearestFinishedRobot.angle - m_secondNearestFinishedRobot.angle) < 0.5) { // angle margin // remove id hack
             this->SetFinishedStatus();
             wheelVelocities = {0, 0};
             return wheelVelocities;
@@ -192,13 +190,12 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 }
 
 void CFootBotLisat::ControlStep() {
-  if(this->GetId() == "fb1") { // for debugging purposes
-    argos::RLOG << "nearest robot id: " << m_nearestFinishedRobot.id << std::endl;
-    argos::RLOG << "Compare nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
+    argos::RLOG << "1st nearest robot id: " << m_nearestFinishedRobot.id << std::endl;
+    argos::RLOG << "2nd nearest robot id: " << m_secondNearestFinishedRobot.id << std::endl;
+    //argos::RLOG << "Compare nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
     //argos::RLOG << "nearest robot distance: " << m_nearestFinishedRobot.distance << std::endl;
     //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
-  }
-
+  
   // If the robot is a leader it remains stationary
   if (m_isLeader || m_isFinished) return;
 
@@ -236,24 +233,82 @@ void CFootBotLisat::ControlStep() {
     //argos::RLOG << "Robot id: " << id << std::endl;
 }
 
-void CFootBotLisat::ReceiveLocationMessage(float distance, float angle, int senderId, bool fromLeader, bool isFinished) { //todo: use RobotRelativeLocation relativeLocation instead?
-  RobotRelativeLocation relativeLocation = {distance, angle};
-  if (fromLeader) { // for leader use id 0
-    m_otherRobotLocations[0] = relativeLocation;
-  } 
-  else {          // not leader so use robot_id
-    m_otherRobotLocations[senderId] = relativeLocation;
-    //argos::RLOG << "is finished: " << isFinished << std::endl;
-    if ( (isFinished && distance < m_nearestFinishedRobot.distance) || m_nearestFinishedRobot.distance == 0) { // if sender is finished and currently closest robot, update m_nearestFinishedRobot
-      m_nearestFinishedRobot = {senderId, distance, angle};
-    } 
+void CFootBotLisat::ReceiveLocationMessage(float senderDistance, float senderAngle, int senderId, bool senderIsFinished) { //todo: use RobotRelativeLocation relativeLocation instead?
+  RobotRelativeLocation relativeLocation = {senderDistance, senderAngle};
+  // if (fromLeader) { // for leader use id 0
+  m_otherRobotLocations[senderId] = relativeLocation;
+  // } 
+  //argos::RLOG << "is finished: " << isFinished << std::endl;
+  //
+  //
+  //
 
-    if ( m_nearestFinishedRobot.id == senderId) { //todo: improve readability
-      m_nearestFinishedRobot.distance = distance;
-      m_nearestFinishedRobot.angle = angle;
+  if (senderIsFinished) {
+      if (m_nearestFinishedRobot.id == -1) {
+        m_nearestFinishedRobot = {senderId, senderDistance, senderAngle};
+        return;
+      }
+      if (senderDistance < m_nearestFinishedRobot.distance) {
+        if (senderId == m_nearestFinishedRobot.id) {
+          m_nearestFinishedRobot.distance = senderDistance;
+          m_nearestFinishedRobot.angle = senderAngle;
+          return;
+        }
+        m_secondNearestFinishedRobot = m_secondNearestFinishedRobot; // push down 1st place to 2nd place
+        m_nearestFinishedRobot = {senderId, senderDistance, senderAngle};
+        return;
+      }
+      else {
+         if (senderId == m_nearestFinishedRobot.id) {
+          m_nearestFinishedRobot.distance = senderDistance;
+          m_nearestFinishedRobot.angle = senderAngle;
+          return;
+        }        
+      }
+
+    if (senderId != m_nearestFinishedRobot.id ) { // to ensure same id does not take up 1st and 2nd place
+      if (m_secondNearestFinishedRobot.id == -1) {
+        m_secondNearestFinishedRobot = {senderId, senderDistance, senderAngle};
+        return;
+      }
+      if (senderDistance < m_secondNearestFinishedRobot.distance) {
+         if (senderId == m_secondNearestFinishedRobot.id) {
+          m_secondNearestFinishedRobot.distance = senderDistance;
+          m_secondNearestFinishedRobot.angle = senderAngle;
+          return;
+        }
+        m_secondNearestFinishedRobot = {senderId, senderDistance, senderAngle};
+      }
+      else {
+        if (senderId == m_secondNearestFinishedRobot.id) {
+          m_secondNearestFinishedRobot.distance = senderDistance;
+          m_secondNearestFinishedRobot.angle = senderAngle;
+          return;
+        }    
+      }
     }
   }
 
+  // if ( (isFinished && distance < m_nearestFinishedRobot.distance) || (isFinished && m_nearestFinishedRobot.distance == -1)) { // if sender is finished and currently closest robot, update m_nearestFinishedRobot
+  //   if (m_secondNearestFinishedRobot.id != senderId) {
+  //     m_nearestFinishedRobot = {senderId, senderDistance, senderAngle};
+  //   }
+  // } 
+  // else if ( (isFinished && distance < m_secondNearestFinishedRobot.distance) || (isFinished && m_secondNearestFinishedRobot.distance == -1) ) {
+  //   if (m_nearestFinishedRobot.id != senderId) {
+  //     //m_secondNearestFinishedRobot = {senderId, distance, angle};
+  //   }
+  // }
+
+  // if ( m_nearestFinishedRobot.id == senderId) { //todo: improve readability
+  //   m_nearestFinishedRobot.distance = distance;
+  //   m_nearestFinishedRobot.angle = angle;
+  // }
+  // if ( m_secondNearestFinishedRobot.id == senderId) { //todo: improve readability
+  //   m_secondNearestFinishedRobot.distance = distance;
+  //   m_secondNearestFinishedRobot.angle = angle;
+  // }
+  
 };
 
 void CFootBotLisat::GiveLeaderStatus() {
