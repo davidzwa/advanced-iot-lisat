@@ -25,6 +25,7 @@ int16_t sampleBuffer3b[ADCBUFFERSIZE];
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
 int16_t rms;
+int16_t rms_filt;
 
 /* ADCBuf semaphore */
 sem_t adcbufSem;
@@ -35,6 +36,10 @@ extern uint32_t lastTriggerMic2;
 extern uint32_t lastTriggerMic3;
 
 // CASPER's TDOA PLAYGROUND
+
+float outputDirVector2D_plane_cutting[2];
+float outputDirVector2D_valin[2];
+
 uint32_t getCurrentPreciseTime(); // Timer difference method
 void resetWosMicMode();
 void setWosMode(MIC micType);

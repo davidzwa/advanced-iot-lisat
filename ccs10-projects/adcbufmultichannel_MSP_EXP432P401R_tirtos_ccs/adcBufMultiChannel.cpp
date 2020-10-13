@@ -70,24 +70,28 @@ void *mainThread(void *arg0)
     int numBufsSent = 0;
     while(1) {
         sem_wait(&adcbufSem);
-        
         /*
          * Start with a header message and print current buffer values
          */
 //        Display_printf(display, 0, 0, "\r\n", //Buffer %u finished:
 //            (unsigned int)buffersCompletedCounter++);
 
-//         filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
-//        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
+         //filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
+        //filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
 
 //        doFFT(outputBuffer_filtered, fftOutput);
 //        arm_correlate_q15(outputBuffer_filtered, CHUNK_LENGTH, audioVector, AUDIO_LENGTH, correlation);
 
 //        for (i = 0; i < ADCBUFFERSIZE; i++) {
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer_filtered[i]);
-//        }
-//        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE, &rms);
-//        Display_printf(display, 0, 0, "R.%d", rms);
+
+        arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
+
+        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
+        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
+        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
+        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
+        Display_printf(display, 0, 0, "R.%d", rms);
 //        if (rms > 0) {
 //
 //        }
