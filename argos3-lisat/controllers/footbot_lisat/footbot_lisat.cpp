@@ -89,11 +89,6 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
    m_otherRobotLocations = new RobotRelativeLocation[20]; //TODO: make dynamic (number_of_robots gives bad alloc)
 
    m_pcLEDs   = GetActuator<CCI_LEDsActuator                          >("leds");
-
-   if(this->GetId() == "fb2") { // for debugging purposes
-      m_pcLEDs->SetAllColors(CColor::GREEN);
-   }
-
 }
 
 /****************************************/
@@ -104,23 +99,23 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 
     WheelVelocities wheelVelocities = {0, 0};
 
-    RobotRelativeLocation leaderLocation = m_otherRobotLocations[0];
-    float distanceToLeader = leaderLocation.distance;
-    float angleToLeader = leaderLocation.angle;
+    RobotRelativeLocation leaderLocation = m_otherRobotLocations[m_nearestFinishedRobot.id];
+    float distanceToClosestFinished = leaderLocation.distance;
+    float angleToClosestFinished = leaderLocation.angle;
 
 
-    //argos::RLOG << "leader distance: " << distanceToLeader << std::endl;
-    //argos::RLOG << "leader angle: " << angleToLeader << std::endl;
+    //argos::RLOG << "leader distance: " << distanceToClosestFinished << std::endl;
+    //argos::RLOG << "leader angle: " << angleToClosestFinished << std::endl;
 
     /* If already finished stay stationary */
     if (this->m_isFinished) {
       return wheelVelocities;
     }
-    if ( (distanceToLeader > INTER_ROBOT_DISTANCE_THRESHOLD) && !m_convergedToLeader) { //0.25
-      if (angleToLeader < 5) {
+    if ( (distanceToClosestFinished > INTER_ROBOT_DISTANCE_THRESHOLD) && !m_convergedToLeader) { //0.25
+      if (angleToClosestFinished < 5) {
         wheelVelocities = {3, 3};
       }
-      else if (angleToLeader < 180) {
+      else if (angleToClosestFinished < 180) {
         wheelVelocities = {3, 1};
 
       } else {
@@ -145,19 +140,19 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
           //todo:  push and pull to nearest robot 
           if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD - PSI_MARGIN) { // distance margin?
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {3, 2};
+                wheelVelocities = {3, 1};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {2, 3};
+                wheelVelocities  = {1, 3};
                 return wheelVelocities;
               }
           }
           else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD + PSI_MARGIN) {
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {2, 3};
+                wheelVelocities = {1, 3};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {3, 2};
+                wheelVelocities  = {3, 1};
                 return wheelVelocities;
               }
           }
