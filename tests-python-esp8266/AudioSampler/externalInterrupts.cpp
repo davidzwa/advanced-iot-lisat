@@ -1,4 +1,5 @@
 #include "externalInterrupts.h"
+#ifdef MIC3_MEASURE_SETUP
 #include "serialInterface.h"
 #include "tdoaAlgorithm.h"
 
@@ -108,3 +109,4 @@ ICACHE_RAM_ATTR void interruptMic3RTriggered()
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
     startOsTimer(adcTimerDoneCallback);
 }
+#endif

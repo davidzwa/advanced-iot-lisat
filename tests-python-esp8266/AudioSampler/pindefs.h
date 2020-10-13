@@ -8,6 +8,7 @@
 
 const int ledPin = LED_BUILTIN;
 
+#ifdef MIC3_MEASURE_SETUP
 // Mic analog input
 const int analogInPin = A0;
 // Mic wake-on-sound trigger inputs
@@ -20,5 +21,6 @@ const int mic3RTriggerPin = D7; // Mic 'right' also on AnalogInput
 const int wosModePin1L = 5; // D1
 const int wosModePin2M = 16; // D0
 const int wosModePin3R = 4; // D2
+#endif
 
 #endif // !PINDEFS__H

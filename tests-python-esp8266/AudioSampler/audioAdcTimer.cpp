@@ -2,6 +2,7 @@
 #include "pindefs.h"
 #include "filter.h"
 
+#ifdef MIC3_MEASURE_SETUP
 extern "C"
 {
 #define USE_US_TIMER
@@ -71,3 +72,5 @@ void timerCallback(void *pArg)
         // throw std::overflow_error("Buffer overflow");
     }
 }
+
+#endif

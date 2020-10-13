@@ -1,10 +1,12 @@
 // Intellisense
 // https://stackoverflow.com/questions/51614871/why-wont-arduino-intellisense-work-in-vscode
 
-#include "pindefs.h"
 #include "defines.h"
+#include "pindefs.h"
+#ifdef MIC3_MEASURE_SETUP
 #include "audioAdcTimer.h"
 #include "externalInterrupts.h"
+#endif
 #include "serialInterface.h"
 #include <ESP8266WiFi.h>
 
@@ -16,12 +18,13 @@ PubSubClient client(espClient);
 
 void user_init(void)
 {
-    // ADC timer
-    initOsTimer(sampling_period_us);
-
     // LED as visual tool
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
+
+#ifdef MIC3_MEASURE_SETUP
+    // ADC timer
+    initOsTimer(sampling_period_us);
 
     // Start listening for wake-on-sound
     pinMode(mic1LTriggerPin, INPUT_PULLUP);
@@ -29,6 +32,15 @@ void user_init(void)
     pinMode(wosModePin2M, OUTPUT);
     pinMode(wosModePin3R, OUTPUT);
     resetWosMicMode();
+
+    // Prepare runtime
+#ifndef NO_BUFFER
+    resetWosMicMode();
+    enableMicTriggerInterrupts(); // Interrupts arm the timer
+#else
+    setNormalMicMode();
+#endif // NO_BUFFER
+#endif
 
 #ifdef MQTT_CLIENT
     // Setup WiFi & MQTT pubsub client
@@ -45,18 +57,11 @@ void setup()
     Serial.begin(serial_baud_rate);
 
     user_init();
-
-    // Prepare runtime
-#ifndef NO_BUFFER
-    resetWosMicMode();
-    enableMicTriggerInterrupts(); // Interrupts arm the timer
-#else
-    setNormalMicMode();
-#endif // NO_BUFFER
 }
 
 void loop()
 {
+#ifdef MIC3_MEASURE_SETUP
 #ifdef NO_BUFFER
     transmitSerialValue(analogRead(analogInPin));
 #else
@@ -69,6 +74,7 @@ void loop()
     {
         digitalWrite(ledPin, HIGH);
     }
+#endif
 #endif
 
 #ifdef MQTT_CLIENT
