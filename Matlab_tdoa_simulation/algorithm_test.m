@@ -23,7 +23,7 @@ robots = [0,0,0];
 %robots =[zeros(20,2), (1:20)'/20*2*pi];    % [x,y,phi] with x and y in meters and phi in radians
 %mic = [-1,0; 1,0; 0,0; 0,-1; 0,1];    %locations of the microfons relative to the robot
 
-N_mic = 4;
+N_mic = 3;
 mic = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
 % mic = [0,0; mic];
 %mic = [0,5; 5,5; 5,0; 0,0];

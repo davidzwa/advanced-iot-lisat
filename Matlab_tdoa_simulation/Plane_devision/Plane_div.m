@@ -23,7 +23,7 @@ end
 
 %% source
 
-source = [-3,-2];
+source = [-2,-2];
 
 %% TOA from mic to source 
 
@@ -61,7 +61,7 @@ ang = ang/norm(ang)
 figure
 
 hold on
-scatter(source(1), source(2),'k^','filled');
+%scatter(source(1), source(2),'k^','filled');
 grid
 
 
@@ -87,7 +87,12 @@ for i = 1:length(mic_locs)
 end
 
 
-quiver(0,0,ang(1), ang(2),'k');
+%quiver(0,0,ang(1), ang(2),'k');
 
 
 axis([-3, 3, -3, 3]);
+
+xlabel("x[m]")
+ylabel("y[m]")
+title("Cutting the plane sections")
+axis([-0.5, 0.5, -0.5, 0.5])
