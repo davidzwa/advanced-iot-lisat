@@ -6,8 +6,7 @@ void TDOA_direction_estimation(int TDOA[2], float dir[2])
 {
     // TDOA = array of time differences
     // dir = direction array (estimate array will be saved there)
-
-    const float inverse[2][2] = {{4.000000000000001, 7.999999999999998}, {0.0, 0.0}};
+    const float inverse[2][2] = {{ 6.666666666666665, -3.3333333333333326},{ -9.527047717159588e-16, -5.773672055427252}};
     float mag;
 
     dir[0] = dir[1] = 0;

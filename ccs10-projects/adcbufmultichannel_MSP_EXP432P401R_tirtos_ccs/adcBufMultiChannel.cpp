@@ -86,6 +86,11 @@ void *mainThread(void *arg0)
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer_filtered[i]);
 
         arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
+
+        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
+        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
+        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
+        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
         Display_printf(display, 0, 0, "R.%d", rms);
 //        if (rms > 0) {
 //

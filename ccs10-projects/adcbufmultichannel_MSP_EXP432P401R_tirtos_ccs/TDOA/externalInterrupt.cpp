@@ -18,7 +18,7 @@ bool mic3RTriggered = false;
 bool startAdcSampling = false;
 bool timerStarted = false;
 
-float outputDirVector2D[2];
+
 
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
@@ -153,27 +153,28 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
     if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
     {
-//        int inputTdoaVector2D[2];
-//        inputTdoaVector2D[0] = lastTriggerMic2M - lastTriggerMic1L;
-//        inputTdoaVector2D[1] = lastTriggerMic3R - lastTriggerMic1L;
+        int inputTDOAVector2D[2];
+        inputTDOAVector2D[0] = lastTriggerMic1L - lastTriggerMic2M;
+        inputTDOAVector2D[1] = lastTriggerMic1L - lastTriggerMic3R;
 
-        //TDOA_direction_estimation(inputTdoaVector2D, outputDirVector2D);
+        TDOA_direction_estimation(inputTDOAVector2D, outputDirVector2D_valin);
+
         unsigned long inputTOAVector[3] = {lastTriggerMic1L, lastTriggerMic2M, lastTriggerMic3R};
-        plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D);
+        plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
 
     }
     transmittedData_t serialData = {
         lastTriggerMic1L,
         lastTriggerMic2M,
         lastTriggerMic3R,
-        outputDirVector2D[0],
-        outputDirVector2D[1],
+        outputDirVector2D_valin[0],
+        outputDirVector2D_valin[1],
         CHUNK_LENGTH,
         outputBuffer
     };
 
     stopTimerIfStarted();
-//    transmitSerialData(&serialData);
+    //transmitSerialData(&serialData);
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
 
