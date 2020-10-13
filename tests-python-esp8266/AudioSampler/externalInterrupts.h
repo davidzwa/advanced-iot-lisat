@@ -4,6 +4,7 @@
 #ifndef EXTERNAL_INTERRUPTS__H
 #define EXTERNAL_INTERRUPTS__H
 
+#ifdef MIC3_MEASURE_SETUP
 enum MIC
 {
     MIC_LEFT = wosModePin1L,
@@ -27,5 +28,5 @@ void disableMicTriggerInterrupts();
 ICACHE_RAM_ATTR void interruptMic1LTriggered();
 ICACHE_RAM_ATTR void interruptMic2MTriggered();
 ICACHE_RAM_ATTR void interruptMic3RTriggered();
-
+#endif 
 #endif // !EXTERNAL_INTERRUPTS__H
