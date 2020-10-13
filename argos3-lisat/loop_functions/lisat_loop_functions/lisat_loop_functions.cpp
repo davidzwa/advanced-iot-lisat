@@ -243,7 +243,7 @@ void CLisatLoopFunctions::PreStep() {
          }
          cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true, false);
 
-         /* Let every robot loop over all other robots to forward its location */
+         /* Let every robot loop over all senders to receive their location */
          for (int senderId = 1; senderId < m_robotCount; senderId++) {
             if (senderId == StringIDtoInt(cController.GetId())) { //skip itself
                continue;

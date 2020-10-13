@@ -136,39 +136,37 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
         return wheelVelocities;
       } else {
           if(this->GetId() == "fb1") { // for debugging purposes
-            argos::RLOG << "Compare nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
-            argos::RLOG << "Compare leader  angle: " << angleToLeader << std::endl;
+            //argos::RLOG << "Compare leader  angle: " << angleToLeader << std::endl;
             //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
           }
-        if (m_nearestFinishedRobot.angle - angleToLeader < 0.5) { // angle margin // remove id hack
-          this->SetFinishedStatus();
-          wheelVelocities = {0, 0};
-          return wheelVelocities;
-        } 
-        //todo:  push and pull to nearest robot 
-        if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD) { // distance margin?
-            if (m_nearestFinishedRobot.angle < 180) {
-              wheelVelocities = {3, 2};
-              return wheelVelocities;
-            } else {
-              wheelVelocities  = {2, 3};
-              return wheelVelocities;
-            }
+          if (abs(m_nearestFinishedRobot.angle - angleToLeader) < 0.5) { // angle margin // remove id hack
+            this->SetFinishedStatus();
+            wheelVelocities = {0, 0};
+            return wheelVelocities;
+          } 
+          //todo:  push and pull to nearest robot 
+          if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD) { // distance margin?
+              if (m_nearestFinishedRobot.angle < 180) {
+                wheelVelocities = {3, 2};
+                return wheelVelocities;
+              } else {
+                wheelVelocities  = {2, 3};
+                return wheelVelocities;
+              }
+          }
+          else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD) {
+              if (m_nearestFinishedRobot.angle < 180) {
+                wheelVelocities = {2, 3};
+                return wheelVelocities;
+              } else {
+                wheelVelocities  = {3, 2};
+                return wheelVelocities;
+              }
+          }
+          wheelVelocities = {1, 1};
+          return wheelVelocities;      
         }
-        else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD) {
-            if (m_nearestFinishedRobot.angle < 180) {
-              wheelVelocities = {2, 3};
-              return wheelVelocities;
-            } else {
-              wheelVelocities  = {3, 2};
-              return wheelVelocities;
-            }
-        }
-        wheelVelocities = {1, 1};
-        return wheelVelocities;      
       }
-
-    }
     // robotsCloserToStartpoint = CalculateRobotsCloserToStartpoint();
 
     // // If close to startpoint
@@ -196,6 +194,7 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 void CFootBotLisat::ControlStep() {
   if(this->GetId() == "fb1") { // for debugging purposes
     argos::RLOG << "nearest robot id: " << m_nearestFinishedRobot.id << std::endl;
+    argos::RLOG << "Compare nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
     //argos::RLOG << "nearest robot distance: " << m_nearestFinishedRobot.distance << std::endl;
     //argos::RLOG << "Finished robots: " << m_finishedRobotsCount << std::endl;
   }
@@ -248,6 +247,11 @@ void CFootBotLisat::ReceiveLocationMessage(float distance, float angle, int send
     if ( (isFinished && distance < m_nearestFinishedRobot.distance) || m_nearestFinishedRobot.distance == 0) { // if sender is finished and currently closest robot, update m_nearestFinishedRobot
       m_nearestFinishedRobot = {senderId, distance, angle};
     } 
+
+    if ( m_nearestFinishedRobot.id == senderId) { //todo: improve readability
+      m_nearestFinishedRobot.distance = distance;
+      m_nearestFinishedRobot.angle = angle;
+    }
   }
 
 };
