@@ -5,7 +5,9 @@
 
 const char *ssid = "Brus";
 const char *password = "Tackle1963";
-const char *mqtt_server = "broker.mqtt-dashboard.com";
+const char *mqtt_server = "192.168.1.10";
+const char *mqtt_user = "david";
+const char *mqtt_password = "Davido12";
 char mqqt_msg[MSG_BUFFER_SIZE];
 int value = 0;
 unsigned long lastMsg = 0;
@@ -72,7 +74,7 @@ void reconnect()
         String clientId = "ESP8266Client-";
         clientId += String(random(0xffff), HEX);
         // Attempt to connect
-        if (client.connect(clientId.c_str()))
+        if (client.connect(clientId.c_str(), mqtt_user, mqtt_password))
         {
             Serial.println("connected");
             // Once connected, publish an announcement...

@@ -17,7 +17,7 @@ void transmitSerialData(transmittedData_t *data)
     {
         transmitSerialValue(data->buffer[i]);
     }
-
+#ifdef MIC3_MEASURE_SETUP
     transmitSerialParam("M1", data->deltaMic1);
     transmitSerialParam("M2", data->deltaMic2);
     transmitSerialParam("M3", data->deltaMic3);
@@ -27,6 +27,7 @@ void transmitSerialData(transmittedData_t *data)
     transmitSerialParam("J", avg_jitter_us);
 #endif
     transmitSerialParam("P", sampling_period_us);
+#endif
     transmitEndSymbol(); // End of data separator
     transmitting = false;
 }

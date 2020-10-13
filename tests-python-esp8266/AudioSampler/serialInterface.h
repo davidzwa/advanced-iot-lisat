@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 
+#ifdef MIC3_MEASURE_SETUP
 struct transmittedData_t
 {
     int deltaMic1;
@@ -14,6 +15,14 @@ struct transmittedData_t
     int *buffer;
     // Add any metadata here
 };
+#else
+struct transmittedData_t
+{
+    int length;
+    int *buffer;
+    // Add any metadata here
+};
+#endif
 
 extern bool transmitting;
 
