@@ -178,13 +178,16 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
 
-    mic1LTriggered = false;
-    mic2MTriggered = false;
-    mic3RTriggered = false;
 
-    /* post adcbuf semaphore */
     GPIO_write(LED_TRIGGER_1, 0);
-    sem_post(&adcbufSem);
+
+    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
+    {
+        mic1LTriggered = false;
+        mic2MTriggered = false;
+        mic3RTriggered = false;
+        sem_post(&adcbufSem);     /* post adcbuf semaphore */
+    }
 }
 
 void interruptMic1LTriggered(uint_least8_t index)
