@@ -143,7 +143,7 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
             return wheelVelocities;
           } 
           //todo:  push and pull to nearest robot 
-          if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD) { // distance margin?
+          if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD - PSI_MARGIN) { // distance margin?
               if (m_nearestFinishedRobot.angle < 180) {
                 wheelVelocities = {3, 2};
                 return wheelVelocities;
@@ -152,7 +152,7 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
                 return wheelVelocities;
               }
           }
-          else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD) {
+          else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD + PSI_MARGIN) {
               if (m_nearestFinishedRobot.angle < 180) {
                 wheelVelocities = {2, 3};
                 return wheelVelocities;
@@ -254,7 +254,7 @@ void CFootBotLisat::ReceiveLocationMessage(float senderDistance, float senderAng
           m_nearestFinishedRobot.angle = senderAngle;
           return;
         }
-        m_secondNearestFinishedRobot = m_secondNearestFinishedRobot; // push down 1st place to 2nd place
+        m_secondNearestFinishedRobot = m_nearestFinishedRobot; // push down 1st place to 2nd place
         m_nearestFinishedRobot = {senderId, senderDistance, senderAngle};
         return;
       }
