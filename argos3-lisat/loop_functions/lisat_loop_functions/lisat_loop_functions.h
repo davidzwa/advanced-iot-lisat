@@ -24,6 +24,9 @@ public:
 
    virtual void BroadcastRobotFinished();
 
+   virtual bool IsExperimentFinished();
+
+
 private:
 
    //std::vector<CVector2> m_cFoodPos;
@@ -35,7 +38,8 @@ private:
 
 
    int m_robotCount;
-   //UInt32 m_unCollectedFood;
+   
+   int m_finishedRobotsCount;
 };
 
 #endif

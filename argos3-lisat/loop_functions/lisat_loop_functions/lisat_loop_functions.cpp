@@ -20,6 +20,7 @@ CLisatLoopFunctions::CLisatLoopFunctions() :
    // m_unEnergyPerWalkingRobot(1)
    m_pcFloor(NULL),
    m_pcRNG(NULL),
+   m_finishedRobotsCount(0),
    m_robotCount(0) {}
 
 /****************************************/
@@ -175,6 +176,7 @@ int StringIDtoInt(std::string strid) {
 }
 
 void CLisatLoopFunctions::PreStep() {
+   argos::LOG << "finished robot count: " << m_finishedRobotsCount << std::endl;         
 
    // Get all footbots
    CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
@@ -212,8 +214,10 @@ void CLisatLoopFunctions::PreStep() {
       /* Check if any broadcasts of a robot's finished status are required */
       if (cController.checkBroadcastFinishedStatus()) {
          broadcastFinishedCount++;
+         m_finishedRobotsCount++; // add to total number of robots
          cController.confirmBroadcastFinishedStatus();
       }
+      
       /* Update if another robot recently finished */
 
    }
@@ -266,72 +270,13 @@ void CLisatLoopFunctions::PreStep() {
 
       }
    }   
+}
 
-      //argos::LOG << cController.m_isLeader; << std::endl;
-
-      // /* Count how many foot-bots are in which state */
-      // if(! cController.IsResting()) ++unWalkingFBs;
-      // else ++unRestingFBs;
-
-      /* Get the position of the foot-bot on the ground as a CVector2 */
-      // CVector2 cPos;
-      // cPos.Set(cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetX(),
-      //          cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position.GetY());
-      // argos::LOG << cPos.GetX() << std::endl;
-
-
-
-
-      // /* Get food data */
-      // CFootBotLisat::SFoodData& sFoodData = cController.GetFoodData();
-      
-      // /* The foot-bot has a food item */
-      // if(sFoodData.HasFoodItem) {
-      //    /* Check whether the foot-bot is in the nest */
-      //    if(cPos.GetX() < -1.0f) {
-      //       /* Place a new food item on the ground */
-      //       m_cFoodPos[sFoodData.FoodItemIdx].Set(m_pcRNG->Uniform(m_cForagingArenaSideX),
-      //                                             m_pcRNG->Uniform(m_cForagingArenaSideY));
-      //       //Drop the food item 
-      //       sFoodData.HasFoodItem = false;
-      //       sFoodData.FoodItemIdx = 0;
-      //       ++sFoodData.TotalFoodItems;
-      //       /* Increase the energy and food count */
-      //       m_nEnergy += m_unEnergyPerFoodItem;
-      //       ++m_unCollectedFood;
-      //       /* The floor texture must be updated */
-      //       m_pcFloor->SetChanged();
-      //    }
-      // }
-      // else {
-      //    /* The foot-bot has no food item */
-      //    /* Check whether the foot-bot is out of the nest */
-      //    if(cPos.GetX() > -1.0f) {
-      //       /* Check whether the foot-bot is on a food item */
-      //       bool bDone = false;
-      //       for(size_t i = 0; i < m_cFoodPos.size() && !bDone; ++i) {
-      //          if((cPos - m_cFoodPos[i]).SquareLength() < m_fFoodSquareRadius) {
-      //              If so, we move that item out of sight 
-      //             m_cFoodPos[i].Set(100.0f, 100.f);
-      //             /* The foot-bot is now carrying an item */
-      //             sFoodData.HasFoodItem = true;
-      //             sFoodData.FoodItemIdx = i;
-      //             /* The floor texture must be updated */
-      //             m_pcFloor->SetChanged();
-      //             /* We are done */
-      //             bDone = true;
-      //          }
-      //       }
-      //    }
-      // }
-   /* Update energy expediture due to walking robots */
-   // m_nEnergy -= unWalkingFBs * m_unEnergyPerWalkingRobot;
-   // /* Output stuff to file */
-   // m_cOutput << GetSpace().GetSimulationClock() << "\t"
-   //           << unWalkingFBs << "\t"
-   //           << unRestingFBs << "\t"
-   //           << m_unCollectedFood << "\t"
-   //           << m_nEnergy << std::endl;
+bool CLisatLoopFunctions::IsExperimentFinished() {
+   if (m_finishedRobotsCount == m_robotCount-1) {
+      return true;
+   }
+   return false;
 }
 
 /****************************************/
