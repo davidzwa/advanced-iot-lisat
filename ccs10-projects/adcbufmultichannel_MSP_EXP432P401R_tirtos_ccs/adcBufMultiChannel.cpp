@@ -10,6 +10,7 @@
 #include "TDOA/externalInterrupt.h"
 #include "TDOA/diffTimer.h"
 #include "SerialInterface/serialInterface.h"
+#include "SerialInterface/UART_esp.h"
 
 // Extra data file
 #include "corrAudio.h"
@@ -32,6 +33,7 @@ void *mainThread(void *arg0)
     GPIO_init();
     Timer_init();
     Display_init();
+    UART_init();
 
     /* Configure & open Display driver */
     Display_Params_init(&displayParams);
@@ -54,8 +56,12 @@ void *mainThread(void *arg0)
     Display_printf(display, 0, 0, "ADCBuf & timer initialized. Testing.");
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
     initInterruptCallbacks();
-    enableMicTriggerInterrupts();
 
+//    initUARTESP();
+//    openUARTESP();
+//    writeUARTInfinite();
+
+    enableMicTriggerInterrupts();
     // Fill one ADC buf: not required for functioning
     //    testADCBufOpened();
 
