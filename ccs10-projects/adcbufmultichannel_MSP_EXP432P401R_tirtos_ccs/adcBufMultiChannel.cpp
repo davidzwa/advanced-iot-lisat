@@ -69,14 +69,17 @@ void *mainThread(void *arg0)
     motors->Initialize();
     motors->PowerUp();
     while(1) {
-        sleep(2);
-        motors->DriveForwards(4000);
-        sleep(2);
-        motors->DriveBackwards(4000);
-        sleep(2);
-        motors->DriveLeft(4000, 50);
-        sleep(2);
-        motors->DriveRight(4000, 50);
+        motors->DriveForwards(4000); sleep(1);
+        motors->DriveBackwards(4000); sleep(1);
+
+        motors->DriveLeft(4000, 1000); sleep(1);
+        motors->DriveRight(4000, 1000); sleep(1);
+
+        motors->DriveLeft(4000, -500); sleep(1);
+        motors->DriveRight(4000, -500); sleep(1);
+
+        motors->DriveRight(4000, -4000); sleep(1);
+        motors->DriveRight(4000, 4000); sleep(1);
 //        sem_wait(&adcbufSem);
         /*
          * Start with a header message and print current buffer values

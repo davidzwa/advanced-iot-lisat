@@ -101,22 +101,38 @@ void Motor::CheckPWMStopped(){
 //    this->SetSpeed(dutyLeft, dutyRight);
 //}
 
-// Drive + rotate = curve. Curve = 0-255
-void Motor::DriveLeft(uint16_t speed, uint16_t curve){
-    this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
+// Drive + rotate = curve. Rotate [-SPEED/2, SPEED/2]
+void Motor::DriveLeft(uint16_t speed, int16_t speed2){
     this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
 
-    this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
+    if (speed2 < 0) {
+        this->SetMotorSpeedLimited(this->pwmLeft, -speed2, &(this->dutyLeft));
+        this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
+    }
+    else {
+        this->SetMotorSpeedLimited(this->pwmLeft, speed2, &(this->dutyLeft));
+        this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
+    }
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
 }
 
-// Drive + rotate = curve. Curve = 0-255
-void Motor::DriveRight(uint16_t speed, uint16_t curve){
+// Drive + rotate = curve. Rotate [-SPEED/2, SPEED/2]
+void Motor::DriveRight(uint16_t speed, int16_t speed2){
     this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
 
+    // Dia: 15cm
+    // Circ: 47.12cm
+    // Speed full:10cm/s
+    // Rot 50%: 90 degr/s
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
-    this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
+    if (speed2 < 0) {
+        this->SetMotorSpeedLimited(this->pwmRight, -speed2, &(this->dutyRight));
+        this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
+    }
+    else {
+        this->SetMotorSpeedLimited(this->pwmRight, speed2, &(this->dutyRight));
+        this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
+    }
 }
 
 // Drive backward mode (SPEED_MAX: 1/2)

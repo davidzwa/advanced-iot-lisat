@@ -15,8 +15,8 @@ class Motor
 public:
     Motor();
     void Initialize();
-    void DriveLeft(uint16_t,uint16_t);
-    void DriveRight(uint16_t,uint16_t);
+    void DriveLeft(uint16_t,int16_t curve);
+    void DriveRight(uint16_t,int16_t curve);
     void DriveForwards(uint16_t);
     void DriveBackwards(uint16_t);
     void PowerUp();
