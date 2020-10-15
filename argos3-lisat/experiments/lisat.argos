@@ -8,7 +8,7 @@
     <system threads="0" />
     <experiment length="0"
                 ticks_per_second="10"
-                random_seed="126" />
+                random_seed="15"/>
     <!--  <experiment length="0"
                 ticks_per_second="10" /> -->
   </framework>
@@ -46,31 +46,31 @@
               energy_per_walking_robot="1"
               output="foraging.txt" /> -->
     <lisat_parameters 
-              number_of_robots="3"
+              number_of_robots="5"
               output="lisat_output.txt" />
   </loop_functions>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="6, 6, 1" center="0,0,0.5">
+  <arena size="7, 7, 1" center="0,0,0.5">
 
     <floor id="floor"
        source="loop_functions"
        pixels_per_meter="50" />
 
 
-    <box id="wall_north" size="5,0.1,0.5" movable="false">
-      <body position="0,2.5,0" orientation="0,0,0" />
+    <box id="wall_north" size="6,0.1,0.5" movable="false">
+      <body position="0,3,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="5,0.1,0.5" movable="false">
-      <body position="0,-2.5,0" orientation="0,0,0" />
+    <box id="wall_south" size="6,0.1,0.5" movable="false">
+      <body position="0,-3,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.1,5,0.5" movable="false">
-      <body position="2.5,0,0" orientation="0,0,0" />
+    <box id="wall_east" size="0.1,6,0.5" movable="false">
+      <body position="3,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.1,5,0.5" movable="false">
-      <body position="-2.5,0,0" orientation="0,0,0" />
+    <box id="wall_west" size="0.1,6,0.5" movable="false">
+      <body position="-3,0,0" orientation="0,0,0" />
     </box>
 
     <!--
@@ -86,10 +86,10 @@
 
 
     <distribute>
-      <position method="uniform" min="-1,-1,0" max="1,1,0" />
+      <position method="uniform" min="-2.,-2,0" max="1.5,1.5,0" />
       <!-- <position method="gaussian" mean="0,0,0" std_dev="1,1,0" /> -->
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="3" max_trials="100">
+      <entity quantity="5" max_trials="100">
         <foot-bot id="fb">
           <controller config="flc" />
         </foot-bot>

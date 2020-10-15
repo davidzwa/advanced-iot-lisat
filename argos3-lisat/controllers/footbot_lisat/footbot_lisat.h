@@ -31,8 +31,8 @@
 /* Definition of the LEDs actuator */
 #include <argos3/plugins/robots/generic/control_interface/ci_leds_actuator.h>
 
-#define INTER_ROBOT_DISTANCE_THRESHOLD 0.5 // in meters
-
+#define INTER_ROBOT_DISTANCE_THRESHOLD  0.6 // distance robot should keep between each other      (in meters)
+#define PSI_MARGIN                      0.01 // margin for push/pull around nearest finished robot (in meters)
 /*
  * All the ARGoS stuff in the 'argos' namespace.
  * With this statement, you save typing argos:: every time.
@@ -118,7 +118,7 @@ public:
 
    virtual WheelVelocities LineCorrectionAlgorithm();
 
-   virtual void ReceiveLocationMessage(float distance, float angle, int senderId, bool fromLeader, bool isFinished); 
+   virtual void ReceiveLocationMessage(float distance, float angle, int senderId, bool isFinished); 
 
 private:
 
@@ -170,6 +170,7 @@ private:
    int m_finishedRobotsCount;
 
    NearestFinishedRobot m_nearestFinishedRobot;
+   NearestFinishedRobot m_secondNearestFinishedRobot;
 
    // Whether robot has converged to leader at least once
    bool m_convergedToLeader;
