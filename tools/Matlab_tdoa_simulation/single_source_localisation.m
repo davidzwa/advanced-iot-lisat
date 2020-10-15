@@ -10,7 +10,7 @@ Fs_send = 1000e3;      % sampeling frequency of the signal
 env = gen_transfer(env, Fs_send, c);
 
 %% record outputs
-Fs_record = 100e3;      % sampeling frequency of the recording
+Fs_record = 10e3;      % sampeling frequency of the recording
 [y, yt] = Run_sim(env, u, t, Fs_record, Fs_send);
 
 %% determine TDOA

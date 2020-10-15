@@ -2,12 +2,12 @@ clearvars
 close all
 
 %% setup environment
-field = [-1, 1, -1, 1];
+field = 5*[-1, 1, -1, 1];
 walls = false;   % for echos, not yet implemented
 
 % source setup 
 sources_per_ring = 2000;
-ring_distances = 0.11:0.010:1;
+ring_distances = 0.11:0.1:5;
 sources = zeros(sources_per_ring * length(ring_distances), 2);
 
 for i =  1:length(ring_distances)
