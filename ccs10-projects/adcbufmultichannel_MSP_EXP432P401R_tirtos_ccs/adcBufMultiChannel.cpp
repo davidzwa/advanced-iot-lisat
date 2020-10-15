@@ -30,9 +30,9 @@ void *mainThread(void *arg0)
     int32_t status;
 
     /* Call driver init functions */
-//    ADCBuf_init();
+    ADCBuf_init();
     GPIO_init();
-//    Timer_init();
+    Timer_init();
     Display_init();
     UART_init();
 
@@ -51,40 +51,33 @@ void *mainThread(void *arg0)
         while(1);
     }
 
-//    initADCBuf();
-//    initTimer();
+    initADCBuf();
+    initTimer();
+    //    initUARTESP();
+    //    openUARTESP();
+    //    writeUARTInfinite();
 
-    Display_printf(display, 0, 0, "ADCBuf & timer initialized. Testing.");
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
-
-    Motor* motors = new Motor();
-    motors->Initialize();
-    motors->SetSpeed(0,0);
-
-//    initUARTESP();
-//    openUARTESP();
-//    writeUARTInfinite();
-
-//    enableMicTriggerInterrupts();
-    // Fill one ADC buf: not required for functioning
-    //    testADCBufOpened();
-
+    //    enableMicTriggerInterrupts();
     // Enable IirFilter
 //    filter = new IirFilter();
 //    filter->InitFilterState();
 
-
-    GPIO_write(MOTOR_LEFT_SLEEP, 1);
-    GPIO_write(MOTOR_RIGHT_SLEEP, 1);
-    GPIO_write(MOTOR_LEFT_DIRECTION, 1);
-    GPIO_write(MOTOR_RIGHT_DIRECTION, 1);
-
     int numBufsSent = 0;
+    Motor* motors = new Motor();
+    motors->Initialize();
+    motors->PowerUp();
     while(1) {
+        sleep(2);
+        motors->DriveForwards(4000);
+        sleep(2);
+        motors->DriveBackwards(4000);
+        sleep(2);
+        motors->DriveLeft(4000, 50);
+        sleep(2);
+        motors->DriveRight(4000, 50);
 //        sem_wait(&adcbufSem);
-
-        motors->IncrementSpeed(10, 10); //(9000,2000);
         /*
          * Start with a header message and print current buffer values
          */
@@ -118,7 +111,5 @@ void *mainThread(void *arg0)
 //        Display_printf(display, 0, 0, "%d", maxValue);
 //        Display_printf(display, 0, 0, "Sem++");
 //        numBufsSent++;
-        usleep(5000);
     }
-
 }

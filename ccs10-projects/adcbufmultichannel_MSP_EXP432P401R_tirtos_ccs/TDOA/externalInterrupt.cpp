@@ -55,6 +55,11 @@ void openADCBuf() {
     // Start ADCBuf here for measurements
 //    ADCBuf_open(CONFIG_ADCBUF0CHANNEL_0, &adcBufParams);
     ADCBuf_convert(adcBuf, continuousConversion, NUM_ADC_CHANNELS);
+
+    if (!adcBuf){
+        /* AdcBuf did not open correctly. */
+        while(1);
+    }
 }
 
 void closeADCBuf() {
@@ -75,20 +80,17 @@ void stopTimerIfStarted() {
         timerStarted = false;
     }
 }
-
-void testADCBufOpened() {
-    if (!adcBuf){
-        /* AdcBuf did not open correctly. */
-        while(1);
-    }
-
-    /* Start converting sequencer 0. */
-    if (ADCBuf_convert(adcBuf, continuousConversion, 1) !=
-        ADCBuf_STATUS_SUCCESS) {
-        /* Did not start conversion process correctly. */
-        while(1);
-    }
-}
+//
+//void testADCBufOpened() {
+//
+//
+//    /* Start converting sequencer 0. */
+//    if (ADCBuf_convert(adcBuf, continuousConversion, 1) !=
+//        ADCBuf_STATUS_SUCCESS) {
+//        /* Did not start conversion process correctly. */
+//        while(1);
+//    }
+//}
 
 // CASPER's PLAYGROUND
 uint32_t getCurrentPreciseTime()

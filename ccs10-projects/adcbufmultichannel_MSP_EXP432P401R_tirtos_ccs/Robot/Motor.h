@@ -3,17 +3,31 @@
 #ifndef ROBOT_MOTOR_H_
 #define ROBOT_MOTOR_H_
 
+enum MOTOR_DIRECTION {
+    BACKWARDS=1,
+    FORWARDS=0
+};
+
 #define PERIOD_US 10000
+#define SPEED_MAX 5000
 class Motor
 {
 public:
     Motor();
     void Initialize();
-    void SetSpeed(int left, int right);
-    void IncrementSpeed(int left, int right);
-    void Stop();
-//    DriveRight(uint32_t leftDutyCycle, uint32_t rightDutyCycle);
-    void MotorStop();
+    void DriveLeft(uint16_t,uint16_t);
+    void DriveRight(uint16_t,uint16_t);
+    void DriveForwards(uint16_t);
+    void DriveBackwards(uint16_t);
+    void PowerUp();
+    void PowerDown();
+protected:
+    void AwakeDriver();
+    void SleepDriver();
+    void CheckPWMStarted();
+    void CheckPWMStopped();
+    void SetMotorDirection(uint8_t, MOTOR_DIRECTION);
+    void SetMotorSpeedLimited(PWM_Handle, uint16_t, uint16_t*);
 private:
     /* Period and duty in microseconds */
     uint16_t pwmPeriod = PERIOD_US;
@@ -22,8 +36,9 @@ private:
 
     /* Sleep time in microseconds */
     uint32_t   time = 50000;
-    PWM_Handle pwm1 = NULL;
-    PWM_Handle pwm2 = NULL;
+    PWM_Handle pwmLeft = NULL;
+    PWM_Handle pwmRight = NULL;
+    bool motorPowered = false;
     bool pwm1Started = false;
     bool pwm2Started = false;
     PWM_Params params;
