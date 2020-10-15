@@ -1,6 +1,7 @@
 /* DriverLib Includes */
-#include <dsp/fft.h>
-#include <dsp/iirFilter.h>
+#include <DSP/fft.h>
+#include <DSP/iirFilter.h>
+#include <Robot/Motor.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -29,9 +30,9 @@ void *mainThread(void *arg0)
     int32_t status;
 
     /* Call driver init functions */
-    ADCBuf_init();
+//    ADCBuf_init();
     GPIO_init();
-    Timer_init();
+//    Timer_init();
     Display_init();
     UART_init();
 
@@ -50,18 +51,22 @@ void *mainThread(void *arg0)
         while(1);
     }
 
-    initADCBuf();
-    initTimer();
+//    initADCBuf();
+//    initTimer();
 
     Display_printf(display, 0, 0, "ADCBuf & timer initialized. Testing.");
-    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
-    initInterruptCallbacks();
+//    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
+//    initInterruptCallbacks();
+
+    Motor* motors = new Motor();
+    motors->Initialize();
+    motors->SetSpeed(0,0);
 
 //    initUARTESP();
 //    openUARTESP();
 //    writeUARTInfinite();
 
-    enableMicTriggerInterrupts();
+//    enableMicTriggerInterrupts();
     // Fill one ADC buf: not required for functioning
     //    testADCBufOpened();
 
@@ -69,13 +74,17 @@ void *mainThread(void *arg0)
 //    filter = new IirFilter();
 //    filter->InitFilterState();
 
-    /*
-     * Go to sleep in the foreground thread forever. The data will be collected
-     * and transfered in the background thread
-     */
+
+    GPIO_write(MOTOR_LEFT_SLEEP, 1);
+    GPIO_write(MOTOR_RIGHT_SLEEP, 1);
+    GPIO_write(MOTOR_LEFT_DIRECTION, 1);
+    GPIO_write(MOTOR_RIGHT_DIRECTION, 1);
+
     int numBufsSent = 0;
     while(1) {
-        sem_wait(&adcbufSem);
+//        sem_wait(&adcbufSem);
+
+        motors->IncrementSpeed(10, 10); //(9000,2000);
         /*
          * Start with a header message and print current buffer values
          */
@@ -91,13 +100,13 @@ void *mainThread(void *arg0)
 //        for (i = 0; i < ADCBUFFERSIZE; i++) {
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer_filtered[i]);
 
-        arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
-
-        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
-        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
-        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
-        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
-        Display_printf(display, 0, 0, "R.%d", rms);
+//        arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
+//
+//        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
+//        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
+//        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
+//        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
+//        Display_printf(display, 0, 0, "R.%d", rms);
 //        if (rms > 0) {
 //
 //        }
@@ -107,8 +116,9 @@ void *mainThread(void *arg0)
 
 //        outputBuffer_filtered[]
 //        Display_printf(display, 0, 0, "%d", maxValue);
-        Display_printf(display, 0, 0, "Sem++");
-        numBufsSent++;
+//        Display_printf(display, 0, 0, "Sem++");
+//        numBufsSent++;
+        usleep(5000);
     }
 
 }

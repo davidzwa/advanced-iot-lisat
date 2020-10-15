@@ -21,6 +21,13 @@ const GPIO4    = GPIO.addInstance();
 const GPIO5    = GPIO.addInstance();
 const GPIO6    = GPIO.addInstance();
 const GPIO7    = GPIO.addInstance();
+const GPIO8    = GPIO.addInstance();
+const GPIO9    = GPIO.addInstance();
+const GPIO10   = GPIO.addInstance();
+const GPIO11   = GPIO.addInstance();
+const PWM      = scripting.addModule("/ti/drivers/PWM", {}, false);
+const PWM1     = PWM.addInstance();
+const PWM2     = PWM.addInstance();
 const Power    = scripting.addModule("/ti/drivers/Power");
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
 const Timer    = scripting.addModule("/ti/drivers/Timer", {}, false);
@@ -72,6 +79,30 @@ GPIO7.$name     = "LED_TRIGGER_1";
 GPIO7.mode      = "Output";
 GPIO7.$hardware = system.deviceData.board.components.LED1_RED;
 
+GPIO8.mode               = "Output";
+GPIO8.initialOutputState = "High";
+GPIO8.$name              = "MOTOR_RIGHT_DIRECTION";
+GPIO8.gpioPin.$assign    = "boosterpack.15";
+
+GPIO9.mode               = "Output";
+GPIO9.initialOutputState = "High";
+GPIO9.$name              = "MOTOR_LEFT_DIRECTION";
+GPIO9.gpioPin.$assign    = "boosterpack.14";
+
+GPIO10.$name           = "MOTOR_LEFT_SLEEP";
+GPIO10.mode            = "Output";
+GPIO10.gpioPin.$assign = "boosterpack.31";
+
+GPIO11.$name           = "MOTOR_RIGHT_SLEEP";
+GPIO11.mode            = "Output";
+GPIO11.gpioPin.$assign = "boosterpack.11";
+
+PWM1.$name                = "MOTOR_LEFT_PWM";
+PWM1.timer.pwmPin.$assign = "boosterpack.40";
+
+PWM2.$name                = "MOTOR_RIGHT_PWM";
+PWM2.timer.pwmPin.$assign = "boosterpack.39";
+
 Power.initialPerformanceLevel = 3;
 Power.performanceLevel3.$name = "ti_drivers_power_PowerMSP432PerfLevels0";
 Power.performanceLevel2.$name = "ti_drivers_power_PowerMSP432PerfLevels1";
@@ -90,11 +121,13 @@ Timer1.interruptPriority = "1";
 Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A2";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.30";
 ADCBuf1.adc.$suggestSolution                       = "ADC14";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P1.0.GPIO/EUSCI_A0_SPI.STE";
+PWM1.timer.$suggestSolution                        = "Timer_A1";
+PWM2.timer.$suggestSolution                        = "Timer_A1";
 RTOS.timer0.resource.$suggestSolution              = "Timer_A0";
-Timer1.timer.$suggestSolution                      = "Timer_A1";
+Timer1.timer.$suggestSolution                      = "Timer_A2";
