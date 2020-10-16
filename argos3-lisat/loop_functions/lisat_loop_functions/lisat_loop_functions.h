@@ -5,14 +5,18 @@
 #include <argos3/core/simulator/entity/floor_entity.h>
 #include <argos3/core/utility/math/range.h>
 #include <argos3/core/utility/math/rng.h>
-//#include <chrono>
+#include <chrono>
 
 #include<bits/stdc++.h> 
+#include <list> 
+#include <iterator> 
+#include <algorithm>
 
 using namespace argos;
 
 #define NOISE_MEAN 0.0
-#define NOISE_STD 0.5
+#define NOISE_STD 0
+#define LOCATION_BROADCAST_INTERVAL 100000 // in microseconds
 
 class Vector { 
 
@@ -107,6 +111,7 @@ public:
    virtual void BroadcastRobotFinished();
 
    virtual bool IsExperimentFinished();
+   virtual void PostExperiment();
 
 
 private:
@@ -125,6 +130,11 @@ private:
    int m_finishedRobotsCount;
    Vector m_finalLeaderPosition;
    Vector m_finalFirstFinishedRobotPosition;
+
+
+   std::list <int> m_finishedRobotsIds;
+
+   std::chrono::time_point<std::chrono::high_resolution_clock> m_t1;
 };
 
 

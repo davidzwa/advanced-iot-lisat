@@ -8,6 +8,7 @@
 
 #include <math.h> 
 
+
 #define _USE_MATH_DEFINES
 
 std::default_random_engine generator;
@@ -38,6 +39,8 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       m_pcFloor = &GetSpace().GetFloorEntity();
       /* Get the number of food items we want to be scattered from XML */
       
+
+
       // get robot count from .argos configuration file
       GetNodeAttribute(tLisat, "number_of_robots", m_robotCount);
 
@@ -54,12 +57,12 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       GetNodeAttribute(tLisat, "output", m_strOutput);
       GetNodeAttribute(tLisat, "output_error", m_strOutputError);
       /* Open the file, erasing its contents */
-      m_cOutput.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
-      m_cOutput << "# count \t timesteps" << std::endl;
+      m_cOutput.open(m_strOutput.c_str(), std::ios_base::app);
+      //m_cOutput << "# count \t timesteps" << std::endl;
 
 
-      m_outputError.open(m_strOutputError.c_str(), std::ios_base::trunc | std::ios_base::out);
-      m_outputError << " counter \t avg errror \t timesteps" << std::endl;
+      m_outputError.open(m_strOutputError.c_str(), std::ios_base::app);
+      //m_outputError << " counter \t avg errror \t timesteps" << std::endl;
 
 
       /* Iterate over all robots to pick a leader */
@@ -79,6 +82,7 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
          }
       
       }
+      m_t1 = std::chrono::high_resolution_clock::now();
    }
    catch(CARGoSException& ex) {
       THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
@@ -231,7 +235,7 @@ void CLisatLoopFunctions::PreStep() {
          leaderPosition.Set(truePosition.GetX(), truePosition.GetY()); 
          finishedRobots[0] = 1;         
       } 
-      else {
+      else if (cController.IsFinished()){
          int id = StringIDtoInt(cController.GetId());
          CVector2 position;
          position.Set(truePosition.GetX(), truePosition.GetY());
@@ -243,6 +247,7 @@ void CLisatLoopFunctions::PreStep() {
       if (cController.checkBroadcastFinishedStatus()) {
          broadcastFinishedCount++;
          m_finishedRobotsCount++; // add to total number of robots
+         m_finishedRobotsIds.push_back(StringIDtoInt(cController.GetId()));
          if (m_finishedRobotsCount == 1) {
             m_finalFirstFinishedRobotPosition.x = truePosition.GetX();
             m_finalFirstFinishedRobotPosition.y = truePosition.GetY();
@@ -255,6 +260,27 @@ void CLisatLoopFunctions::PreStep() {
 
    }
 
+   // Iterate over all robots 
+   for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
+      
+      /* Get handle to foot-bot entity and controller */
+      CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
+      CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
+      if (!cController.hasLeaderStatus()) {
+         if (broadcastFinishedCount > 0) {
+            cController.updateRobotsFinishedCount(broadcastFinishedCount);            
+         }
+      /* Update if another robot recently finished */
+      }
+   }
+
+   auto t2 = std::chrono::high_resolution_clock::now();
+   auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - m_t1 ).count();
+   if (duration < 100000) {
+      return;
+   }
+   m_t1 = std::chrono::high_resolution_clock::now();
+
    /* Iterate over all robots to broadcast leader position and any finished robots */ //TODO: leader position actually only needs to be broadcasted once?
    for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
       
@@ -262,11 +288,8 @@ void CLisatLoopFunctions::PreStep() {
       CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
       CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
       CVector2 selfPosition;
-      if (!cController.hasLeaderStatus()) {
+      if (!cController.hasLeaderStatus() && !cController.IsFinished()) {
 
-         if (broadcastFinishedCount > 0) {
-            cController.updateRobotsFinishedCount(broadcastFinishedCount);            
-         }
 
          //argos::LOG << "robot id: " << StringIDtoInt(cController.GetId()) << std::endl;    
          CVector3 truePosition = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
@@ -282,10 +305,15 @@ void CLisatLoopFunctions::PreStep() {
          // }
          float adjustedAngle = addNormalNoiseToAngle(angleRelativeToLeader);
          cController.ReceiveLocationMessage(distanceToLeader, adjustedAngle, 0, true);
-         
+
          /* Let every robot loop over all senders to receive their location */
          for (int senderId = 1; senderId < m_robotCount; senderId++) {
             if (senderId == StringIDtoInt(cController.GetId())) { //skip itself
+               continue;
+            }
+            bool found = (std::find(m_finishedRobotsIds.begin(), m_finishedRobotsIds.end(), senderId) != m_finishedRobotsIds.end());
+            if (!found) {
+
                continue;
             }
             CVector2 senderPosition;
@@ -305,6 +333,10 @@ void CLisatLoopFunctions::PreStep() {
       }
    }   
 }
+
+// bool CLisatLoopFunctions::PostStep() {
+
+// }
 
 bool CLisatLoopFunctions::IsExperimentFinished() {
    if (m_finishedRobotsCount == m_robotCount - 1) { //exclude leader
@@ -333,7 +365,7 @@ bool CLisatLoopFunctions::IsExperimentFinished() {
             Vector robotFinalPosition(robPos.GetX(), robPos.GetY(), robPos.GetZ());
             float error = shortDistance(leader_position, finished_robot_position, robotFinalPosition);
             argos::LOG << "Distance Error for robot " << cController.GetId() << "is: " << error << std::endl;
-            m_cOutput << "#" << counter << "\te: " << error << std::endl;           
+            m_cOutput << counter << "\t" << error << std::endl;           
             results[counter] = error;
             error_sum += error;
             counter++;
@@ -341,12 +373,16 @@ bool CLisatLoopFunctions::IsExperimentFinished() {
       }
       float error_avg = error_sum / (m_robotCount - 2);
          /* Close the file */
-      m_outputError << "#" << counter << "\t avg error: " << error_avg << std::endl; 
+      m_outputError << error_avg << std::endl; 
       m_cOutput.close();
       m_outputError.close();
       return true;
    }
    return false;
+}
+
+void CLisatLoopFunctions::PostExperiment() {
+   exit(0);
 }
 
 /****************************************/

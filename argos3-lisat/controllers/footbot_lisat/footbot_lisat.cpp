@@ -132,12 +132,11 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
       } else {
             argos::RLOG << "1st nearest angle: " << m_nearestFinishedRobot.angle << std::endl;
             argos::RLOG << "2nd nearest angle: " << m_secondNearestFinishedRobot.angle << std::endl;
-          if (abs(m_nearestFinishedRobot.angle - m_secondNearestFinishedRobot.angle) < 0.5) { // angle margin // remove id hack
+          if (abs(m_nearestFinishedRobot.angle - m_secondNearestFinishedRobot.angle) < 0.5) { // angle margin
             this->SetFinishedStatus();
             wheelVelocities = {0, 0};
             return wheelVelocities;
           } 
-          //todo:  push and pull to nearest robot 
           if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD - PSI_MARGIN) { // distance margin?
               if (m_nearestFinishedRobot.angle < 180) {
                 wheelVelocities = {ROBOT_UPPER_SPEED, ROBOT_LOWER_SPEED};
