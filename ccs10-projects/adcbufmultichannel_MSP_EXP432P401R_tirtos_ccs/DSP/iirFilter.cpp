@@ -6,7 +6,7 @@
  */
 
 #include <arm_math.h>
-#include <dsp/iirFilter.h>
+#include <DSP/iirFilter.h>
 
 IirFilter::IirFilter()
 {

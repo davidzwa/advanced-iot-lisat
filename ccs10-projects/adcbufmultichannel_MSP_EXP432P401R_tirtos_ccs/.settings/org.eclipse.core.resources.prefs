@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//Debug/Robot/subdir_rules.mk=UTF-8
+encoding//Debug/Robot/subdir_vars.mk=UTF-8
 encoding//Debug/SerialInterface/subdir_rules.mk=UTF-8
 encoding//Debug/SerialInterface/subdir_vars.mk=UTF-8
 encoding//Debug/TDOA/subdir_rules.mk=UTF-8

@@ -46,7 +46,7 @@ void setWosMode(MIC micType);
 void setNormalMicMode(MIC micType);
 
 void initADCBuf();
-void testADCBufOpened();
+//void testADCBufOpened(); // Bit useless
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
                     void *completedADCBuffer, uint32_t completedChannel);
 void initInterruptCallbacks();
