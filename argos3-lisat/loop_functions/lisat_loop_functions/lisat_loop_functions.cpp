@@ -21,8 +21,6 @@ CLisatLoopFunctions::CLisatLoopFunctions() :
    m_pcFloor(NULL),
    m_pcRNG(NULL),
    m_finishedRobotsCount(0),
-   m_finalLeaderPosition(-1,-1,-1),
-   m_finalFirstFinishedRobotPosition(-1,-1,-1),
    m_robotCount(0) {}
 
 /****************************************/
@@ -61,11 +59,7 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
          CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
          // Make first robot leader
          if (it == m_cFootbots.begin()) {
-            CVector3 leaderPosInitial = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
             cController.GiveLeaderStatus();
-            m_finalLeaderPosition.x = leaderPosInitial.GetX();  // used for tests
-            m_finalLeaderPosition.y = leaderPosInitial.GetY();  // used for tests
-            m_finalLeaderPosition.z = leaderPosInitial.GetZ();  // used for tests
             argos::LOG << "Leader chosen" << std::endl;
          }
       
@@ -206,7 +200,7 @@ void CLisatLoopFunctions::PreStep() {
 
       /* find leader position */
       if (cController.hasLeaderStatus()) {
-         leaderPosition.Set(truePosition.GetX(), truePosition.GetY()); 
+         leaderPosition.Set(truePosition.GetX(), truePosition.GetY());  
          finishedRobots[0] = 1;         
       } 
       else {
@@ -221,11 +215,6 @@ void CLisatLoopFunctions::PreStep() {
       if (cController.checkBroadcastFinishedStatus()) {
          broadcastFinishedCount++;
          m_finishedRobotsCount++; // add to total number of robots
-         if (m_finishedRobotsCount == 1) {
-            m_finalFirstFinishedRobotPosition.x = truePosition.GetX();
-            m_finalFirstFinishedRobotPosition.y = truePosition.GetY();
-            m_finalFirstFinishedRobotPosition.z = truePosition.GetZ();
-         }
          cController.confirmBroadcastFinishedStatus();
       }
       
@@ -284,44 +273,7 @@ void CLisatLoopFunctions::PreStep() {
 }
 
 bool CLisatLoopFunctions::IsExperimentFinished() {
-   if (m_finishedRobotsCount == m_robotCount-1) { //exclude leader
-      //Vector line_point1(4, 2, 1), line_point2(8, 4, 2); 
-      //Vector point(2, 2, 2);
-
-   Vector line_point1 = m_finalLeaderPosition;
-   Vector line_point2 = m_finalFirstFinishedRobotPosition;
-
-   Vector point(0, 0, 0);
-
-
-   argos::LOG <<"Leader X: " << m_finalLeaderPosition.x << std::endl;    
-   argos::LOG <<"Leader Y: " << m_finalLeaderPosition.y << std::endl;    
-   argos::LOG <<"Leader Z: " << m_finalLeaderPosition.z << std::endl;    
-   argos::LOG <<"finished X: " << m_finalFirstFinishedRobotPosition.x << std::endl;    
-   argos::LOG <<"finished Y: " << m_finalFirstFinishedRobotPosition.y << std::endl;    
-   argos::LOG <<"finished Z: " << m_finalFirstFinishedRobotPosition.z << std::endl;    
-
-
-   // Get all footbots
-   // CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
-
-   // for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
-      
-   //    /* Get handle to foot-bot entity and controller */
-   //    CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
-   //    CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
-      
-
-
-   //    CVector3 truePosition = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
-
-
-      
-   //    /* Update if another robot recently finished */
-
-   // }
-
-      argos::LOG << "Shortest Distance is : " << shortDistance(line_point1, line_point2, point) << std::endl;          
+   if (m_finishedRobotsCount == m_robotCount-1) {
       return true;
    }
    return false;
