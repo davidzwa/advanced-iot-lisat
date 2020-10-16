@@ -30,6 +30,7 @@ CFootBotLisat::CFootBotLisat() :
    m_broadcastFinishedFlag(false),
    m_fDelta(0.5f),
    m_convergedToLeader(false),
+   m_finishedFirst(false),
    m_nearestFinishedRobot({-1,-1,-1}),
    m_secondNearestFinishedRobot({-1,-1,-1}),
    m_fWheelVelocity(2.5f),
@@ -94,6 +95,10 @@ void CFootBotLisat::Init(TConfigurationNode& t_node) {
 /****************************************/
 /****************************************/
 
+#define PUSH_PULL_HIGHER_SPEED 4
+#define PUSH_PULL_LOWER_SPEED 2
+
+
 /* The line correction algorithm */
 WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
 
@@ -113,13 +118,13 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
     }
     if ( (distanceToClosestFinished > INTER_ROBOT_DISTANCE_THRESHOLD) && !m_convergedToLeader) { //0.25
       if (angleToClosestFinished < 5) {
-        wheelVelocities = {3, 3};
+        wheelVelocities = {5, 5};
       }
       else if (angleToClosestFinished < 180) {
-        wheelVelocities = {3, 1};
+        wheelVelocities = {5, 3};
 
       } else {
-        wheelVelocities = {1, 3};
+        wheelVelocities = {3, 5};
       }
       return wheelVelocities;
     } else {
@@ -140,23 +145,23 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
           //todo:  push and pull to nearest robot 
           if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD - PSI_MARGIN) { // distance margin?
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {3, 1};
+                wheelVelocities = {PUSH_PULL_HIGHER_SPEED, PUSH_PULL_LOWER_SPEED};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {1, 3};
+                wheelVelocities  = {PUSH_PULL_LOWER_SPEED, PUSH_PULL_HIGHER_SPEED};
                 return wheelVelocities;
               }
           }
           else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD + PSI_MARGIN) {
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {1, 3};
+                wheelVelocities = {PUSH_PULL_LOWER_SPEED, PUSH_PULL_HIGHER_SPEED};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {3, 1};
+                wheelVelocities  = {PUSH_PULL_HIGHER_SPEED, PUSH_PULL_LOWER_SPEED};
                 return wheelVelocities;
               }
           }
-          wheelVelocities = {1, 1};
+          wheelVelocities = {2, 2};
           return wheelVelocities;      
         }
       }
@@ -347,6 +352,14 @@ void CFootBotLisat::confirmBroadcastFinishedStatus() {
 
 void CFootBotLisat::updateRobotsFinishedCount(int count) {
   m_finishedRobotsCount += count;
+}
+
+void CFootBotLisat::setFinishedFirst() {
+  m_finishedFirst = true;
+}
+
+bool CFootBotLisat::checkFinishedFirst() {
+  return m_finishedFirst;
 }
 
 

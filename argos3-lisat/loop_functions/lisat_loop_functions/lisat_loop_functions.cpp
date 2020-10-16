@@ -10,7 +10,10 @@
 
 #define _USE_MATH_DEFINES
 
-/****************************************/
+std::default_random_engine generator;
+std::normal_distribution<double> dist(NOISE_MEAN, NOISE_STD);  
+
+/****************************************/ 
 /****************************************/
 
 CLisatLoopFunctions::CLisatLoopFunctions() :
@@ -18,9 +21,12 @@ CLisatLoopFunctions::CLisatLoopFunctions() :
    // m_nEnergy(0),
    // m_unEnergyPerFoodItem(1),
    // m_unEnergyPerWalkingRobot(1)
+   m_distributeBounds(-2.0f, 2.0f),
    m_pcFloor(NULL),
    m_pcRNG(NULL),
    m_finishedRobotsCount(0),
+   m_finalLeaderPosition(-1, -1, -1),
+   m_finalFirstFinishedRobotPosition(-1, -1, -1),
    m_robotCount(0) {}
 
 /****************************************/
@@ -32,7 +38,6 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       /* Get a pointer to the floor entity */
       m_pcFloor = &GetSpace().GetFloorEntity();
       /* Get the number of food items we want to be scattered from XML */
-      
       // get robot count from .argos configuration file
       GetNodeAttribute(tLisat, "number_of_robots", m_robotCount);
 
@@ -47,9 +52,14 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       
       /* Get the output file name from XML */
       GetNodeAttribute(tLisat, "output", m_strOutput);
+      GetNodeAttribute(tLisat, "output_sum", m_strErrorSumOutput);
+
       /* Open the file, erasing its contents */
       m_cOutput.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
-      m_cOutput << "# clock\twalking\tresting\tcollected_food\tenergy" << std::endl;
+      m_cOutput << "# counter \t distance" << std::endl;
+
+      m_errorSumOutput.open(m_strErrorSumOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
+      m_errorSumOutput << "# counter \t error sum " << std::endl;
 
       /* Iterate over all robots to pick a leader */
       CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
@@ -64,23 +74,28 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
          }
       
       }
+
+      /* calculate planes */
+      if (NUMBER_OF_MICS == 2)  {
+         m_number_of_planes = 2;
+      } else {
+          m_number_of_planes = NUMBER_OF_MICS * 2;
+      }
+      float max_degrees = 360.0;
+      float degrees = 0;
+      m_plane_degree_step = max_degrees / m_number_of_planes;
+      for (int i = 0; i < m_number_of_planes + 1; i++) {
+         m_plane_angles[i] = degrees + (m_plane_degree_step * i);
+      }
+
+      m_pcRNG = CRandom::CreateRNG("argos");
+
    }
    catch(CARGoSException& ex) {
       THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
    }
 }
 
-/****************************************/
-/****************************************/
-
-void CLisatLoopFunctions::Reset() {
-   /* Zero the counters */
-   /* Close the file */
-   m_cOutput.close();
-   /* Open the file, erasing its contents */
-   m_cOutput.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
-   m_cOutput << "# col 1\twcol 2" << std::endl;
-}
 
 /****************************************/
 /****************************************/
@@ -88,10 +103,7 @@ void CLisatLoopFunctions::Reset() {
 void CLisatLoopFunctions::Destroy() {
    /* Close the file */
    m_cOutput.close();
-}
-
-void CLisatLoopFunctions::BroadcastRobotFinished() {
-   argos::LOG << "Robot finished!" << std::endl;
+   m_errorSumOutput.close();   
 }
 
 /****************************************/
@@ -175,6 +187,24 @@ int StringIDtoInt(std::string strid) {
    return std::stoi(strid);
 }
 
+float CLisatLoopFunctions::TranslateAngleToPlane(float angle) {
+   if (angle >= 360) { // quick fix, otherwise 360 gives out of bounds
+      angle = 359;
+   }
+   int plane_id = (int) angle / m_plane_degree_step;
+   float mid_plane_angle = (m_plane_angles[plane_id] + m_plane_angles[plane_id+1]) / 2;
+   return mid_plane_angle; 
+}
+
+float addNormalNoiseToAngle(float angle) {
+      //argos::LOG << "angle before noise: " << angle << std::endl;         
+      angle = angle + dist(generator);
+      //argos::LOG << "angle after noise: " << angle << std::endl;         
+      return angle;
+}
+
+
+
 void CLisatLoopFunctions::PreStep() {
    argos::LOG << "finished robot count: " << m_finishedRobotsCount << std::endl;         
 
@@ -215,12 +245,20 @@ void CLisatLoopFunctions::PreStep() {
       if (cController.checkBroadcastFinishedStatus()) {
          broadcastFinishedCount++;
          m_finishedRobotsCount++; // add to total number of robots
+
+         if (m_finishedRobotsCount == 1) {
+            m_finalFirstFinishedRobotPosition.x = truePosition.GetX();
+            m_finalFirstFinishedRobotPosition.y = truePosition.GetY();
+            m_finalFirstFinishedRobotPosition.z = truePosition.GetZ();
+            cController.setFinishedFirst();
+         }
          cController.confirmBroadcastFinishedStatus();
       }
       
       /* Update if another robot recently finished */
 
    }
+
 
    /* Iterate over all robots to broadcast leader position and any finished robots */ //TODO: leader position actually only needs to be broadcasted once?
    for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
@@ -247,7 +285,10 @@ void CLisatLoopFunctions::PreStep() {
          // if (StringIDtoInt(cController.GetId()) == 1) { // for testing purposes
          //    argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
          // }
-         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true);
+         float adjustedAngle = addNormalNoiseToAngle(angleRelativeToLeader);
+         cController.ReceiveLocationMessage(distanceToLeader, adjustedAngle, 0, true);
+         //argos::LOG << "adjust angle to leader: " << adjustedAngle << std::endl;    
+
 
          /* Let every robot loop over all senders to receive their location */
          for (int senderId = 1; senderId < m_robotCount; senderId++) {
@@ -263,8 +304,9 @@ void CLisatLoopFunctions::PreStep() {
             float angleRelativeToSender = CalculateAngleTwoRobots(zAngle, selfPosition, senderPosition);
 
             //argos::LOG << "distance to sender " << senderId << ": " << distanceToSender << std::endl;    
-            //argos::LOG << "angle to sender " << senderId << ": " << angleRelativeToSender << std::endl;         
-            cController.ReceiveLocationMessage(distanceToSender, angleRelativeToSender, senderId, finishedRobots[senderId]);        
+            //argos::LOG << "angle to sender " << senderId << ": " << angleRelativeToSender <<
+            float adjustedAngle2 = addNormalNoiseToAngle(angleRelativeToSender);
+            cController.ReceiveLocationMessage(distanceToSender, adjustedAngle2, senderId, finishedRobots[senderId]);        
          }
 
 
@@ -272,11 +314,70 @@ void CLisatLoopFunctions::PreStep() {
    }   
 }
 
+
+void CLisatLoopFunctions::Reset() {
+
+}
+
+void CLisatLoopFunctions::PostStep() {
+   // if (m_finishedRobotsCount == m_robotCount - 1) { //exclude leader
+   //    CSimulator& cSimulator = this->GetSimulator();
+   //    //cSimulator.Terminate();
+   //    //cSimulator.Reset();
+   //    exit(0);
+   // }
+}
+
 bool CLisatLoopFunctions::IsExperimentFinished() {
-   if (m_finishedRobotsCount == m_robotCount-1) {
+   if (m_finishedRobotsCount == m_robotCount - 1) { //exclude leader
+
+
+   argos::CSimulator& cSimulator = argos::CSimulator::GetInstance();
+
+   cSimulator.Terminate();
+      int results[m_robotCount];
+      int counter = 1;
+      float error_sum = 0;
+      Vector leader_position = m_finalLeaderPosition;
+      Vector finished_robot_position = m_finalFirstFinishedRobotPosition;
+
+      argos::LOG <<"Leader X: " << m_finalLeaderPosition.x << std::endl;    
+      argos::LOG <<"Leader Y: " << m_finalLeaderPosition.y << std::endl;    
+      argos::LOG <<"Leader Z: " << m_finalLeaderPosition.z << std::endl;    
+      argos::LOG <<"finished X: " << m_finalFirstFinishedRobotPosition.x << std::endl;    
+      argos::LOG <<"finished Y: " << m_finalFirstFinishedRobotPosition.y << std::endl;    
+      argos::LOG <<"finished Z: " << m_finalFirstFinishedRobotPosition.z << std::endl;    
+
+      /* Loop over all robots and calculate distance to line formed by leader and first finished robots */
+      CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+      for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
+
+         CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
+         CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
+
+         if (!cController.hasLeaderStatus() && !cController.checkFinishedFirst()) {
+            CVector3 robPos = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
+            Vector robotFinalPosition(robPos.GetX(), robPos.GetY(), robPos.GetZ());
+            float error = shortDistance(leader_position, finished_robot_position, robotFinalPosition);
+            argos::LOG << "Distance Error for robot " << cController.GetId() << "is: " << error << std::endl;
+            m_cOutput << "#" << counter << "\te: " << error << std::endl;           
+            results[counter] = error;
+            error_sum += error;
+            counter++;
+         }
+      }
+      float error_avg = error_sum / (m_robotCount - 2);
+         /* Close the file */
+      m_errorSumOutput << "#" << counter << "\t avg error: " << error_avg << std::endl; 
+      m_cOutput.close();
+      m_errorSumOutput.close();
       return true;
    }
    return false;
+}
+
+void CLisatLoopFunctions::PostExperiment() {
+   exit(0);
 }
 
 /****************************************/

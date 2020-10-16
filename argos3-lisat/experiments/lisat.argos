@@ -47,7 +47,9 @@
               output="foraging.txt" /> -->
     <lisat_parameters 
               number_of_robots="5"
-              output="lisat_output.txt" />
+
+              output="lisat_output.txt"
+              output_sum="lisat_output_avg_error" />
   </loop_functions>
 
   <!-- *********************** -->
@@ -162,8 +164,8 @@
   <!-- ****************** -->
   <!-- * Visualization * -->
   <!-- ****************** -->
-  <visualization>
+<!--   <visualization>
     <qt-opengl />
-  </visualization>
+  </visualization> -->
 
 </argos-configuration>

@@ -1,1 +1,4 @@
-# clock	walking	resting	collected_food	energy
+# counter 	 distance
+#1	e: 0.0681607
+#2	e: 0.283363
+#3	e: 0.231934
