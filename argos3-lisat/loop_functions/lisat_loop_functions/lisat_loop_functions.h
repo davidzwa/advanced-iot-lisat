@@ -5,24 +5,11 @@
 #include <argos3/core/simulator/entity/floor_entity.h>
 #include <argos3/core/utility/math/range.h>
 #include <argos3/core/utility/math/rng.h>
-<<<<<<< HEAD
-
+//#include <chrono>
 
 #include<bits/stdc++.h> 
-=======
-#include <chrono>
->>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
-
-#include <random>
 
 using namespace argos;
-
-<<<<<<< HEAD
-
-#define NUMBER_OF_MICS 8 // NEEDS TO BE HIGHER THAN 2 ELSE FORMULA IS IRREGULAR  
-
-#define NOISE_MEAN 0.0
-#define NOISE_STD 5.0
 
 class Vector { 
 
@@ -101,8 +88,6 @@ float shortDistance(Vector line_point1, Vector line_point2,
     return CD; 
 } 
 
-=======
->>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
 class CLisatLoopFunctions : public CLoopFunctions {
 
 public:
@@ -115,13 +100,11 @@ public:
    virtual void Destroy();
    //virtual CColor GetFloorColor(const CVector2& c_position_on_plane);
    virtual void PreStep();
-    virtual void PostStep();
+
    virtual void BroadcastRobotFinished();
 
    virtual bool IsExperimentFinished();
-   virtual void PostExperiment();
 
-   virtual float TranslateAngleToPlane(float angle);
 
 private:
 
@@ -129,32 +112,16 @@ private:
    CFloorEntity* m_pcFloor;
    CRandom::CRNG* m_pcRNG;
 
-   CRange<Real> m_distributeBounds;
-
-
    std::string m_strOutput;
    std::ofstream m_cOutput;
 
-   std::string m_strErrorSumOutput;
-   std::ofstream m_errorSumOutput;
 
    int m_robotCount;
-   
    int m_finishedRobotsCount;
-<<<<<<< HEAD
-
    Vector m_finalLeaderPosition;
    Vector m_finalFirstFinishedRobotPosition;
-
-   float m_plane_degree_step;
-   float m_number_of_planes;
-   float m_plane_angles[NUMBER_OF_MICS*2];
-
-
 };
 
-=======
-};
 
->>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
+
 #endif

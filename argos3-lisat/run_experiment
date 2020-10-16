@@ -1,4 +1,0 @@
-#!/bin/bash
-
-argos3 -c experiments/lisat.argos
-argos3 -c experiments/lisat.argos

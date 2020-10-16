@@ -46,14 +46,8 @@
               energy_per_walking_robot="1"
               output="foraging.txt" /> -->
     <lisat_parameters 
-              number_of_robots="5"
-<<<<<<< HEAD
-
-              output="lisat_output.txt"
-              output_sum="lisat_output_avg_error" />
-=======
+              number_of_robots="3"
               output="lisat_output.txt" />
->>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
   </loop_functions>
 
   <!-- *********************** -->
@@ -92,10 +86,10 @@
 
 
     <distribute>
-      <position method="uniform" min="-2.,-2,0" max="1.5,1.5,0" />
+      <position method="uniform" min="-1.,-1,0" max="1,1,0" />
       <!-- <position method="gaussian" mean="0,0,0" std_dev="1,1,0" /> -->
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
-      <entity quantity="5" max_trials="100">
+      <entity quantity="3" max_trials="100">
         <foot-bot id="fb">
           <controller config="flc" />
         </foot-bot>
@@ -168,8 +162,8 @@
   <!-- ****************** -->
   <!-- * Visualization * -->
   <!-- ****************** -->
-<!--   <visualization>
+  <visualization>
     <qt-opengl />
-  </visualization> -->
+  </visualization>
 
 </argos-configuration>
