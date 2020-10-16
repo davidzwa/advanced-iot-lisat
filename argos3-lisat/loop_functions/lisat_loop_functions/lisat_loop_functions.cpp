@@ -10,6 +10,8 @@
 
 #define _USE_MATH_DEFINES
 
+std::default_random_engine generator;
+std::normal_distribution<double> dist(NOISE_MEAN, NOISE_STD); 
 
 /****************************************/
 /****************************************/
@@ -194,6 +196,13 @@ int StringIDtoInt(std::string strid) {
    return std::stoi(strid);
 }
 
+float addNormalNoiseToAngle(float angle) {
+      //argos::LOG << "angle before noise: " << angle << std::endl;         
+      angle = angle + dist(generator);
+      //argos::LOG << "angle after noise: " << angle << std::endl;         
+      return angle;
+}
+
 void CLisatLoopFunctions::PreStep() {
    argos::LOG << "finished robot count: " << m_finishedRobotsCount << std::endl;         
 
@@ -271,8 +280,9 @@ void CLisatLoopFunctions::PreStep() {
          // if (StringIDtoInt(cController.GetId()) == 1) { // for testing purposes
          //    argos::LOG << "angle to leader: " << angleRelativeToLeader << std::endl;    
          // }
-         cController.ReceiveLocationMessage(distanceToLeader, angleRelativeToLeader, 0, true);
-
+         float adjustedAngle = addNormalNoiseToAngle(angleRelativeToLeader);
+         cController.ReceiveLocationMessage(distanceToLeader, adjustedAngle, 0, true);
+         
          /* Let every robot loop over all senders to receive their location */
          for (int senderId = 1; senderId < m_robotCount; senderId++) {
             if (senderId == StringIDtoInt(cController.GetId())) { //skip itself
@@ -288,8 +298,8 @@ void CLisatLoopFunctions::PreStep() {
 
             //argos::LOG << "distance to sender " << senderId << ": " << distanceToSender << std::endl;    
             //argos::LOG << "angle to sender " << senderId << ": " << angleRelativeToSender << std::endl;         
-            cController.ReceiveLocationMessage(distanceToSender, angleRelativeToSender, senderId, finishedRobots[senderId]);        
-         }
+            float adjustedAngle2 = addNormalNoiseToAngle(angleRelativeToSender);
+            cController.ReceiveLocationMessage(distanceToSender, adjustedAngle2, senderId, finishedRobots[senderId]);          }
 
 
       }

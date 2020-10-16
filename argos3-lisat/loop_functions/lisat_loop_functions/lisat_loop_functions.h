@@ -11,6 +11,9 @@
 
 using namespace argos;
 
+#define NOISE_MEAN 0.0
+#define NOISE_STD 0.5
+
 class Vector { 
 
 public: 
