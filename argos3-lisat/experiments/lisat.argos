@@ -47,9 +47,13 @@
               output="foraging.txt" /> -->
     <lisat_parameters 
               number_of_robots="5"
+<<<<<<< HEAD
 
               output="lisat_output.txt"
               output_sum="lisat_output_avg_error" />
+=======
+              output="lisat_output.txt" />
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
   </loop_functions>
 
   <!-- *********************** -->

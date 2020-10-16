@@ -5,14 +5,19 @@
 #include <argos3/core/simulator/entity/floor_entity.h>
 #include <argos3/core/utility/math/range.h>
 #include <argos3/core/utility/math/rng.h>
+<<<<<<< HEAD
 
 
 #include<bits/stdc++.h> 
+=======
+#include <chrono>
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
 
 #include <random>
 
 using namespace argos;
 
+<<<<<<< HEAD
 
 #define NUMBER_OF_MICS 8 // NEEDS TO BE HIGHER THAN 2 ELSE FORMULA IS IRREGULAR  
 
@@ -96,6 +101,8 @@ float shortDistance(Vector line_point1, Vector line_point2,
     return CD; 
 } 
 
+=======
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
 class CLisatLoopFunctions : public CLoopFunctions {
 
 public:
@@ -134,6 +141,7 @@ private:
    int m_robotCount;
    
    int m_finishedRobotsCount;
+<<<<<<< HEAD
 
    Vector m_finalLeaderPosition;
    Vector m_finalFirstFinishedRobotPosition;
@@ -145,4 +153,8 @@ private:
 
 };
 
+=======
+};
+
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
 #endif

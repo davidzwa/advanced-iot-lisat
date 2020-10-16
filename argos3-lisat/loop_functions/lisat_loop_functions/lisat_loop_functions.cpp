@@ -25,8 +25,11 @@ CLisatLoopFunctions::CLisatLoopFunctions() :
    m_pcFloor(NULL),
    m_pcRNG(NULL),
    m_finishedRobotsCount(0),
+<<<<<<< HEAD
    m_finalLeaderPosition(-1, -1, -1),
    m_finalFirstFinishedRobotPosition(-1, -1, -1),
+=======
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
    m_robotCount(0) {}
 
 /****************************************/
@@ -245,6 +248,7 @@ void CLisatLoopFunctions::PreStep() {
       if (cController.checkBroadcastFinishedStatus()) {
          broadcastFinishedCount++;
          m_finishedRobotsCount++; // add to total number of robots
+<<<<<<< HEAD
 
          if (m_finishedRobotsCount == 1) {
             m_finalFirstFinishedRobotPosition.x = truePosition.GetX();
@@ -252,6 +256,8 @@ void CLisatLoopFunctions::PreStep() {
             m_finalFirstFinishedRobotPosition.z = truePosition.GetZ();
             cController.setFinishedFirst();
          }
+=======
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
          cController.confirmBroadcastFinishedStatus();
       }
       
@@ -314,6 +320,7 @@ void CLisatLoopFunctions::PreStep() {
    }   
 }
 
+<<<<<<< HEAD
 
 void CLisatLoopFunctions::Reset() {
 
@@ -371,6 +378,10 @@ bool CLisatLoopFunctions::IsExperimentFinished() {
       m_errorSumOutput << "#" << counter << "\t avg error: " << error_avg << std::endl; 
       m_cOutput.close();
       m_errorSumOutput.close();
+=======
+bool CLisatLoopFunctions::IsExperimentFinished() {
+   if (m_finishedRobotsCount == m_robotCount-1) {
+>>>>>>> parent of b20f4ec... finished implementation to measure distance between a point and a line defined by two robot's location.
       return true;
    }
    return false;
