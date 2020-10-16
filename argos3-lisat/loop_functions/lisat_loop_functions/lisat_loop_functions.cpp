@@ -10,6 +10,7 @@
 
 #define _USE_MATH_DEFINES
 
+
 /****************************************/
 /****************************************/
 
@@ -317,7 +318,7 @@ bool CLisatLoopFunctions::IsExperimentFinished() {
          CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
          CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
 
-         if (!cController.hasLeaderStatus() && ) {
+         if (!cController.hasLeaderStatus() ) {
             CVector3 robPos = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
             Vector robotFinalPosition(robPos.GetX(), robPos.GetY(), robPos.GetZ());
             float error = shortDistance(leader_position, finished_robot_position, robotFinalPosition);

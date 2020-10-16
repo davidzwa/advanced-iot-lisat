@@ -54,24 +54,24 @@
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="7, 7, 1" center="0,0,0.5">
+  <arena size="9, 9, 1" center="0,0,0.5">
 
     <floor id="floor"
        source="loop_functions"
        pixels_per_meter="50" />
 
 
-    <box id="wall_north" size="6,0.1,0.5" movable="false">
-      <body position="0,3,0" orientation="0,0,0" />
+    <box id="wall_north" size="9,0.1,0.5" movable="false">
+      <body position="0,4.5,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="6,0.1,0.5" movable="false">
-      <body position="0,-3,0" orientation="0,0,0" />
+    <box id="wall_south" size="9,0.1,0.5" movable="false">
+      <body position="0,-4.5,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.1,6,0.5" movable="false">
-      <body position="3,0,0" orientation="0,0,0" />
+    <box id="wall_east" size="0.1,9,0.5" movable="false">
+      <body position="4.5,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.1,6,0.5" movable="false">
-      <body position="-3,0,0" orientation="0,0,0" />
+    <box id="wall_west" size="0.1,9,0.5" movable="false">
+      <body position="-4.5,0,0" orientation="0,0,0" />
     </box>
 
     <!--
@@ -84,9 +84,13 @@
         standard deviation is 360 degrees.
     -->
 
+<!-- 
+    <foot-bot id="fb0">
+      <body position="0,0,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot> -->
 
-
-    <distribute>
+      <distribute>
       <position method="uniform" min="-1.,-1,0" max="1,1,0" />
       <!-- <position method="gaussian" mean="0,0,0" std_dev="1,1,0" /> -->
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />

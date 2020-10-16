@@ -1,1 +1,2 @@
  counter 	 avg errror 	 timesteps
+#5	 avg error: 0.0139418

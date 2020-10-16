@@ -113,13 +113,13 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
     }
     if ( (distanceToClosestFinished > INTER_ROBOT_DISTANCE_THRESHOLD) && !m_convergedToLeader) { //0.25
       if (angleToClosestFinished < 5) {
-        wheelVelocities = {3, 3};
+        wheelVelocities = {ROBOT_UPPER_SPEED, ROBOT_UPPER_SPEED};
       }
       else if (angleToClosestFinished < 180) {
-        wheelVelocities = {3, 1};
+        wheelVelocities = {ROBOT_UPPER_SPEED, ROBOT_LOWER_SPEED};
 
       } else {
-        wheelVelocities = {1, 3};
+        wheelVelocities = {ROBOT_LOWER_SPEED, ROBOT_UPPER_SPEED};
       }
       return wheelVelocities;
     } else {
@@ -140,23 +140,23 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
           //todo:  push and pull to nearest robot 
           if (m_nearestFinishedRobot.distance > INTER_ROBOT_DISTANCE_THRESHOLD - PSI_MARGIN) { // distance margin?
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {3, 1};
+                wheelVelocities = {ROBOT_UPPER_SPEED, ROBOT_LOWER_SPEED};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {1, 3};
+                wheelVelocities  = {ROBOT_LOWER_SPEED, ROBOT_UPPER_SPEED};
                 return wheelVelocities;
               }
           }
           else if (m_nearestFinishedRobot.distance < INTER_ROBOT_DISTANCE_THRESHOLD + PSI_MARGIN) {
               if (m_nearestFinishedRobot.angle < 180) {
-                wheelVelocities = {1, 3};
+                wheelVelocities = {ROBOT_LOWER_SPEED, ROBOT_UPPER_SPEED};
                 return wheelVelocities;
               } else {
-                wheelVelocities  = {3, 1};
+                wheelVelocities  = {ROBOT_UPPER_SPEED, ROBOT_LOWER_SPEED};
                 return wheelVelocities;
               }
           }
-          wheelVelocities = {1, 1};
+          wheelVelocities = {2, 2};
           return wheelVelocities;      
         }
       }
@@ -180,7 +180,7 @@ WheelVelocities CFootBotLisat::LineCorrectionAlgorithm() {
     // }
 
 
-  //WheelVelocities wheelVelocities = {5, 5};
+  //WheelVelocities wheelVelocities = {ROBOT_UPPER_SPEED, ROBOT_UPPER_SPEED};
   return wheelVelocities;
 }
 

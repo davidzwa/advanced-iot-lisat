@@ -31,8 +31,12 @@
 /* Definition of the LEDs actuator */
 #include <argos3/plugins/robots/generic/control_interface/ci_leds_actuator.h>
 
-#define INTER_ROBOT_DISTANCE_THRESHOLD  0.6 // distance robot should keep between each other      (in meters)
-#define PSI_MARGIN                      0.01 // margin for push/pull around nearest finished robot (in meters)
+#define INTER_ROBOT_DISTANCE_THRESHOLD  0.5 // distance robot should keep between each other      (in meters)
+#define PSI_MARGIN                      0.05 // margin for push/pull around nearest finished robot (in meters)
+
+
+#define ROBOT_UPPER_SPEED 4
+#define ROBOT_LOWER_SPEED 3
 /*
  * All the ARGoS stuff in the 'argos' namespace.
  * With this statement, you save typing argos:: every time.
