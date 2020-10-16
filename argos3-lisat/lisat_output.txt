@@ -1,1 +1,1 @@
-# clock	walking	resting	collected_food	energy
+# count 	 timesteps

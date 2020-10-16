@@ -115,6 +115,8 @@ private:
    std::string m_strOutput;
    std::ofstream m_cOutput;
 
+   std::string m_strOutputError;
+   std::ofstream m_outputError;
 
    int m_robotCount;
    int m_finishedRobotsCount;

@@ -49,9 +49,15 @@ void CLisatLoopFunctions::Init(TConfigurationNode& t_node) {
       
       /* Get the output file name from XML */
       GetNodeAttribute(tLisat, "output", m_strOutput);
+      GetNodeAttribute(tLisat, "output_error", m_strOutputError);
       /* Open the file, erasing its contents */
       m_cOutput.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
-      m_cOutput << "# clock\twalking\tresting\tcollected_food\tenergy" << std::endl;
+      m_cOutput << "# count \t timesteps" << std::endl;
+
+
+      m_outputError.open(m_strOutputError.c_str(), std::ios_base::trunc | std::ios_base::out);
+      m_outputError << " counter \t avg errror \t timesteps" << std::endl;
+
 
       /* Iterate over all robots to pick a leader */
       CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
@@ -86,6 +92,11 @@ void CLisatLoopFunctions::Reset() {
    /* Open the file, erasing its contents */
    m_cOutput.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
    m_cOutput << "# col 1\twcol 2" << std::endl;
+
+   m_outputError.close();
+   /* Open the file, erasing its contents */
+   m_outputError.open(m_strOutputError.c_str(), std::ios_base::trunc | std::ios_base::out);
+   m_outputError << "# col 1\twcol 2" << std::endl;
 }
 
 /****************************************/
@@ -94,6 +105,7 @@ void CLisatLoopFunctions::Reset() {
 void CLisatLoopFunctions::Destroy() {
    /* Close the file */
    m_cOutput.close();
+   m_outputError.close();
 }
 
 void CLisatLoopFunctions::BroadcastRobotFinished() {
@@ -284,44 +296,43 @@ void CLisatLoopFunctions::PreStep() {
 }
 
 bool CLisatLoopFunctions::IsExperimentFinished() {
-   if (m_finishedRobotsCount == m_robotCount-1) { //exclude leader
-      //Vector line_point1(4, 2, 1), line_point2(8, 4, 2); 
-      //Vector point(2, 2, 2);
+   if (m_finishedRobotsCount == m_robotCount - 1) { //exclude leader
+      int results[m_robotCount];
+      int counter = 1;
+      float error_sum = 0;
+      Vector leader_position = m_finalLeaderPosition;
+      Vector finished_robot_position = m_finalFirstFinishedRobotPosition;
 
-   Vector line_point1 = m_finalLeaderPosition;
-   Vector line_point2 = m_finalFirstFinishedRobotPosition;
+      argos::LOG <<"Leader X: " << m_finalLeaderPosition.x << std::endl;    
+      argos::LOG <<"Leader Y: " << m_finalLeaderPosition.y << std::endl;    
+      argos::LOG <<"Leader Z: " << m_finalLeaderPosition.z << std::endl;    
+      argos::LOG <<"finished X: " << m_finalFirstFinishedRobotPosition.x << std::endl;    
+      argos::LOG <<"finished Y: " << m_finalFirstFinishedRobotPosition.y << std::endl;    
+      argos::LOG <<"finished Z: " << m_finalFirstFinishedRobotPosition.z << std::endl;    
 
-   Vector point(0, 0, 0);
+      /* Loop over all robots and calculate distance to line formed by leader and first finished robots */
+      CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
+      for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
 
+         CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
+         CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
 
-   argos::LOG <<"Leader X: " << m_finalLeaderPosition.x << std::endl;    
-   argos::LOG <<"Leader Y: " << m_finalLeaderPosition.y << std::endl;    
-   argos::LOG <<"Leader Z: " << m_finalLeaderPosition.z << std::endl;    
-   argos::LOG <<"finished X: " << m_finalFirstFinishedRobotPosition.x << std::endl;    
-   argos::LOG <<"finished Y: " << m_finalFirstFinishedRobotPosition.y << std::endl;    
-   argos::LOG <<"finished Z: " << m_finalFirstFinishedRobotPosition.z << std::endl;    
-
-
-   // Get all footbots
-   // CSpace::TMapPerType& m_cFootbots = GetSpace().GetEntitiesByType("foot-bot");
-
-   // for(CSpace::TMapPerType::iterator it = m_cFootbots.begin(); it != m_cFootbots.end(); ++it) {
-      
-   //    /* Get handle to foot-bot entity and controller */
-   //    CFootBotEntity& cFootBot = *any_cast<CFootBotEntity*>(it->second);
-   //    CFootBotLisat& cController = dynamic_cast<CFootBotLisat&>(cFootBot.GetControllableEntity().GetController());
-      
-
-
-   //    CVector3 truePosition = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
-
-
-      
-   //    /* Update if another robot recently finished */
-
-   // }
-
-      argos::LOG << "Shortest Distance is : " << shortDistance(line_point1, line_point2, point) << std::endl;          
+         if (!cController.hasLeaderStatus() && ) {
+            CVector3 robPos = cFootBot.GetEmbodiedEntity().GetOriginAnchor().Position;
+            Vector robotFinalPosition(robPos.GetX(), robPos.GetY(), robPos.GetZ());
+            float error = shortDistance(leader_position, finished_robot_position, robotFinalPosition);
+            argos::LOG << "Distance Error for robot " << cController.GetId() << "is: " << error << std::endl;
+            m_cOutput << "#" << counter << "\te: " << error << std::endl;           
+            results[counter] = error;
+            error_sum += error;
+            counter++;
+         }
+      }
+      float error_avg = error_sum / (m_robotCount - 2);
+         /* Close the file */
+      m_outputError << "#" << counter << "\t avg error: " << error_avg << std::endl; 
+      m_cOutput.close();
+      m_outputError.close();
       return true;
    }
    return false;
