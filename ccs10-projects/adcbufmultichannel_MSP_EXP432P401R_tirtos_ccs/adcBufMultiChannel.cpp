@@ -33,29 +33,31 @@ void *mainThread(void *arg0)
     ADCBuf_init();
     GPIO_init();
     Timer_init();
-    Display_init();
     UART_init();
 
-    /* Configure & open Display driver */
-    Display_Params_init(&displayParams);
-    displayParams.lineClearMode = DISPLAY_CLEAR_BOTH;
-    display = Display_open(Display_Type_UART, &displayParams);
-    if (display == NULL) {
-        Display_printf(display, 0, 0, "Error creating display\n");
-        while (1);
-    }
-    
-    status = sem_init(&adcbufSem, 0, 0);
-    if (status != 0) {
-        Display_printf(display, 0, 0, "Error creating adcbufSem\n");
-        while(1);
-    }
+//    Display_init();
+//    /* Configure & open Display driver */
+//    Display_Params_init(&displayParams);
+//    displayParams.lineClearMode = DISPLAY_CLEAR_BOTH;
+//    display = Display_open(Display_Type_UART, &displayParams);
+//    if (display == NULL) {
+//        Display_printf(display, 0, 0, "Error creating display\n");
+//        while (1);
+//    }
+//
+//    status = sem_init(&adcbufSem, 0, 0);
+//    if (status != 0) {
+//        Display_printf(display, 0, 0, "Error creating adcbufSem\n");
+//        while(1);
+//    }
 
     initADCBuf();
     initTimer();
-    //    initUARTESP();
-    //    openUARTESP();
-    //    writeUARTInfinite();
+
+//    initUARTESP();
+//    openUARTESP();
+//    writeUARTInfinite();
+
 
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
@@ -63,24 +65,25 @@ void *mainThread(void *arg0)
     // Enable IirFilter
 //    filter = new IirFilter();
 //    filter->InitFilterState();
-
     int numBufsSent = 0;
     Motor* motors = new Motor();
     motors->Initialize();
     motors->PowerUp();
     while(1) {
+        //        sem_wait(&adcbufSem);
         motors->DriveForwards(4000); sleep(1);
-        motors->DriveBackwards(4000); sleep(1);
+//        motors->DriveBackwards(4000); sleep(1);
+        motors->DriveForwards(0); sleep(1);
 
-        motors->DriveLeft(4000, 1000); sleep(1);
-        motors->DriveRight(4000, 1000); sleep(1);
+        motors->DriveLeft(4000, 2000); sleep(1);
+//        motors->DriveRight(4000, 1000); sleep(1);
 
-        motors->DriveLeft(4000, -500); sleep(1);
-        motors->DriveRight(4000, -500); sleep(1);
+//        motors->DriveLeft(4000, -500); sleep(1);
+//        motors->DriveRight(4000, -500); sleep(1);
+//
+//        motors->DriveRight(4000, -4000); sleep(1);
+//        motors->DriveRight(4000, 4000); sleep(1);
 
-        motors->DriveRight(4000, -4000); sleep(1);
-        motors->DriveRight(4000, 4000); sleep(1);
-//        sem_wait(&adcbufSem);
         /*
          * Start with a header message and print current buffer values
          */

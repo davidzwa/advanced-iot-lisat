@@ -43,6 +43,13 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Python: SerialCommand File",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests-python-esp8266/python-tryout-tools/serial/interface.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: SerialCapture File",
             "type": "python",
             "request": "launch",
