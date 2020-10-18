@@ -54,14 +54,14 @@ void *mainThread(void *arg0)
     initADCBuf();
     initTimer();
 
-//    initUARTESP();
-//    openUARTESP();
-//    writeUARTInfinite();
+    initUARTESP();
+    openUARTESP();
+    writeUARTInfinite();
 
 
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
-    //    enableMicTriggerInterrupts();
+//    enableMicTriggerInterrupts();
     // Enable IirFilter
 //    filter = new IirFilter();
 //    filter->InitFilterState();
