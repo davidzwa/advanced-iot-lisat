@@ -64,6 +64,7 @@ void *mainThread(void *arg0)
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
 //    enableMicTriggerInterrupts();
+  
     // Enable IirFilter
 //    filter = new IirFilter();
 //    filter->InitFilterState();
