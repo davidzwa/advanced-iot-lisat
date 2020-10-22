@@ -94,7 +94,6 @@ void loop()
         ++value;
         snprintf(mqqt_msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
         // Serial.print("Publish message: ");
-        // Serial.println(mqqt_msg);
         client.publish("outTopic", mqqt_msg);
     }
 #endif

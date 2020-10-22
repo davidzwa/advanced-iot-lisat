@@ -52,11 +52,11 @@ void callback(char *topic, byte *payload, unsigned int length)
 #endif
     if (strncmp((char *)topic, "MSP", 3) == 0)
     {
-        // for (int i = 0; i < length; i++)
-        // {
-        //     Serial.print((char)payload[i]);
-        // }
-        // Serial.println("MSP!MSG");
+         for (int i = 0; i < length; i++)
+         {
+             Serial.print((char)payload[i]);
+         }
+         Serial.println();
         digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
     }
 }

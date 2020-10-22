@@ -5,7 +5,7 @@
 
 char input;
 char serialBuffer[64];
-const char echoPrompt[] = "ack-MSP\n\r";
+const char echoPrompt[] = "ack-MSP";
 UART_Handle uart;
 UART_Params uartParams;
 sem_t uartbufSem; // Easy lock on receiving
