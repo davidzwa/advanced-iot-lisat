@@ -43,6 +43,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Python: LISAT",
+            "type": "python",
+            "request": "launch",
+            "module": "python_lisat.main",
+            "cwd": "${workspaceFolder}/",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: SerialCapture File",
             "type": "python",
             "request": "launch",
