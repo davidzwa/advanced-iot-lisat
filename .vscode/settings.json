@@ -8,8 +8,7 @@
         "**/.svn": true,
         "**/.hg": true,
         "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/.esp-*": true
+        "**/.DS_Store": true
     },
     "python.pythonPath": "C:\\Users\\david\\.virtualenvs\\advanced-iot-lisat-WFz-puxS\\Scripts\\python.exe"
 }

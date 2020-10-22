@@ -42,6 +42,11 @@ void user_init(void)
 #endif // NO_BUFFER
 #endif
 
+Serial.begin(serial_baud_rate);
+#ifdef SERIAL_SWAP_MSP432
+    Serial.swap();
+#endif
+
 #ifdef MQTT_CLIENT
     // Setup WiFi & MQTT pubsub client
     setup_wifi();
@@ -54,9 +59,6 @@ void user_init(void)
 
 void setup()
 {
-    Serial.begin(serial_baud_rate);
-    Serial1.begin(9600);
-
     user_init();
 }
 
@@ -91,8 +93,8 @@ void loop()
         lastMsg = now;
         ++value;
         snprintf(mqqt_msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
-        Serial.print("Publish message: ");
-        Serial.println(mqqt_msg);
+        // Serial.print("Publish message: ");
+        // Serial.println(mqqt_msg);
         client.publish("outTopic", mqqt_msg);
     }
 #endif

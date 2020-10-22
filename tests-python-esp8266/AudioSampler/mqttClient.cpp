@@ -1,7 +1,8 @@
 #include "mqttClient.h"
+#include "defines.h"
 
 // WiFi/AP config ESP
-#include <ESP8266WiFi.h>            // Include the Wi-Fi library
+#include <ESP8266WiFi.h> // Include the Wi-Fi library
 
 const char *ssid = "Brus";
 const char *password = "Tackle1963";
@@ -42,25 +43,21 @@ void setup_wifi()
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
+#ifndef SERIAL_SWAP_MSP432
     Serial.print("Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
-    for (int i = 0; i < length; i++)
+    // #else
+    // Serial.print(topic);
+#endif
+    if (strncmp((char *)topic, "MSP", 3) == 0)
     {
-        Serial.print((char)payload[i]);
-    }
-    Serial.println();
-
-    // Switch on the LED if an 1 was received as first character
-    if ((char)payload[0] == '1')
-    {
-        digitalWrite(BUILTIN_LED, LOW); // Turn the LED on (Note that LOW is the voltage level
-                                        // but actually the LED is on; this is because
-                                        // it is active low on the ESP-01)
-    }
-    else
-    {
-        digitalWrite(BUILTIN_LED, HIGH); // Turn the LED off by making the voltage HIGH
+        // for (int i = 0; i < length; i++)
+        // {
+        //     Serial.print((char)payload[i]);
+        // }
+        // Serial.println("MSP!MSG");
+        digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
     }
 }
 
@@ -76,19 +73,22 @@ void reconnect()
         // Attempt to connect
         if (client.connect(clientId.c_str(), mqtt_user, mqtt_password))
         {
-            Serial.println("connected");
+            Serial.println("CONN1");
             // Once connected, publish an announcement...
             client.publish("outTopic", "hello world");
             // ... and resubscribe
             client.subscribe("inTopic");
+            client.subscribe("MSP");
         }
         else
         {
+            Serial.println("CONN0");
+            #ifndef SERIAL_SWAP_MSP432
             Serial.print("failed, rc=");
             Serial.print(client.state());
             Serial.println(" try again in 5 seconds");
-            // Wait 5 seconds before retrying
-            delay(5000);
+            #endif
+            delay(MQTT_DISCONNECT_RETRY);
         }
     }
 }
