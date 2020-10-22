@@ -42,4 +42,4 @@ class SerialService(object):
             decoded_input = recv_input.decode(errors='ignore')
             self.serial_messages.append((decoded_input))
             print('Data length received:', len(decoded_input))
-            print(decoded_input, flush=True)
+            print(">>{}<<".format(decoded_input.rstrip()), flush=True)

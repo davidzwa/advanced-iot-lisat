@@ -43,10 +43,11 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: SerialCommand File",
+            "name": "Python: LISAT",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/tests-python-esp8266/python-tryout-tools/serial/interface.py",
+            "module": "python_lisat.main",
+            "cwd": "${workspaceFolder}/",
             "console": "integratedTerminal"
         },
         {

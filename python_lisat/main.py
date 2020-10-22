@@ -10,7 +10,6 @@ import asyncio
 import random
 
 from aioconsole import AsynchronousCli
-
 from python_lisat.constants import *
 from python_lisat.services.serial_service import SerialService
 
