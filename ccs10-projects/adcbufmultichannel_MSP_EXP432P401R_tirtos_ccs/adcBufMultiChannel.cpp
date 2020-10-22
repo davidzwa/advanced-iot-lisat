@@ -53,18 +53,21 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     initTimer();
+    //    initUARTESP();
+    //    openUARTESP();
+    //    writeUARTInfinite();
 
     initUARTESP();
     openUARTESP();
     writeUARTInfinite();
-
-
+  
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
 //    enableMicTriggerInterrupts();
     // Enable IirFilter
 //    filter = new IirFilter();
 //    filter->InitFilterState();
+
     int numBufsSent = 0;
     Motor* motors = new Motor();
     motors->Initialize();
