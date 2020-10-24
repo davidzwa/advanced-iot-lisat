@@ -1,6 +1,9 @@
 # Swarm Got Talent
 This project is targeted on using Audio to enhance Swarm robots. This means we didnt take usual sensors for granted, instead we've decided to minimalize the peripherals on our robot to keep it light, understandable, repeatable and still very functional. 
 
+An impression of the current state of the project:
+<img src="https://user-images.githubusercontent.com/6005355/97089275-f9cdef00-1636-11eb-97ef-bdf1510ba561.png" width="300">
+
 This repository requires you to be experienced with the following software/hardware:
 - [Python (3.7/3.8)](https://www.python.org/downloads/release/python-370/) - serial and MQTT data processing, sound experiments and data plotting
 - Python libraries numpy, matplotlib, asyncio
