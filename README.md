@@ -10,10 +10,10 @@ This repository requires you to be experienced with the following software/hardw
 - [Python (3.7/3.8)](https://www.python.org/downloads/release/python-370/) - serial and MQTT data processing, sound experiments and data plotting
 - Python libraries numpy, matplotlib, asyncio
 - [MatLab (2019+)](https://nl.mathworks.com/products/matlab.html) - audio signal TDOA simulation
-- [ArgOS3](https://www.argos-sim.info/) - swarm simulation
+- [ARGoS v3](https://www.argos-sim.info/) - swarm simulation
 - ESP8266 (see SDK link below) - ESP12F WiFi microcontroller based on (but not the same as) WeMos R1 D1
 - ESP Arduino SDK, ESP8266WiFi library, PublishSubscriber library (MQTT)
-- Code Composer Studio 10 and MSP432 SimpleLink RED (see TI RSLK software/hardware references below)
+- [Code Composer Studio 10](https://www.ti.com/tool/CCSTUDIO) and MSP432 SimpleLink RED (see TI RSLK software/hardware references below)
 
 ## Folders
 - `src`: code for ESP, MSP and Python (named accordingly)
@@ -37,7 +37,7 @@ This repository requires you to be experienced with the following software/hardw
 ## Software sources
 - [MSP432 TI-Driver Reference project](https://dev.ti.com/tirex/explore/node?devtools=MSP-EXP432P401R&node=AAJhPvFtK5knOoD6xzMhpQ__z-lQYNj__LATEST)
 - [ESP8266 Arduino Documentation](https://arduino-esp8266.readthedocs.io/en/latest/) and [ESP8266 Function Overview](https://www.arduino.cc/reference/en/libraries/esp8266-framework/)
-- [ESP8266 Ardiono SDK](https://github.com/esp8266/Arduino)
+- [ESP8266 Arduino SDK](https://github.com/esp8266/Arduino)
 
 ## Hardware sources
 - [TI RSLK MAX Program](https://university.ti.com/programs/RSLK/)
