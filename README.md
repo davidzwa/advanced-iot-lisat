@@ -3,6 +3,8 @@ This project is targeted on using Audio to enhance Swarm robots. This means we d
 
 An impression of the current state of the project:
 <img src="https://user-images.githubusercontent.com/6005355/97089275-f9cdef00-1636-11eb-97ef-bdf1510ba561.png" width="300">
+- [Quick link to MSP432 source code](https://github.com/davidzwa/advanced-iot-lisat/tree/master/src/MSP432LISAT/MSP432P401R_LISAT_ccs)
+- [Quick link to ESP8266 source code](https://github.com/davidzwa/advanced-iot-lisat/tree/master/src/ESP8266LISAT)
 
 This repository requires you to be experienced with the following software/hardware:
 - [Python (3.7/3.8)](https://www.python.org/downloads/release/python-370/) - serial and MQTT data processing, sound experiments and data plotting
