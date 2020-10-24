@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4df013c7-6bbe-43b9-ba70-615751545964" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1iy6uOT8nHQKuy67jC7ziGVdQOu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../machoc-99999eu" />
+    <property name="restartRequiresConfirmation" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\david\Projects\advanced-iot-lisat\python_lisat\services" />
+      <recent name="C:\Users\david\Projects\advanced-iot-lisat\python-lisat" />
+      <recent name="C:\Users\david\Projects\advanced-iot-lisat" />
+      <recent name="C:\Users\david\Projects\advanced-iot-lisat\tests-python-esp8266\python-lisat" />
+      <recent name="C:\Users\david\Projects\advanced-iot-lisat\tests-python-esp8266\python-tryout-tools\serial\asyncio" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="MainLISAT" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="advanced-iot-lisat" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python_lisat" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python_lisat/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-iot-lisat" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.MainLISAT" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4df013c7-6bbe-43b9-ba70-615751545964" name="Default Changelist" comment="" />
+      <created>1602867706348</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602867706348</updated>
+      <workItem from="1602867708220" duration="1334000" />
+      <workItem from="1603026664237" duration="12000" />
+      <workItem from="1603045490095" duration="3054000" />
+      <workItem from="1603048585126" duration="7062000" />
+      <workItem from="1603178330438" duration="19000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="113" y="42" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603049759076">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="113" y="42" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1160@0.0.1920.1160" timestamp="1603049759076" />
+    <state x="709" y="390" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603047952348">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="709" y="390" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1160@0.0.1920.1160" timestamp="1603047952348" />
+    <state x="740" y="338" key="FileChooserDialogImpl" timestamp="1603026674145">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="740" y="338" key="FileChooserDialogImpl/0.0.1920.1160@0.0.1920.1160" timestamp="1603026674145" />
+    <state width="1877" height="354" key="GridCell.Tab.0.bottom" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.0.bottom/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state width="1877" height="354" key="GridCell.Tab.0.center" timestamp="1603056132724">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.0.center/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132724" />
+    <state width="1877" height="354" key="GridCell.Tab.0.left" timestamp="1603056132724">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.0.left/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132724" />
+    <state width="1877" height="354" key="GridCell.Tab.0.right" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.0.right/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state width="1877" height="354" key="GridCell.Tab.1.bottom" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.1.bottom/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state width="1877" height="354" key="GridCell.Tab.1.center" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.1.center/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state width="1877" height="354" key="GridCell.Tab.1.left" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.1.left/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state width="1877" height="354" key="GridCell.Tab.1.right" timestamp="1603056132725">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state width="1877" height="354" key="GridCell.Tab.1.right/0.0.1920.1160@0.0.1920.1160" timestamp="1603056132725" />
+    <state x="623" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1603048791756">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="623" y="255" width="672" height="678" key="search.everywhere.popup/0.0.1920.1160@0.0.1920.1160" timestamp="1603048791756" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/advanced_iot_lisat$interface.coverage" NAME="interface Coverage Results" MODIFIED="1602868436267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests-python-esp8266/python-tryout-tools/serial" />
+    <SUITE FILE_PATH="coverage/advanced_iot_lisat$MainLISAT.coverage" NAME="MainLISAT Coverage Results" MODIFIED="1603055821101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python_lisat" />
+  </component>
+</project>
