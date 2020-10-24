@@ -3,6 +3,7 @@
  *
  *  Created on: Oct 10, 2020
  *      Author: david
+ *  Description: Hardcoded 8-bit samples representing a short finger snip. Useful for correlation. Not used, left for reference.
  */
 
 #ifndef CORRAUDIO_H_

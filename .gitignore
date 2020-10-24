@@ -49,3 +49,9 @@ argos3-lisat/cmake/
 argos3-lisat/embedding/
 
 */.metadata/
+
+src/MSP432LISAT/.jxbrowser-data/
+
+src/MSP432LISAT/MSP432P401R_LISAT_ccs/.settings/
+
+src/MSP432LISAT/RemoteSystemsTempFiles/

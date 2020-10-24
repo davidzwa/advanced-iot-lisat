@@ -5,7 +5,7 @@
  *      Author: david
  */
 
-#include <DSP/fft.h>
+#include <Math/fft.h>
 
 FFT::FFT()
 {

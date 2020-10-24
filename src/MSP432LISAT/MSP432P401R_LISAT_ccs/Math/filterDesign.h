@@ -1,5 +1,5 @@
-#ifndef DSP_FILTERDESIGN_H_
-#define DSP_FILTERDESIGN_H_
+#ifndef MATH_FILTERDESIGN_H_
+#define MATH_FILTERDESIGN_H_
 
 /*
 
@@ -521,4 +521,4 @@ fixed point precision: 16 bits
 
 
 
-#endif /* DSP_FILTERDESIGN_H_ */
+#endif /* MATH_FILTERDESIGN_H_ */

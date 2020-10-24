@@ -1,6 +1,6 @@
 /* DriverLib Includes */
-#include <DSP/fft.h>
-#include <DSP/iirFilter.h>
+#include <Math/fft.h>
+#include <Math/iirFilter.h>
 #include <Robot/Motor.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -12,9 +12,6 @@
 #include "TDOA/diffTimer.h"
 #include "SerialInterface/serialInterface.h"
 #include "SerialInterface/UART_esp.h"
-
-// Extra data file
-#include "corrAudio.h"
 
 /* DSP LPF Filter */
 IirFilter* filter;
