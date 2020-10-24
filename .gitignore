@@ -47,3 +47,5 @@ ccs10-projects/.jxbrowser-data/
 argos3-lisat/build/
 argos3-lisat/cmake/
 argos3-lisat/embedding/
+
+*/.metadata/

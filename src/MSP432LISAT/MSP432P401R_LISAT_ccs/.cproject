@@ -106,7 +106,7 @@
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
-				<externalSettings containerId="tirtos_builds_MSP_EXP432P401R_release_ccs;" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
+				<externalSettings containerId="MSP432P401R_TIRTOS_ccs;com.ti.ccstudio.buildDefinitions.MSP432.Debug.740156688" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier"/>
 			</storageModule>
 		</cconfiguration>
 	</storageModule>
