@@ -5,7 +5,9 @@
             "includePath": [
                 "C:\\Users\\david\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
                 "C:\\Users\\david\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.5.0\\**",
-                "C:\\Users\\david\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**"
+                "C:\\Users\\david\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**",
+                "C:\\Users\\d.zwart\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**",
+                "C:\\Users\\d.zwart\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**"
             ],
             "forcedInclude": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"

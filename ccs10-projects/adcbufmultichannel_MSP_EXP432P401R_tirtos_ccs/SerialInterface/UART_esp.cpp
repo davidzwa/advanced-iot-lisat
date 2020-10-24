@@ -5,13 +5,13 @@
 
 char input;
 char serialBuffer[64];
-const char echoPrompt[] = "Response. Device OK.\r\n";
+const char echoPrompt[] = "ack-MSP";
 UART_Handle uart;
 UART_Params uartParams;
 sem_t uartbufSem; // Easy lock on receiving
 
 // COMMANDS
-const char INFO[] = "info";
+const char INFO[] = "MSP!";
 
 int parsePacket(char* buffer) {
     return strncmp(buffer, INFO, 4);
@@ -36,7 +36,7 @@ void initUARTESP() {
 }
 
 void openUARTESP() {
-    uart = UART_open(UART_DEBUG, &uartParams);
+    uart = UART_open(COMM_ESP, &uartParams); // UART_DEBUG
 
     if (uart == NULL) {
         /* UART_open() failed */
@@ -54,7 +54,11 @@ void writeUARTInfinite() {
 
         int result = parsePacket(serialBuffer);
         if (result == 0) {
+            GPIO_toggle(LED_TRIGGER_1);
             UART_write(uart, echoPrompt, sizeof(echoPrompt));
+        }
+        else {
+            GPIO_toggle(LED_ERROR_2);
         }
     }
 }
