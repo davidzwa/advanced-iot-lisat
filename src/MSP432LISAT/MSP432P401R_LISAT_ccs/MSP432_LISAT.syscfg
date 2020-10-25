@@ -112,7 +112,7 @@ GPIO13.gpioPin.$assign  = "boosterpack.13";
 
 GPIO14.$name            = "TACHO_RIGHT";
 GPIO14.interruptTrigger = "Rising Edge";
-GPIO14.gpioPin.$assign  = "boosterpack.23";
+GPIO14.gpioPin.$assign  = "boosterpack.24";
 
 PWM1.$name                = "MOTOR_LEFT_PWM";
 PWM1.timer.pwmPin.$assign = "boosterpack.40";
@@ -146,9 +146,9 @@ UART1.uart.rxPin.$assign = "boosterpack.4";
 Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.30";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
 GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE";
