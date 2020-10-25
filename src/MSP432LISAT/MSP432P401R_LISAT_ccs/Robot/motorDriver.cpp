@@ -1,12 +1,12 @@
+#include <Robot/motorDriver.h>
 #include "common.h"
-#include <Robot/Motor.h>
 
-Motor::Motor()
+MotorDriver::MotorDriver()
 {
     PWM_init();
 }
 
-void Motor::Initialize() {
+void MotorDriver::Initialize() {
     PWM_Params_init(&params);
     params.dutyUnits = PWM_DUTY_US;
     params.dutyValue = 0;
@@ -30,12 +30,12 @@ void Motor::Initialize() {
 /**
  * Start the pwm signals and awake the H-bridge driver
  */
-void Motor::PowerUp(void) {
+void MotorDriver::PowerUp(void) {
     this->CheckPWMStarted();
     this->AwakeDriver();
     this->motorPowered = true;
 }
-void Motor::AwakeDriver(void) {
+void MotorDriver::AwakeDriver(void) {
     GPIO_write(MOTOR_LEFT_SLEEP, 1);
     GPIO_write(MOTOR_RIGHT_SLEEP, 1);
 }
@@ -45,17 +45,17 @@ void Motor::AwakeDriver(void) {
  * Put the motor in sleep mode to save energy.
  * Set the duty cycles to zero.
 */
-void Motor::PowerDown(void) {
+void MotorDriver::PowerDown(void) {
     this->CheckPWMStopped();
     this->SleepDriver();
     this->motorPowered = false;
 }
-void Motor::SleepDriver(void) {
+void MotorDriver::SleepDriver(void) {
     GPIO_write(MOTOR_LEFT_SLEEP, 0);
     GPIO_write(MOTOR_RIGHT_SLEEP, 0);
 }
 
-void Motor::CheckPWMStarted(){
+void MotorDriver::CheckPWMStarted(){
     if (!pwm1Started) {
         dutyLeft = 0;
         PWM_start(pwmLeft);
@@ -70,7 +70,7 @@ void Motor::CheckPWMStarted(){
     PWM_setDuty(pwmRight, dutyRight);
 }
 
-void Motor::CheckPWMStopped(){
+void MotorDriver::CheckPWMStopped(){
     if (pwm1Started) {
         dutyLeft = 0;
         PWM_stop(pwmLeft);
@@ -102,7 +102,7 @@ void Motor::CheckPWMStopped(){
 //}
 
 // Drive + rotate = curve. Rotate [-SPEED/2, SPEED/2]
-void Motor::DriveLeft(uint16_t speed, int16_t speed2){
+void MotorDriver::DriveLeft(uint16_t speed, int16_t speed2){
     this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
 
     if (speed2 < 0) {
@@ -117,7 +117,7 @@ void Motor::DriveLeft(uint16_t speed, int16_t speed2){
 }
 
 // Drive + rotate = curve. Rotate [-SPEED/2, SPEED/2]
-void Motor::DriveRight(uint16_t speed, int16_t speed2){
+void MotorDriver::DriveRight(uint16_t speed, int16_t speed2){
     this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
 
     // Dia: 15cm
@@ -136,7 +136,7 @@ void Motor::DriveRight(uint16_t speed, int16_t speed2){
 }
 
 // Drive backward mode (SPEED_MAX: 1/2)
-void Motor::DriveBackwards(uint16_t speed){
+void MotorDriver::DriveBackwards(uint16_t speed){
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
@@ -144,7 +144,7 @@ void Motor::DriveBackwards(uint16_t speed){
 }
 
 // Drive forward mode
-void Motor::DriveForwards(uint16_t speed){
+void MotorDriver::DriveForwards(uint16_t speed){
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
@@ -152,11 +152,11 @@ void Motor::DriveForwards(uint16_t speed){
 }
 
 // Set motor direction: 1 forward, 0 backward
-void Motor::SetMotorDirection(uint8_t motorDirPin, MOTOR_DIRECTION direction){
+void MotorDriver::SetMotorDirection(uint8_t motorDirPin, MOTOR_DIRECTION direction){
     GPIO_write(motorDirPin, direction);
 }
 
-void Motor::SetMotorSpeedLimited(PWM_Handle pwmHandle, uint16_t speed, uint16_t* dutyCycleStore) {
+void MotorDriver::SetMotorSpeedLimited(PWM_Handle pwmHandle, uint16_t speed, uint16_t* dutyCycleStore) {
     this->CheckPWMStarted();
     if (speed < SPEED_MAX) {
         PWM_setDuty(pwmHandle, speed);

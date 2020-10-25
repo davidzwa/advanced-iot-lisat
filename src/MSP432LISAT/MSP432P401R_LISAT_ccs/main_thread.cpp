@@ -1,17 +1,17 @@
 /* DriverLib Includes */
-#include <Math/fft.h>
-#include <Math/iirFilter.h>
-#include <Robot/Motor.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
 
 // Our common defines and entrypoint
 #include "common.h"
-#include "TDOA/externalInterrupt.h"
-#include "TDOA/diffTimer.h"
 #include "SerialInterface/serialInterface.h"
-#include "SerialInterface/UART_esp.h"
+#include <DSP/fft.h>
+#include <DSP/iirFilter.h>
+#include <Robot/motorDriver.h>
+#include <SerialInterface/serialESPBridge.h>
+#include "TDOA/freeRunningTimer.h"
+#include <TDOA/microphoneLocalization.h>
 
 /* DSP LPF Filter */
 IirFilter* filter;
@@ -50,13 +50,10 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     initTimer();
-    //    initUARTESP();
-    //    openUARTESP();
-    //    writeUARTInfinite();
 
     initUARTESP();
     openUARTESP();
-    writeUARTInfinite();
+    writeUARTInfinite(); // BLOCKING for testing
   
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
@@ -67,7 +64,7 @@ void *mainThread(void *arg0)
 //    filter->InitFilterState();
 
     int numBufsSent = 0;
-    Motor* motors = new Motor();
+    MotorDriver* motors = new MotorDriver();
     motors->Initialize();
     motors->PowerUp();
     while(1) {

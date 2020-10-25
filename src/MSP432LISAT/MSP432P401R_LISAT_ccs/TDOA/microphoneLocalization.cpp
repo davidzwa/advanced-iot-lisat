@@ -1,5 +1,5 @@
-#include <TDOA/externalInterrupt.h>
-#include "TDOA/diffTimer.h"
+#include "TDOA/microphoneLocalization.h"
+#include "TDOA/freeRunningTimer.h"
 #include "tdoaAlgorithm.h"
 #include "SerialInterface/serialInterface.h"
 
@@ -80,17 +80,7 @@ void stopTimerIfStarted() {
         timerStarted = false;
     }
 }
-//
-//void testADCBufOpened() {
-//
-//
-//    /* Start converting sequencer 0. */
-//    if (ADCBuf_convert(adcBuf, continuousConversion, 1) !=
-//        ADCBuf_STATUS_SUCCESS) {
-//        /* Did not start conversion process correctly. */
-//        while(1);
-//    }
-//}
+
 
 // CASPER's PLAYGROUND
 uint32_t getCurrentPreciseTime()
@@ -141,7 +131,7 @@ void setWosMode(MIC pinNumber)
 }
 
 /*
- * This function is called whenever a buffer is full. The semaphore can be used to listen for this event in the main thread below.
+ * This function is called whenever a buffer is full. The semaphore post is awaited in the main thread.
  */
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
@@ -165,21 +155,22 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
         plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
 
     }
-    transmittedData_t serialData = {
-        lastTriggerMic1L,
-        lastTriggerMic2M,
-        lastTriggerMic3R,
-        outputDirVector2D_valin[0],
-        outputDirVector2D_valin[1],
-        CHUNK_LENGTH,
-        outputBuffer
-    };
+
+// Not smart to do in interrupt/callback
+//    transmittedData_t serialData = {
+//        lastTriggerMic1L,
+//        lastTriggerMic2M,
+//        lastTriggerMic3R,
+//        outputDirVector2D_valin[0],
+//        outputDirVector2D_valin[1],
+//        CHUNK_LENGTH,
+//        outputBuffer
+//    };
+    //transmitSerialData(&serialData);
 
     stopTimerIfStarted();
-    //transmitSerialData(&serialData);
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
-
 
     GPIO_write(LED_TRIGGER_1, 0);
 

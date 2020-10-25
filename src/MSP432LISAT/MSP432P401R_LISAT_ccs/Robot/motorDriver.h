@@ -1,3 +1,4 @@
+#include "common.h"
 #include <ti/drivers/PWM.h>
 
 #ifndef ROBOT_MOTOR_H_
@@ -10,10 +11,10 @@ enum MOTOR_DIRECTION {
 
 #define PERIOD_US 10000
 #define SPEED_MAX 5000
-class Motor
+class MotorDriver
 {
 public:
-    Motor();
+    MotorDriver();
     void Initialize();
     void DriveLeft(uint16_t,int16_t curve);
     void DriveRight(uint16_t,int16_t curve);
