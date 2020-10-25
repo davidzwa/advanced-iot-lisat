@@ -4,10 +4,8 @@
  * Email: amjad.y.majid@gmail.com
  */
 
-#include "differentialRobot.h"
-//#include "printf.h"
 #include <math.h>
-#define MAX_IR 800 // max ir distances in mm
+#include "differentialRobot.h"
 
 //uint16_t const  data_len_robot_pose_debug = 200;
 //uint16_t static cntr_robot_pose_debug=0;
@@ -19,7 +17,6 @@
 tachometer_t right_tachometer = {0,0,0};
 tachometer_t left_tachometer = {0,0,0};
 pose_t pose = {0,0,0};  // initial position of the robot
-ir_distance_t ir_distance = {MAX_IR,MAX_IR,MAX_IR};
 
 wheel_t right_wheel;
 wheel_t left_wheel;
@@ -40,7 +37,6 @@ differential_robot_t* robot_init()
     robot.right = &right_wheel;
     robot.left = &left_wheel;
     robot.pose = &pose;
-    robot.ir_distance = &ir_distance;
    
     return &robot;
 }
