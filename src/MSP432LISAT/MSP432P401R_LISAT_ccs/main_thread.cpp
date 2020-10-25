@@ -1,20 +1,22 @@
 /* DriverLib Includes */
-#include <Math/fft.h>
-#include <Math/iirFilter.h>
-#include <Robot/Motor.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
 
 // Our common defines and entrypoint
 #include "common.h"
-#include "TDOA/externalInterrupt.h"
-#include "TDOA/diffTimer.h"
 #include "SerialInterface/serialInterface.h"
-#include "SerialInterface/UART_esp.h"
+#include "Robot/motorDriver.h"
+#include "Robot/tachometer.h"
+#include "SerialInterface/serialESPBridge.h"
+#include "TDOA/freeRunningTimer.h"
+#include "TDOA/microphoneLocalization.h""
+
+//#include "DSP/fft.h"
+//#include "DSP/iirFilter.h"
 
 /* DSP LPF Filter */
-IirFilter* filter;
+//IirFilter* filter;
 
 int32_t buffersCompletedCounter = 0;
 
@@ -50,13 +52,11 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     initTimer();
-    //    initUARTESP();
-    //    openUARTESP();
-    //    writeUARTInfinite();
+    initTachometerInterrupts();
 
     initUARTESP();
     openUARTESP();
-    writeUARTInfinite();
+//    writeUARTInfinite(); // BLOCKING for testing
   
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
@@ -67,16 +67,25 @@ void *mainThread(void *arg0)
 //    filter->InitFilterState();
 
     int numBufsSent = 0;
-    Motor* motors = new Motor();
+    MotorDriver* motors = new MotorDriver();
     motors->Initialize();
     motors->PowerUp();
+
+    int speed = 2000;
     while(1) {
         //        sem_wait(&adcbufSem);
-        motors->DriveForwards(4000); sleep(1);
-//        motors->DriveBackwards(4000); sleep(1);
+        motors->DriveForwards(speed); sleep(1);
         motors->DriveForwards(0); sleep(1);
 
-        motors->DriveLeft(4000, 2000); sleep(1);
+        speed += 250;
+
+        if (speed > 4500) {
+            speed = 1000;
+        }
+//        motors->DriveBackwards(4000); sleep(1);
+//        motors->DriveForwards(0); sleep(1);
+
+//        motors->DriveLeft(4000, 2000); sleep(1);
 //        motors->DriveRight(4000, 1000); sleep(1);
 
 //        motors->DriveLeft(4000, -500); sleep(1);
