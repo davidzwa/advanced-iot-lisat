@@ -2,7 +2,9 @@
 This project is targeted on using Audio to enhance Swarm robots. This means we didnt take usual sensors for granted, instead we've decided to minimalize the peripherals on our robot to keep it light, understandable, repeatable and still very functional. 
 
 An impression of the current state of the project:
-<img src="https://user-images.githubusercontent.com/6005355/97089275-f9cdef00-1636-11eb-97ef-bdf1510ba561.png" width="300">
+
+V0.1 enclosure: <img src="https://user-images.githubusercontent.com/6005355/97089275-f9cdef00-1636-11eb-97ef-bdf1510ba561.png" width="300">
+V0.2 enclosure: <img src="https://user-images.githubusercontent.com/6005355/97112643-c0a08800-16e5-11eb-93eb-74b146d65d54.jpg" width="400">
 - [Quick link to MSP432 source code](https://github.com/davidzwa/advanced-iot-lisat/tree/master/src/MSP432LISAT/MSP432P401R_LISAT_ccs)
 - [Quick link to ESP8266 source code](https://github.com/davidzwa/advanced-iot-lisat/tree/master/src/ESP8266LISAT)
 
