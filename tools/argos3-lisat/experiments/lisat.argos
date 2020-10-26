@@ -1,0 +1,174 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+  <!-- ************************* -->
+  <!-- * General configuration * -->
+  <!-- ************************* -->
+  <framework>
+    <system threads="0" />
+    <experiment length="0"
+                ticks_per_second="10"
+                random_seed="15"/>
+    <!--  <experiment length="0"
+                ticks_per_second="10" /> -->
+  </framework>
+
+  <!-- *************** -->
+  <!-- * Controllers * -->
+  <!-- *************** -->
+  <controllers>
+
+    <footbot_lisat_controller id="flc"
+                                  library="build/controllers/footbot_lisat/libfootbot_lisat.so">
+      <actuators>
+        <differential_steering implementation="default" />
+        <leds implementation="default" medium="leds" />
+      </actuators>
+      <sensors>
+        <footbot_proximity implementation="default" show_rays="true" />
+      </sensors>
+      <params alpha="7.5" delta="0.1" velocity="5" />
+    </footbot_lisat_controller>
+
+
+
+  </controllers>
+
+  <!-- ****************** -->
+  <!-- * Loop functions * -->
+  <!-- ****************** -->
+  <loop_functions library="build/loop_functions/lisat_loop_functions/liblisat_loop_functions"
+                  label="lisat_loop_functions">
+    <!-- <foraging  
+              items="15"
+              radius="0.1"
+              energy_per_item="1000"
+              energy_per_walking_robot="1"
+              output="foraging.txt" /> -->
+    <lisat_parameters 
+              number_of_robots="5"
+              output="lisat_output.txt"
+              output_error="lisat_output_error.txt" />
+  </loop_functions>
+
+  <!-- *********************** -->
+  <!-- * Arena configuration * -->
+  <!-- *********************** -->
+  <arena size="9, 9, 1" center="0,0,0.5">
+
+    <floor id="floor"
+       source="loop_functions"
+       pixels_per_meter="50" />
+
+
+    <box id="wall_north" size="9,0.1,0.5" movable="false">
+      <body position="0,4.5,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_south" size="9,0.1,0.5" movable="false">
+      <body position="0,-4.5,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_east" size="0.1,9,0.5" movable="false">
+      <body position="4.5,0,0" orientation="0,0,0" />
+    </box>
+    <box id="wall_west" size="0.1,9,0.5" movable="false">
+      <body position="-4.5,0,0" orientation="0,0,0" />
+    </box>
+
+    <!--
+        You can distribute entities randomly. Here, we distribute
+        10 foot-bots in this way:
+        - the position is uniformly distributed
+        on the ground, in the square whose corners are (-2,-2) and (2,2)
+        - the orientations are non-zero only when rotating around Z and chosen
+        from a gaussian distribution, whose mean is zero degrees and
+        standard deviation is 360 degrees.
+    -->
+
+<!-- 
+    <foot-bot id="fb0">
+      <body position="0,0,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot> -->
+
+      <distribute>
+      <position method="uniform" min="-1.,-1,0" max="1,1,0" />
+      <!-- <position method="gaussian" mean="0,0,0" std_dev="1,1,0" /> -->
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" />
+      <entity quantity="5" max_trials="100">
+        <foot-bot id="fb">
+          <controller config="flc" />
+        </foot-bot>
+      </entity>
+    </distribute>
+<!-- 
+
+    <foot-bot id="fb_0">
+      <body position="1,1,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot>
+
+    <foot-bot id="fb_1">
+      <body position="0,0,0" orientation="0,0,0" />
+      <controller config="flc"/>
+    </foot-bot> -->
+
+<!--     <cylinder id="c" height="0.2" radius="0.1" mass="0.1" movable="false">
+      <body position="1,1,0" orientation="0,0,0" />
+    </cylinder> -->
+
+<!-- 
+    <foot-bot id="fb_leader">
+      <body position="1,1,0" orientation="0,0,0" />
+      <controller config="flc_leader"/>
+    </foot-bot> -->
+
+    <!--
+        We distribute 5 boxes uniformly in position and rotation around Z.
+    -->
+<!--     <distribute>
+      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <orientation method="uniform" min="0,0,0" max="360,0,0" />
+      <entity quantity="5" max_trials="100">
+        <box id="b" size="0.3,0.3,0.5" movable="false" />
+      </entity>
+    </distribute> -->
+
+    <!--
+        We distribute cylinders uniformly in position and with
+        constant rotation (rotating a cylinder around Z does not
+        matter)
+    -->
+<!--     <distribute>
+      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="5" max_trials="100">
+        <cylinder id="c" height="0.5" radius="0.15" movable="false" />
+      </entity>
+    </distribute> -->
+
+  </arena>
+
+  <!-- ******************* -->
+  <!-- * Physics engines * -->
+  <!-- ******************* -->
+  <physics_engines>
+    <dynamics2d id="dyn2d" />
+  </physics_engines>
+
+  <!-- ********* -->
+  <!-- * Media * -->
+  <!-- ********* -->
+  <media>
+    <led id="leds" />
+  </media>
+  
+  <media />
+
+  <!-- ****************** -->
+  <!-- * Visualization * -->
+  <!-- ****************** -->
+  <visualization>
+    <qt-opengl />
+  </visualization>
+
+</argos-configuration>
