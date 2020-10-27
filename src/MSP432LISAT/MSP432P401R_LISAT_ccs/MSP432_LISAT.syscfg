@@ -35,6 +35,7 @@ const Power    = scripting.addModule("/ti/drivers/Power");
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
 const Timer    = scripting.addModule("/ti/drivers/Timer", {}, false);
 const Timer1   = Timer.addInstance();
+const Timer2   = Timer.addInstance();
 const UART     = scripting.addModule("/ti/drivers/UART", {}, false);
 const UART1    = UART.addInstance();
 
@@ -130,7 +131,10 @@ RTOS.timer0.resource.$assign = "Timer_A0";
 
 Timer1.$name             = "CONFIG_TIMER_0_US_MEASURE";
 Timer1.interruptPriority = "1";
-Timer1.timer.$assign     = "Timer_A2";
+Timer1.timerType         = "32 Bits";
+Timer1.timer.$assign     = "TIMER32_0";
+
+Timer2.$name = "TIMER_TACHO_MEASURE";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
@@ -146,12 +150,13 @@ UART1.uart.rxPin.$assign = "boosterpack.4";
 Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.30";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
 GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE";
 PWM1.timer.$suggestSolution                        = "Timer_A1";
 PWM2.timer.$suggestSolution                        = "Timer_A1";
-UART1.uart.$suggestSolution                        = "EUSCI_A1";
+Timer2.timer.$suggestSolution                      = "Timer_A2";
+UART1.uart.$suggestSolution                        = "EUSCI_A2";

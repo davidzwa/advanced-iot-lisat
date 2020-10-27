@@ -3,7 +3,7 @@
 
 void initTimerParams(){
     Timer_Params_init(&params);
-    params.periodUnits = Timer_PERIOD_US;
+    params.periodUnits = Timer_PERIOD_COUNTS;
     params.timerMode = Timer_FREE_RUNNING;
 }
 
@@ -30,3 +30,29 @@ void stopTimer() {
 uint32_t getTimerUs() {
     return Timer_getCount(timer0);
 }
+
+void initTimerTacho() {
+    /*
+     * Setting up the timer in FREE RUNNING mode, allowing us to share it across multiple tasks.
+     */
+    initTimerParams();
+    timer1 = Timer_open(TIMER_TACHO_MEASURE, &params);
+    if (timer1 == NULL) {
+        /* Failed to initialized timer */
+        while (1) {}
+    }
+}
+
+void startTimerTacho() {
+    Timer_start(timer1);
+}
+
+void stopTimerTacho() {
+    Timer_stop(timer1);
+}
+
+uint32_t getTimerUsTacho() {
+    return Timer_getCount(timer1);
+}
+
+

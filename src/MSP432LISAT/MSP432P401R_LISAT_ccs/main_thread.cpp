@@ -71,13 +71,13 @@ void *mainThread(void *arg0)
     motors->Initialize();
     motors->PowerUp();
 
-    int speed = 2000;
+    int speed = 1000;
     while(1) {
         //        sem_wait(&adcbufSem);
-        motors->DriveForwards(speed); sleep(1);
-        motors->DriveForwards(0); sleep(1);
+        motors->DriveForwards(speed); usleep(50000);
+//        motors->DriveForwards(0); sleep(1);
 
-        speed += 250;
+        speed += 10;
 
         if (speed > 4500) {
             speed = 1000;
