@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <semaphore.h>
 
 #include <ti/devices/msp432p4xx/inc/msp.h>

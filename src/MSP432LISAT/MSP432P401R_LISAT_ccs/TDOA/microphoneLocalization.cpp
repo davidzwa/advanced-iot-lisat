@@ -19,7 +19,6 @@ bool startAdcSampling = false;
 bool timerStarted = false;
 
 
-
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
     ADCBuf_Params_init(&adcBufParams);

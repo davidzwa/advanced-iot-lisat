@@ -85,22 +85,6 @@ void MotorDriver::CheckPWMStopped(){
     PWM_setDuty(pwmRight, dutyRight);
 }
 
-///**
-// * Set speed from 0 to PWM_PERIOD where PWM_PERIOD is full power.
-// */
-//void Motor::IncrementSpeed(int leftMotor, int rightMotor){
-//    dutyLeft+=leftMotor;
-//    dutyRight+=rightMotor;
-//    if (dutyLeft > pwmPeriod || dutyRight > pwmPeriod) {
-//        dutyLeft = 0;
-//        dutyRight = 0;
-//
-//        GPIO_toggle(MOTOR_LEFT_DIRECTION);
-//        GPIO_toggle(MOTOR_RIGHT_DIRECTION);
-//    }
-//    this->SetSpeed(dutyLeft, dutyRight);
-//}
-
 // Drive + rotate = curve. Rotate [-SPEED/2, SPEED/2]
 void MotorDriver::DriveLeft(uint16_t speed, int16_t speed2){
     this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
@@ -144,11 +128,27 @@ void MotorDriver::DriveBackwards(uint16_t speed){
 }
 
 // Drive forward mode
-void MotorDriver::DriveForwards(uint16_t speed){
+void MotorDriver::DriveForwards(uint16_t speed) {
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, speed, &(this->dutyLeft));
     this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
+}
+
+void MotorDriver::Drive(int16_t speed_left, int16_t speed_right) {
+    if (speed_left > 0) {
+        this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
+    }
+    else {
+        this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
+    }
+    if (speed_right > 0) {
+        this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
+    } else {
+        this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
+    }
+    this->SetMotorSpeedLimited(this->pwmLeft, speed_left, &(this->dutyLeft));
+    this->SetMotorSpeedLimited(this->pwmRight, speed_right, &(this->dutyRight));
 }
 
 // Set motor direction: 1 forward, 0 backward

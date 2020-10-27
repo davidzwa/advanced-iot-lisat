@@ -7,6 +7,13 @@
 #ifndef SYSTEM_INCLUDE_TACHOMETER_H_
 #define SYSTEM_INCLUDE_TACHOMETER_H_
 
-void initTachometerInterrupts();
+void startCalibrationTachometers();
+void disableCalibrationTachometers();
+float calculateTicksPerInterruptLeft();
+float calculateTicksPerInterruptRight();
+
+void initTachometers();
+void enableTachometerInterrupts();
+void disableTachometerInterrupts();
 
 #endif /* SYSTEM_INCLUDE_TACHOMETER_H_ */
