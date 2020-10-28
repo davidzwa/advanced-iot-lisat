@@ -6,8 +6,7 @@
 // Our common defines and entrypoint
 #include "common.h"
 #include "SerialInterface/serialInterface.h"
-#include "Robot/motorDriver.h"
-#include "Robot/tachometer.h"
+#include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "TDOA/freeRunningTimer.h"
 #include "TDOA/microphoneLocalization.h""
@@ -52,7 +51,6 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     initTimer();
-    initTachometerInterrupts();
 
     initUARTESP();
     openUARTESP();
@@ -67,32 +65,23 @@ void *mainThread(void *arg0)
 //    filter->InitFilterState();
 
     int numBufsSent = 0;
-    MotorDriver* motors = new MotorDriver();
-    motors->Initialize();
-    motors->PowerUp();
+    Robot* robot = new Robot();
+    robot->StartUp();
+
+    int32_t targetRPMs[2] = {120, 240};
+    uint32_t calibratedDutyCycles[2] = {0, 0};
+//    robot->RunTachoCalibrations(targetRPMs, calibratedDutyCycles, 2);
 
     int speed = 1000;
     while(1) {
         //        sem_wait(&adcbufSem);
-        motors->DriveForwards(speed); usleep(50000);
-//        motors->DriveForwards(0); sleep(1);
+        robot->motorDriver->DriveForwards(speed);
+        usleep(50000);
 
         speed += 10;
-
         if (speed > 4500) {
             speed = 1000;
         }
-//        motors->DriveBackwards(4000); sleep(1);
-//        motors->DriveForwards(0); sleep(1);
-
-//        motors->DriveLeft(4000, 2000); sleep(1);
-//        motors->DriveRight(4000, 1000); sleep(1);
-
-//        motors->DriveLeft(4000, -500); sleep(1);
-//        motors->DriveRight(4000, -500); sleep(1);
-//
-//        motors->DriveRight(4000, -4000); sleep(1);
-//        motors->DriveRight(4000, 4000); sleep(1);
 
         /*
          * Start with a header message and print current buffer values

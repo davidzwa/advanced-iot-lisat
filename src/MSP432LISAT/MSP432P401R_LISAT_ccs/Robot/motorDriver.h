@@ -16,6 +16,7 @@ class MotorDriver
 public:
     MotorDriver();
     void Initialize();
+    void Drive(int16_t speed_left, int16_t speed_right);
     void DriveLeft(uint16_t,int16_t curve);
     void DriveRight(uint16_t,int16_t curve);
     void DriveForwards(uint16_t);
