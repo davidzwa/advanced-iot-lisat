@@ -7,7 +7,10 @@
 #ifndef SYSTEM_INCLUDE_TACHOMETER_H_
 #define SYSTEM_INCLUDE_TACHOMETER_H_
 
-void startCalibrationTachometers();
+uint32_t getInterruptCountLeft();
+uint32_t getInterruptCountRight();
+void resetTachometerCountValues();
+
 void disableCalibrationTachometers();
 float calculateTicksPerInterruptLeft();
 float calculateTicksPerInterruptRight();

@@ -5,14 +5,38 @@
  *      Author: david
  */
 
+#include <math.h>
 #include <Robot/robot.h>
 #include <Robot/tachometer.h>
 
+/*
+ * Class methods
+ */
 Robot::Robot()
 {
-    this->diffDrive = init_diff_drive();
+//    this->diffDrive = init_diff_drive();
     this->motorDriver = new MotorDriver();
     initTachometers();
+
+    this->robotPositionX = 0.0f;
+    this->robotPositionY = 0.0f;
+    this->robotAngleTheta = 0.0f;
+    this->distanceTravelled = 0.0f;
+}
+
+/*
+ * Static calculation utilities
+ */
+int32_t SpeedToTicksPerInterrupt(int32_t speed_mmps) {
+    return round(ACLK_COUNTS/(speed_mmps/dist_per_rising_edge));
+}
+
+float TicksToDistance(uint32_t num_isr_ticks) {
+    return num_isr_ticks * dist_per_rising_edge;
+}
+
+float WheelDistanceToRobotDisplacement(float deltaDistanceWheelRight, float deltaDistanceWheelLeft){
+    return (deltaDistanceWheelRight + deltaDistanceWheelLeft)/2;
 }
 
 void Robot::StartUp() {
@@ -26,49 +50,93 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
 
     for(int i=0; i<calibrationCount; i++) {
         int32_t targetRPM = requestedRPMs[i];
-        outCalibratedDutyCycles[i] = this->ApproximateRPM(targetRPM, 10000, 50);
+        outCalibratedDutyCycles[i] = this->_approximateRPM(targetRPM, 10000, 50);
+
+        // 250ms slow-down to lower speed, preventing two calibrations to be triggered after each other
+        this->motorDriver->Drive(500,500);
+        usleep(250000);
     }
 
     this->Stop();
 }
 
+
 // Spin up the wheels until the Tachometers reach the target RPM
-uint32_t Robot::ApproximateRPM(int32_t rpm, int maxRounds, int maxRPMError) {
-    startCalibrationTachometers();
+uint32_t Robot::_approximateRPM(int32_t speed_mmps, int maxRounds, int maxTicksError) {
+    int16_t targetTicks = SpeedToTicksPerInterrupt(speed_mmps);
+
+    resetTachometerCountValues();
     int16_t initialDutyCycleLeft = 500;
     int16_t initialDutyCycleRight = 500;
     this->motorDriver->Drive(initialDutyCycleLeft, initialDutyCycleRight);
-    sleep(1); // Spin up the drive
 
-    int error = maxRPMError+1;
     int iter = 0;
-    while(error > maxRPMError && iter < maxRounds) {
-        float rpmLeft = 10*32000/calculateTicksPerInterruptLeft();
-        float rpmRight = 10*32000/calculateTicksPerInterruptRight();
-        startCalibrationTachometers();
-        usleep(500000);
-        if(isinf(rpmLeft)) {
-            initialDutyCycleLeft += 100;
+    const int diff = 10;
+    const int iter_delay = 25;
+    while(iter < maxRounds) {
+        usleep(iter_delay*1000); // Spin up the drive in 50ms
+        float ticksAvgLeft = calculateTicksPerInterruptLeft();
+        float ticksAvgRight = calculateTicksPerInterruptRight();
+        resetTachometerCountValues();
+
+        if (abs(ticksAvgLeft - targetTicks) < maxTicksError && abs(ticksAvgRight - targetTicks) < maxTicksError) {
+            break;
+        }
+
+        if(isinf(ticksAvgLeft) || ticksAvgLeft == 0.0f || ticksAvgRight > targetTicks) {
+            initialDutyCycleLeft += diff;
         }
         else {
-            initialDutyCycleLeft = 450*rpm/rpmLeft;
+            initialDutyCycleLeft -= diff;
         }
-        if(isinf(rpmRight)) {
-            initialDutyCycleRight += 100;
+        if(isinf(ticksAvgRight) || ticksAvgRight == 0.0f || ticksAvgRight > targetTicks) {
+            initialDutyCycleRight += diff;
         } else {
-            initialDutyCycleRight = 450*rpm/rpmRight;
+            initialDutyCycleRight -= diff;
         }
 
         this->motorDriver->Drive(initialDutyCycleLeft, initialDutyCycleRight);
         iter++;
     }
 
-    disableCalibrationTachometers();
-    return 0;
+    resetTachometerCountValues();
+    return initialDutyCycleLeft;
 }
 
 void Robot::Stop() {
     this->motorDriver->DriveForwards(0);
+}
+
+void Robot::DriveStraight() {
+    // Implement drive straight control loop
+}
+
+void Robot::UpdateRobotPosition() {
+    // Fetch ISR ticks and reset the corresponding counters
+    uint32_t numTicksLeft = getInterruptCountLeft();
+    uint32_t numTicksRight = getInterruptCountRight();
+    resetTachometerCountValues();
+
+    // Process wheel distances to get center point displacement
+    float displacementLeft = TicksToDistance(numTicksLeft);
+    float displacementRight = TicksToDistance(numTicksRight);
+    float displacementCenter = WheelDistanceToRobotDisplacement(displacementLeft, displacementRight);
+    
+    this->_updateRobotCenterPosition(displacementCenter);
+    this->_updateRobotAngleTheta(displacementLeft, displacementRight);
+}
+
+void Robot::_updateRobotCenterPosition(float deltaDistanceCenter) {
+    this->robotPositionX += deltaDistanceCenter * cos(this->robotAngleTheta);
+    this->robotPositionY += deltaDistanceCenter * sin(this->robotAngleTheta);
+    this->distanceTravelled += deltaDistanceCenter;
+}
+
+void Robot::_updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight) {
+    float tempTheta = this->robotAngleTheta;
+    float deltaTheta = (float)(deltaDistanceRight - deltaDistanceLeft)/WHEEL_BASE;
+    tempTheta += deltaTheta;
+    this->robotAngleTheta = atan2(sin(tempTheta), cos(tempTheta));
 }
 
 //void Robot::RunTest() {
