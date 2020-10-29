@@ -7,6 +7,9 @@
 #ifndef SYSTEM_INCLUDE_TACHOMETER_H_
 #define SYSTEM_INCLUDE_TACHOMETER_H_
 
+uint32_t getNuminterruptsLeft();
+uint32_t getNuminterruptsRight();
+
 void startCalibrationTachometers();
 void disableCalibrationTachometers();
 float calculateTicksPerInterruptLeft();

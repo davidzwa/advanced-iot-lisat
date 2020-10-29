@@ -39,8 +39,15 @@ public:
     MotorDriver* motorDriver;
 protected:
     differential_drive_t* diffDrive;
+    void UpdateWheelDistances();
+    void UpdateRobotDistance();
 private:
     uint32_t ApproximateRPM(int32_t rpm, int maxRounds, int maxRPMError);
+
+    float wheel_distance_left;
+    float wheel_distance_right;
+    float distance_difference;
+    float robot_angle;
 };
 
 #endif /* ROBOT_ROBOT_H_ */
