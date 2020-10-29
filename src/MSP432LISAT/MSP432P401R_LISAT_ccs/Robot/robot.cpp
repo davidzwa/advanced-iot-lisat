@@ -5,6 +5,7 @@
  *      Author: david
  */
 
+#include <math.h>
 #include <Robot/robot.h>
 #include <Robot/tachometer.h>
 
@@ -27,36 +28,49 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
     for(int i=0; i<calibrationCount; i++) {
         int32_t targetRPM = requestedRPMs[i];
         outCalibratedDutyCycles[i] = this->ApproximateRPM(targetRPM, 10000, 50);
+        this->motorDriver->Drive(500,500);
+        usleep(250000); // 250ms slow-down
     }
 
     this->Stop();
 }
 
+int32_t SpeedToTicks(int32_t speed_mmps) {
+    return round(ACLK_COUNTS/(speed_mmps/dist_per_rising_edge));
+}
+
 // Spin up the wheels until the Tachometers reach the target RPM
-uint32_t Robot::ApproximateRPM(int32_t rpm, int maxRounds, int maxRPMError) {
+uint32_t Robot::ApproximateRPM(int32_t speed_mmps, int maxRounds, int maxTicksError) {
+    int16_t targetTicks = SpeedToTicks(speed_mmps);
+
     startCalibrationTachometers();
     int16_t initialDutyCycleLeft = 500;
     int16_t initialDutyCycleRight = 500;
     this->motorDriver->Drive(initialDutyCycleLeft, initialDutyCycleRight);
-    sleep(1); // Spin up the drive
 
-    int error = maxRPMError+1;
     int iter = 0;
-    while(error > maxRPMError && iter < maxRounds) {
-        float rpmLeft = 10*32000/calculateTicksPerInterruptLeft();
-        float rpmRight = 10*32000/calculateTicksPerInterruptRight();
+    const int diff = 10;
+    const int iter_delay = 25;
+    while(iter < maxRounds) {
+        usleep(iter_delay*1000); // Spin up the drive in 50ms
+        float ticksAvgLeft = calculateTicksPerInterruptLeft();
+        float ticksAvgRight = calculateTicksPerInterruptRight();
         startCalibrationTachometers();
-        usleep(500000);
-        if(isinf(rpmLeft)) {
-            initialDutyCycleLeft += 100;
+
+        if (abs(ticksAvgLeft - targetTicks) < maxTicksError && abs(ticksAvgRight - targetTicks) < maxTicksError) {
+            break;
+        }
+
+        if(isinf(ticksAvgLeft) || ticksAvgLeft == 0.0f || ticksAvgRight > targetTicks) {
+            initialDutyCycleLeft += diff;
         }
         else {
-            initialDutyCycleLeft = 450*rpm/rpmLeft;
+            initialDutyCycleLeft -= diff;
         }
-        if(isinf(rpmRight)) {
-            initialDutyCycleRight += 100;
+        if(isinf(ticksAvgRight) || ticksAvgRight == 0.0f || ticksAvgRight > targetTicks) {
+            initialDutyCycleRight += diff;
         } else {
-            initialDutyCycleRight = 450*rpm/rpmRight;
+            initialDutyCycleRight -= diff;
         }
 
         this->motorDriver->Drive(initialDutyCycleLeft, initialDutyCycleRight);
@@ -64,7 +78,7 @@ uint32_t Robot::ApproximateRPM(int32_t rpm, int maxRounds, int maxRPMError) {
     }
 
     disableCalibrationTachometers();
-    return 0;
+    return initialDutyCycleLeft;
 }
 
 void Robot::Stop() {

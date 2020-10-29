@@ -9,8 +9,8 @@ enum MOTOR_DIRECTION {
     FORWARDS=0
 };
 
-#define PERIOD_US 10000
-#define SPEED_MAX 5000
+#define PERIOD_US 7000
+#define SPEED_MAX 4000
 class MotorDriver
 {
 public:

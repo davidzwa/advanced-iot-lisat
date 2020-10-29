@@ -19,6 +19,10 @@
 
 int32_t buffersCompletedCounter = 0;
 
+const int num_calibs = 10;
+int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
+uint32_t duty_LUT[num_calibs];
+
 /*
  *  ======== mainThread ========
  */
@@ -68,14 +72,12 @@ void *mainThread(void *arg0)
     Robot* robot = new Robot();
     robot->StartUp();
 
-    int32_t targetRPMs[2] = {120, 240};
-    uint32_t calibratedDutyCycles[2] = {0, 0};
-//    robot->RunTachoCalibrations(targetRPMs, calibratedDutyCycles, 2);
+    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
     int speed = 1000;
     while(1) {
         //        sem_wait(&adcbufSem);
-        robot->motorDriver->DriveForwards(speed);
+//        robot->motorDriver->DriveForwards(speed);
         usleep(50000);
 
         speed += 10;
