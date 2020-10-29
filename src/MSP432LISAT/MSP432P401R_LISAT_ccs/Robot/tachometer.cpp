@@ -24,34 +24,36 @@ uint32_t numCalibrationInterruptsLeft = 0;
 uint32_t numCalibrationInterruptsRight = 0;
 uint32_t sumCalibrationTicksLeft = 0;
 uint32_t sumCalibrationTicksRight = 0;
-bool calibrateTachometers = false;
+bool measureDistanceTachometers = false;
 
 void tachoLeftInterrupt(uint_least8_t index);
 void tachoRightInterrupt(uint_least8_t index);
 uint32_t timerDifference(uint32_t lastTicks, uint32_t clockValue);
 
-void startCalibrationTachometers() {
+void resetTachometerCountValues() {
     numCalibrationInterruptsLeft = 0;
     numCalibrationInterruptsRight = 0;
     sumCalibrationTicksLeft = 0;
     sumCalibrationTicksRight = 0;
-    calibrateTachometers = true;
+    measureDistanceTachometers = true;
 }
 
 void disableCalibrationTachometers() {
-    calibrateTachometers = false;
+    measureDistanceTachometers = false;
 }
 
-uint32_t getNuminterruptsLeft() {
+// This function only makes sense when measureDistanceTachometers == true
+uint32_t getInterruptCountLeft() {
     return numCalibrationInterruptsLeft;
 }
 
-uint32_t getNuminterruptsRight() {
+// This function only makes sense when measureDistanceTachometers == true
+uint32_t getInterruptCountRight() {
     return numCalibrationInterruptsRight;
 }
 
 float calculateTicksPerInterruptLeft() {
-    if (calibrateTachometers == true && sumCalibrationTicksLeft > 0) {
+    if (measureDistanceTachometers == true && sumCalibrationTicksLeft > 0) {
         return (float)sumCalibrationTicksLeft/numCalibrationInterruptsLeft;
     }
     else {
@@ -60,7 +62,7 @@ float calculateTicksPerInterruptLeft() {
 }
 
 float calculateTicksPerInterruptRight() {
-    if (calibrateTachometers == true && sumCalibrationTicksRight > 0) {
+    if (measureDistanceTachometers == true && sumCalibrationTicksRight > 0) {
         return (float)sumCalibrationTicksRight/numCalibrationInterruptsRight;
     }
     else {
@@ -94,7 +96,7 @@ void disableTachometerInterrupts() {
 void tachoLeftInterrupt(uint_least8_t index) {
     uint32_t clockValue = getTimerUsTacho();
     currentTicksDiffLeft = timerDifference(lastTicksLeft, clockValue);
-    if (calibrateTachometers) {
+    if (measureDistanceTachometers) {
         sumCalibrationTicksLeft += currentTicksDiffLeft;
         numCalibrationInterruptsLeft++;
     }
@@ -104,7 +106,7 @@ void tachoLeftInterrupt(uint_least8_t index) {
 void tachoRightInterrupt(uint_least8_t index) {
     uint32_t clockValue = getTimerUsTacho();
     currentTicksDiffRight = timerDifference(lastTicksRight, clockValue);
-    if (calibrateTachometers) {
+    if (measureDistanceTachometers) {
         sumCalibrationTicksRight += currentTicksDiffRight;
         numCalibrationInterruptsRight++;
     }
