@@ -133,22 +133,22 @@ GPIO14.interruptTrigger = "Both Edges";
 GPIO14.gpioPin.$assign  = "boosterpack.13";
 
 GPIO15.$name           = "BUMPER_5_LEFT";
-GPIO15.gpioPin.$assign = "boosterpack.28";
+GPIO15.gpioPin.$assign = "boosterpack.5";
 
 GPIO16.$name           = "BUMPER_4_LEFT";
-GPIO16.gpioPin.$assign = "boosterpack.8";
+GPIO16.gpioPin.$assign = "boosterpack.24";
 
 GPIO17.$name           = "BUMPER_3_LEFT";
 GPIO17.gpioPin.$assign = "boosterpack.27";
 
 GPIO18.$name           = "BUMPER_2_RIGHT";
-GPIO18.gpioPin.$assign = "boosterpack.6";
+GPIO18.gpioPin.$assign = "boosterpack.26";
 
-GPIO19.$name           = "BUMPER_1_RIGHT";
-GPIO19.gpioPin.$assign = "boosterpack.25";
+GPIO19.$name            = "BUMPER_1_RIGHT";
+GPIO19.interruptTrigger = "Falling Edge";
+GPIO19.gpioPin.$assign  = "boosterpack.25";
 
-GPIO20.$name           = "BUMPER_0_RIGHT";
-GPIO20.gpioPin.$assign = "boosterpack.24";
+GPIO20.$name = "BUMPER_0_RIGHT";
 
 GPIO21.$name           = "TACHO_LEFT_A";
 GPIO21.gpioPin.$assign = "expansion.32";
@@ -221,16 +221,14 @@ ADCBuf1.adc.$suggestSolution                       = "ADC14";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
 GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE";
-GPIO15.gpioPin.$suggestSolution                    = "<error>";
-GPIO16.gpioPin.$suggestSolution                    = "<error>";
-GPIO18.gpioPin.$suggestSolution                    = "<error>";
-GPIO24.gpioPin.$suggestSolution                    = "expansion.28";
-GPIO25.gpioPin.$suggestSolution                    = "expansion.29";
-GPIO26.gpioPin.$suggestSolution                    = "expansion.30";
-GPIO27.gpioPin.$suggestSolution                    = "boosterpack.15";
-GPIO28.gpioPin.$suggestSolution                    = "boosterpack.14";
-GPIO29.gpioPin.$suggestSolution                    = "boosterpack.34";
-GPIO30.gpioPin.$suggestSolution                    = "boosterpack.38";
+GPIO20.gpioPin.$suggestSolution                    = "expansion.28";
+GPIO24.gpioPin.$suggestSolution                    = "expansion.29";
+GPIO25.gpioPin.$suggestSolution                    = "expansion.30";
+GPIO26.gpioPin.$suggestSolution                    = "boosterpack.15";
+GPIO27.gpioPin.$suggestSolution                    = "boosterpack.14";
+GPIO28.gpioPin.$suggestSolution                    = "boosterpack.34";
+GPIO29.gpioPin.$suggestSolution                    = "boosterpack.38";
+GPIO30.gpioPin.$suggestSolution                    = "boosterpack.19";
 PWM1.timer.$suggestSolution                        = "Timer_A1";
 PWM2.timer.$suggestSolution                        = "Timer_A1";
 Timer2.timer.$suggestSolution                      = "Timer_A2";
