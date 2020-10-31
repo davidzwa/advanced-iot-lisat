@@ -156,7 +156,8 @@ GPIO21.gpioPin.$assign = "expansion.32";
 GPIO22.$name           = "TACHO_RIGHT_A";
 GPIO22.gpioPin.$assign = "expansion.31";
 
-GPIO23.$name = "LINE_0_LEFT";
+GPIO23.$name           = "LINE_IR1_RIGHT";
+GPIO23.gpioPin.$assign = "expansion.18";
 
 GPIO24.$name = "LINE_IR2_LEFT";
 
@@ -223,14 +224,13 @@ GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE
 GPIO15.gpioPin.$suggestSolution                    = "<error>";
 GPIO16.gpioPin.$suggestSolution                    = "<error>";
 GPIO18.gpioPin.$suggestSolution                    = "<error>";
-GPIO23.gpioPin.$suggestSolution                    = "expansion.28";
-GPIO24.gpioPin.$suggestSolution                    = "expansion.29";
-GPIO25.gpioPin.$suggestSolution                    = "expansion.30";
-GPIO26.gpioPin.$suggestSolution                    = "boosterpack.15";
-GPIO27.gpioPin.$suggestSolution                    = "boosterpack.14";
-GPIO28.gpioPin.$suggestSolution                    = "boosterpack.34";
-GPIO29.gpioPin.$suggestSolution                    = "boosterpack.38";
-GPIO30.gpioPin.$suggestSolution                    = "boosterpack.19";
+GPIO24.gpioPin.$suggestSolution                    = "expansion.28";
+GPIO25.gpioPin.$suggestSolution                    = "expansion.29";
+GPIO26.gpioPin.$suggestSolution                    = "expansion.30";
+GPIO27.gpioPin.$suggestSolution                    = "boosterpack.15";
+GPIO28.gpioPin.$suggestSolution                    = "boosterpack.14";
+GPIO29.gpioPin.$suggestSolution                    = "boosterpack.34";
+GPIO30.gpioPin.$suggestSolution                    = "boosterpack.38";
 PWM1.timer.$suggestSolution                        = "Timer_A1";
 PWM2.timer.$suggestSolution                        = "Timer_A1";
 Timer2.timer.$suggestSolution                      = "Timer_A2";
