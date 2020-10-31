@@ -18,7 +18,7 @@ Robot::Robot()
 //    this->diffDrive = init_diff_drive();
     this->motorDriver = new MotorDriver();
     initTachometers();
-    initBumpers();
+    initBumpers(this);
 
     this->robotPositionX = 0.0f;
     this->robotPositionY = 0.0f;

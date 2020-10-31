@@ -9,6 +9,7 @@
 #include <Robot/bumpers.h>
 #include <ti/sysbios/knl/Clock.h>
 
+Robot* bRobot;
 long bumper_last_called = 0;
 
 void bumperInterrupt(uint_least8_t index) {
@@ -23,9 +24,11 @@ void bumperInterrupt(uint_least8_t index) {
             GPIO_toggle(LED_BLUE_0_GPIO);
             break;
         case BUMPER_2_RIGHT:
+            bRobot->Stop();
             GPIO_toggle(LED_BLUE_0_GPIO);
             break;
         case BUMPER_3_LEFT:
+            bRobot->Stop();
             GPIO_toggle(LED_BLUE_0_GPIO);
             break;
         case BUMPER_4_LEFT:
@@ -56,7 +59,8 @@ void disableBumperInterrupts() {
     GPIO_disableInt(BUMPER_5_LEFT);
 }
 
-void initBumpers() {
+void initBumpers(Robot* pRobot) {
+    bRobot = pRobot;
     GPIO_setCallback(BUMPER_0_RIGHT, bumperInterrupt);
     GPIO_setCallback(BUMPER_1_RIGHT, bumperInterrupt);
     GPIO_setCallback(BUMPER_2_RIGHT, bumperInterrupt);

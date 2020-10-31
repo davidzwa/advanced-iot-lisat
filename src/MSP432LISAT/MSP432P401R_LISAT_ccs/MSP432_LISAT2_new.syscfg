@@ -142,19 +142,11 @@ GPIO16.gpioPin.$assign  = "boosterpack.8";
 GPIO17.$name            = "BUMPER_3_LEFT";
 GPIO17.pull             = "Pull Up";
 GPIO17.interruptTrigger = "Falling Edge";
-<<<<<<< HEAD
-=======
-GPIO17.pull             = "Pull Up";
->>>>>>> ac6cada46d7fded448431439f50038237c185829
 GPIO17.gpioPin.$assign  = "boosterpack.27";
 
 GPIO18.$name            = "BUMPER_2_RIGHT";
 GPIO18.pull             = "Pull Up";
 GPIO18.interruptTrigger = "Falling Edge";
-<<<<<<< HEAD
-=======
-GPIO18.pull             = "Pull Up";
->>>>>>> ac6cada46d7fded448431439f50038237c185829
 GPIO18.gpioPin.$assign  = "boosterpack.6";
 
 GPIO19.$name            = "BUMPER_1_RIGHT";
