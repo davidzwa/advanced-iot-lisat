@@ -13,7 +13,7 @@
 //#include <ti/sysbios/knl/Clock.h>
 #include <ti/drivers/Timer.h>
 #include "common.h"
-#include "TDOA/freeRunningTimer.h"
+#include "System/freeRunningTimer.h"
 
 uint32_t lastTicksLeft = 0;
 uint32_t lastTicksRight = 0;

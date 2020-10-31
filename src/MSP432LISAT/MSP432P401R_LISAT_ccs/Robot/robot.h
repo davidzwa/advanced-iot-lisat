@@ -12,7 +12,7 @@
 #define ROBOT_ROBOT_H_
 
 // Odometer ratio setup
-#define DISC_LINE_COUNT 12
+#define DISC_LINE_COUNT 6
 #define MOTOR_GEAR_RATIO 120
 #define LINES_PER_REV (DISC_LINE_COUNT*MOTOR_GEAR_RATIO)
 
