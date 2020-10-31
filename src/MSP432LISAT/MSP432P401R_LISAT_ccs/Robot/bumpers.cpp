@@ -9,22 +9,22 @@
 #include <Robot/bumpers.h>
 
 void bumper0RightInterrupt(uint_least8_t index) {
-    GPIO_write(LED_ERROR_2, 0);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 void bumper1RightInterrupt(uint_least8_t index) {
-    GPIO_write(LED_ERROR_2, 1);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 void bumper2RightInterrupt(uint_least8_t index) {
-    GPIO_toggle(LED_ERROR_2);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 void bumper3LeftInterrupt(uint_least8_t index) {
-    GPIO_toggle(LED_ERROR_2);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 void bumper4LeftInterrupt(uint_least8_t index) {
-    GPIO_toggle(LED_ERROR_2);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 void bumper5LeftInterrupt(uint_least8_t index) {
-    GPIO_toggle(LED_ERROR_2);
+    GPIO_toggle(LED_BLUE_0_GPIO);
 }
 
 

@@ -56,6 +56,8 @@ const Timer1   = Timer.addInstance();
 const Timer2   = Timer.addInstance();
 const UART     = scripting.addModule("/ti/drivers/UART", {}, false);
 const UART1    = UART.addInstance();
+const LED      = scripting.addModule("/ti/drivers/apps/LED", {}, false);
+const LED1     = LED.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -206,6 +208,9 @@ UART1.interruptPriority  = "5";
 UART1.uart.txPin.$assign = "boosterpack.3";
 UART1.uart.rxPin.$assign = "boosterpack.4";
 
+LED1.$hardware = system.deviceData.board.components.LED2_BLUE;
+LED1.$name     = "LED_BLUE_0";
+
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
@@ -233,3 +238,4 @@ PWM1.timer.$suggestSolution                        = "Timer_A1";
 PWM2.timer.$suggestSolution                        = "Timer_A1";
 Timer2.timer.$suggestSolution                      = "Timer_A2";
 UART1.uart.$suggestSolution                        = "EUSCI_A2";
+LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
