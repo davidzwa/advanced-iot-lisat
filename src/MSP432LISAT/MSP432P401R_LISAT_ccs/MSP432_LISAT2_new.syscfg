@@ -78,16 +78,13 @@ GPIO.interruptPriority = "1";
 GPIO1.mode               = "Output";
 GPIO1.initialOutputState = "High";
 GPIO1.$name              = "MIC1L_MODE_WOS";
-GPIO1.gpioPin.$assign    = "boosterpack.9";
 
 GPIO2.interruptTrigger = "Rising Edge";
 GPIO2.$name            = "MIC1L_D_OUT_INTRPT";
-GPIO2.gpioPin.$assign  = "boosterpack.10";
 
 GPIO3.$name              = "MIC2M_MODE_WOS";
 GPIO3.mode               = "Output";
 GPIO3.initialOutputState = "High";
-GPIO3.gpioPin.$assign    = "boosterpack.6";
 
 GPIO4.$name            = "MIC2M_D_OUT_INTRPT";
 GPIO4.interruptTrigger = "Rising Edge";
@@ -95,11 +92,9 @@ GPIO4.interruptTrigger = "Rising Edge";
 GPIO5.$name              = "MIC3R_MODE_WOS";
 GPIO5.mode               = "Output";
 GPIO5.initialOutputState = "High";
-GPIO5.gpioPin.$assign    = "boosterpack.28";
 
 GPIO6.$name            = "MIC3R_D_OUT_INTRPT";
 GPIO6.interruptTrigger = "Rising Edge";
-GPIO6.gpioPin.$assign  = "boosterpack.8";
 
 GPIO7.$name     = "LED_TRIGGER_1";
 GPIO7.mode      = "Output";
@@ -136,22 +131,33 @@ GPIO14.gpioPin.$assign  = "boosterpack.13";
 
 GPIO15.$name            = "BUMPER_5_LEFT";
 GPIO15.interruptTrigger = "Falling Edge";
+GPIO15.pull             = "Pull Up";
+GPIO15.gpioPin.$assign  = "boosterpack.28";
 
 GPIO16.$name            = "BUMPER_4_LEFT";
 GPIO16.interruptTrigger = "Falling Edge";
+GPIO16.pull             = "Pull Up";
+GPIO16.gpioPin.$assign  = "boosterpack.8";
 
 GPIO17.$name            = "BUMPER_3_LEFT";
+GPIO17.pull             = "Pull Up";
 GPIO17.interruptTrigger = "Falling Edge";
+GPIO17.gpioPin.$assign  = "boosterpack.27";
 
 GPIO18.$name            = "BUMPER_2_RIGHT";
+GPIO18.pull             = "Pull Up";
 GPIO18.interruptTrigger = "Falling Edge";
+GPIO18.gpioPin.$assign  = "boosterpack.6";
 
 GPIO19.$name            = "BUMPER_1_RIGHT";
+GPIO19.pull             = "Pull Up";
 GPIO19.interruptTrigger = "Falling Edge";
 GPIO19.gpioPin.$assign  = "boosterpack.25";
 
 GPIO20.$name            = "BUMPER_0_RIGHT";
+GPIO20.pull             = "Pull Up";
 GPIO20.interruptTrigger = "Falling Edge";
+GPIO20.gpioPin.$assign  = "boosterpack.24";
 
 GPIO21.$name           = "TACHO_LEFT_A";
 GPIO21.gpioPin.$assign = "expansion.32";
@@ -224,17 +230,17 @@ ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.33";
 ADCBuf1.adc.$suggestSolution                       = "ADC14";
-GPIO4.gpioPin.$suggestSolution                     = "boosterpack.19";
+GPIO1.gpioPin.$suggestSolution                     = "expansion.28";
+GPIO2.gpioPin.$suggestSolution                     = "boosterpack.14";
+GPIO3.gpioPin.$suggestSolution                     = "expansion.29";
+GPIO4.gpioPin.$suggestSolution                     = "boosterpack.15";
+GPIO5.gpioPin.$suggestSolution                     = "expansion.30";
+GPIO6.gpioPin.$suggestSolution                     = "boosterpack.7";
 GPIO7.gpioPin.$suggestSolution                     = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
 GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE";
-GPIO15.gpioPin.$suggestSolution                    = "boosterpack.38";
-GPIO16.gpioPin.$suggestSolution                    = "boosterpack.34";
-GPIO17.gpioPin.$suggestSolution                    = "boosterpack.14";
-GPIO18.gpioPin.$suggestSolution                    = "boosterpack.15";
-GPIO20.gpioPin.$suggestSolution                    = "boosterpack.7";
-GPIO24.gpioPin.$suggestSolution                    = "expansion.28";
-GPIO25.gpioPin.$suggestSolution                    = "expansion.29";
-GPIO26.gpioPin.$suggestSolution                    = "expansion.30";
+GPIO24.gpioPin.$suggestSolution                    = "boosterpack.34";
+GPIO25.gpioPin.$suggestSolution                    = "boosterpack.38";
+GPIO26.gpioPin.$suggestSolution                    = "boosterpack.19";
 GPIO27.gpioPin.$suggestSolution                    = "expansion.23";
 GPIO28.gpioPin.$suggestSolution                    = "expansion.24";
 GPIO29.gpioPin.$suggestSolution                    = "expansion.25";
