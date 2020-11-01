@@ -43,7 +43,7 @@ public:
 private:
     void _updateRobotCenterPosition(float deltaDistanceCenter);
     void _updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight);
-    uint32_t _approximateRPM(int32_t rpm, int maxRounds, int maxRPMError);
+    uint32_t _reachMMPS(int32_t rpm, int maxRounds, int maxRPMError);
 
     float robotPositionX;
     float robotPositionY;

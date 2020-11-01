@@ -26,4 +26,7 @@
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
 #define SAMPLE_FREQUENCY (5000)
 
+/* Robot Bumpers */
+#define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
+
 #endif // COMMON__H

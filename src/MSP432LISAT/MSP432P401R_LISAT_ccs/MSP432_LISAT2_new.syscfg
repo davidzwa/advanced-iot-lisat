@@ -96,9 +96,10 @@ GPIO5.initialOutputState = "High";
 GPIO6.$name            = "MIC3R_D_OUT_INTRPT";
 GPIO6.interruptTrigger = "Rising Edge";
 
-GPIO7.$name     = "LED_TRIGGER_1";
-GPIO7.mode      = "Output";
-GPIO7.$hardware = system.deviceData.board.components.LED2_GREEN;
+GPIO7.$name           = "LED_TRIGGER_1";
+GPIO7.mode            = "Output";
+GPIO7.$hardware       = system.deviceData.board.components.LED2_GREEN;
+GPIO7.gpioPin.$assign = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
 
 GPIO8.mode               = "Output";
 GPIO8.initialOutputState = "High";
@@ -118,8 +119,9 @@ GPIO11.$name           = "MOTOR_RIGHT_SLEEP";
 GPIO11.mode            = "Output";
 GPIO11.gpioPin.$assign = "boosterpack.11";
 
-GPIO12.$name     = "LED_ERROR_2";
-GPIO12.$hardware = system.deviceData.board.components.LED1_RED;
+GPIO12.$name           = "LED_ERROR_2";
+GPIO12.$hardware       = system.deviceData.board.components.LED1_RED;
+GPIO12.gpioPin.$assign = "P1.0.GPIO/EUSCI_A0_SPI.STE";
 
 GPIO13.$name            = "TACHO_LEFT";
 GPIO13.interruptTrigger = "Both Edges";
@@ -152,7 +154,6 @@ GPIO18.gpioPin.$assign  = "boosterpack.6";
 GPIO19.$name            = "BUMPER_1_RIGHT";
 GPIO19.pull             = "Pull Up";
 GPIO19.interruptTrigger = "Falling Edge";
-GPIO19.pull             = "Pull Up";
 GPIO19.gpioPin.$assign  = "boosterpack.25";
 
 GPIO20.$name            = "BUMPER_0_RIGHT";
@@ -166,22 +167,37 @@ GPIO21.gpioPin.$assign = "expansion.32";
 GPIO22.$name           = "TACHO_RIGHT_A";
 GPIO22.gpioPin.$assign = "expansion.31";
 
+GPIO23.mode            = "Dynamic";
 GPIO23.$name           = "LINE_IR1_RIGHT";
 GPIO23.gpioPin.$assign = "expansion.18";
 
-GPIO24.$name = "LINE_IR2_LEFT";
+GPIO24.mode            = "Dynamic";
+GPIO24.$name           = "LINE_IR2_RIGHT";
+GPIO24.gpioPin.$assign = "expansion.15";
 
-GPIO25.$name = "LINE_IR3_LEFT";
+GPIO25.mode            = "Dynamic";
+GPIO25.$name           = "LINE_IR3_RIGHT";
+GPIO25.gpioPin.$assign = "expansion.16";
 
-GPIO26.$name = "LINE_IR4_LEFT";
+GPIO26.mode            = "Dynamic";
+GPIO26.$name           = "LINE_IR4_RIGHT";
+GPIO26.gpioPin.$assign = "expansion.13";
 
-GPIO27.$name = "LINE_IR5_RIGHT";
+GPIO27.mode            = "Dynamic";
+GPIO27.$name           = "LINE_IR5_LEFT";
+GPIO27.gpioPin.$assign = "expansion.23";
 
-GPIO28.$name = "LINE_IR6_RIGHT";
+GPIO28.mode            = "Dynamic";
+GPIO28.$name           = "LINE_IR6_LEFT";
+GPIO28.gpioPin.$assign = "expansion.24";
 
-GPIO29.$name = "LINE_IR7_RIGHT";
+GPIO29.mode            = "Dynamic";
+GPIO29.$name           = "LINE_IR7_LEFT";
+GPIO29.gpioPin.$assign = "expansion.25";
 
-GPIO30.$name = "LINE_IR8_RIGHT";
+GPIO30.mode            = "Dynamic";
+GPIO30.$name           = "LINE_IR8_LEFT";
+GPIO30.gpioPin.$assign = "expansion.26";
 
 GPIO31.$name           = "LINE_IR_EVEN_BACKLIGHT";
 GPIO31.gpioPin.$assign = "expansion.10";
@@ -216,8 +232,9 @@ UART1.interruptPriority  = "5";
 UART1.uart.txPin.$assign = "boosterpack.3";
 UART1.uart.rxPin.$assign = "boosterpack.4";
 
-LED1.$hardware = system.deviceData.board.components.LED2_BLUE;
-LED1.$name     = "LED_BLUE_0";
+LED1.$hardware               = system.deviceData.board.components.LED2_BLUE;
+LED1.$name                   = "LED_BLUE_0";
+LED1.gpioPin.gpioPin.$assign = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
@@ -237,17 +254,7 @@ GPIO3.gpioPin.$suggestSolution                     = "expansion.29";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.15";
 GPIO5.gpioPin.$suggestSolution                     = "expansion.30";
 GPIO6.gpioPin.$suggestSolution                     = "boosterpack.7";
-GPIO7.gpioPin.$suggestSolution                     = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
-GPIO12.gpioPin.$suggestSolution                    = "P1.0.GPIO/EUSCI_A0_SPI.STE";
-GPIO24.gpioPin.$suggestSolution                    = "boosterpack.34";
-GPIO25.gpioPin.$suggestSolution                    = "boosterpack.38";
-GPIO26.gpioPin.$suggestSolution                    = "boosterpack.19";
-GPIO27.gpioPin.$suggestSolution                    = "expansion.23";
-GPIO28.gpioPin.$suggestSolution                    = "expansion.24";
-GPIO29.gpioPin.$suggestSolution                    = "expansion.25";
-GPIO30.gpioPin.$suggestSolution                    = "expansion.26";
 PWM1.timer.$suggestSolution                        = "Timer_A1";
 PWM2.timer.$suggestSolution                        = "Timer_A1";
 Timer2.timer.$suggestSolution                      = "Timer_A2";
 UART1.uart.$suggestSolution                        = "EUSCI_A2";
-LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
