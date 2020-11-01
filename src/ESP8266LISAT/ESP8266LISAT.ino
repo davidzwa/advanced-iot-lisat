@@ -42,9 +42,12 @@ void user_init(void)
 #endif // NO_BUFFER
 #endif
 
-Serial.begin(serial_baud_rate);
+    Serial.begin(serial_baud_rate);
 #ifdef SERIAL_SWAP_MSP432
+    // Swap to GPIO13/D7 RX, GPIO15/D8 TX
     Serial.swap();
+    // Serial.setDebugOutput(0);
+    // system_set_os_print(0);
 #endif
 
 #ifdef MQTT_CLIENT
@@ -93,7 +96,6 @@ void loop()
         lastMsg = now;
         ++value;
         snprintf(mqqt_msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
-        // Serial.print("Publish message: ");
         client.publish("outTopic", mqqt_msg);
     }
 #endif
