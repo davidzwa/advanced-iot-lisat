@@ -68,14 +68,14 @@ void closeADCBuf() {
 
 void startTimerIfStopped() {
     if (timerStarted == false) {
-        startTimer();
+        startTimerTacho();
         timerStarted = true;
     }
 }
 
 void stopTimerIfStarted() {
     if (timerStarted == true) {
-        stopTimer();
+        stopTimerTacho();
         timerStarted = false;
     }
 }
@@ -86,7 +86,7 @@ uint32_t getCurrentPreciseTime()
 {
     // Timer example
     // https://dev.ti.com/tirex/explore/node?node=AKyVym.I2F89E.1HEd4gnA__z-lQYNj__LATEST
-    return getTimerUs(); // return time in us
+    return getTimerUsTacho(); // return time in us
 }
 
 void initInterruptCallbacks() {

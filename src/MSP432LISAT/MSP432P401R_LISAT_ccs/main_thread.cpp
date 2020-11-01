@@ -55,7 +55,7 @@ void *mainThread(void *arg0)
 //    }
 
     initADCBuf();
-    initTimer();
+    initTimerTacho();
 
     initUARTESP();
     openUARTESP();
