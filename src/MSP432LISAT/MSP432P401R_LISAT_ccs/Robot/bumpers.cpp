@@ -13,7 +13,7 @@ Robot* bRobot;
 long bumper_last_called = 0;
 
 void bumperInterrupt(uint_least8_t index) {
-    if (Clock_getTicks() - bumper_last_called < 1000) { // every second
+    if (Clock_getTicks() - bumper_last_called < BUMPER_DEBOUNCE_INTERVAL) {
         return;
     }
     switch(index) {

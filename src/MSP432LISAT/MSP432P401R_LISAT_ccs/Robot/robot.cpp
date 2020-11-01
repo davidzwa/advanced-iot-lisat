@@ -53,7 +53,7 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
 
     for(int i=0; i<calibrationCount; i++) {
         int32_t targetRPM = requestedRPMs[i];
-        outCalibratedDutyCycles[i] = this->_approximateRPM(targetRPM, 10000, 50);
+        outCalibratedDutyCycles[i] = this->_reachMMPS(targetRPM, 10000, 50);
 
         // 250ms slow-down to lower speed, preventing two calibrations to be triggered after each other
         this->motorDriver->Drive(500,500);
@@ -65,7 +65,7 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
 
 
 // Spin up the wheels until the Tachometers reach the target RPM
-uint32_t Robot::_approximateRPM(int32_t speed_mmps, int maxRounds, int maxTicksError) {
+uint32_t Robot::_reachMMPS(int32_t speed_mmps, int maxRounds, int maxTicksError) {
     int16_t targetTicks = SpeedToTicksPerInterrupt(speed_mmps);
 
     resetTachometerCountValues();
