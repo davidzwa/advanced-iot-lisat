@@ -12,8 +12,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Semaphore.h>
 
-void loopESPSerial_task(void *arg0) {
-    UART_init();
+void threadLoopESPSerial(void *arg0) {
     initUARTESP();
     openUARTESP();
 

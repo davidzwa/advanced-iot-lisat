@@ -19,10 +19,6 @@ int parseHeader(char* buffer) {
 
 void uartCallbackReceived(UART_Handle handle, void* buffer, size_t count) {
     sem_post(&uartbufSem);
-//    int result = parseHeader((char*)buffer);
-//    if (result == 0) {
-//
-//    }
 }
 
 void initUARTESP() {

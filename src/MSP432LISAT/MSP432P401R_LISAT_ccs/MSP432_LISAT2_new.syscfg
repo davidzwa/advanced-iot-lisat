@@ -209,7 +209,6 @@ PWM1.timer.$assign        = "Timer_A1";
 PWM1.timer.pwmPin.$assign = "boosterpack.40";
 
 PWM2.$name                = "MOTOR_RIGHT_PWM";
-PWM2.clockSource          = "ACLK";
 PWM2.timer.$assign        = "Timer_A1";
 PWM2.timer.pwmPin.$assign = "boosterpack.39";
 

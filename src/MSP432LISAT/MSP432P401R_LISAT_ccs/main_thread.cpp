@@ -33,8 +33,10 @@ void *mainThread(void *arg0)
     int32_t status;
 
     /* Call driver init functions */
-    ADCBuf_init();
-    Timer_init();
+    initUARTESP();
+    openUARTESP();
+    initADCBuf();
+    initTimerTacho();
 
 //    Display_init();
 //    /* Configure & open Display driver */
@@ -51,21 +53,14 @@ void *mainThread(void *arg0)
 //        Display_printf(display, 0, 0, "Error creating adcbufSem\n");
 //        while(1);
 //    }
-
-    initADCBuf();
-    initTimerTacho();
   
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
 //    enableMicTriggerInterrupts();
   
-    // Enable IirFilter
-//    filter = new IirFilter();
-//    filter->InitFilterState();
-
     int numBufsSent = 0;
     robot->StartUp();
-    //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
+//    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
 //    writeUARTInfinite(); // BLOCKING for testing
 

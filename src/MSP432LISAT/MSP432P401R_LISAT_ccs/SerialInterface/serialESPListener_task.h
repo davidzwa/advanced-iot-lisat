@@ -4,6 +4,6 @@
 #define SERIALESPLISTENER_TASK_H_
 
 #define TASKSTACKSIZE   512
-void initLoopESPSerialTask();
+void threadLoopESPSerial();
 
 #endif /* SERIALESPLISTENER_TASK_H_ */
