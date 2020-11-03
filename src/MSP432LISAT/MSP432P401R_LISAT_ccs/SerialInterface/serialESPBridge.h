@@ -3,6 +3,6 @@
 
 void initUARTESP();
 void openUARTESP();
-void writeUARTInfinite();
+void waitUARTPacketInfinite();
 
 #endif /* SERIALINTERFACE_UART_ESP_H_ */

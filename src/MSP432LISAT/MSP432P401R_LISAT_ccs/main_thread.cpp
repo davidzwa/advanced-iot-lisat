@@ -1,11 +1,11 @@
 /* DriverLib Includes */
 #include <stdint.h>
 #include <stdio.h>
+#include <SerialInterface/serialDebugInterface.h>
 #include <unistd.h>
 
 // Our common defines and entrypoint
 #include "common.h"
-#include "SerialInterface/serialInterface.h"
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
@@ -34,9 +34,7 @@ void *mainThread(void *arg0)
 
     /* Call driver init functions */
     ADCBuf_init();
-    GPIO_init();
     Timer_init();
-    UART_init();
 
 //    Display_init();
 //    /* Configure & open Display driver */
@@ -56,10 +54,6 @@ void *mainThread(void *arg0)
 
     initADCBuf();
     initTimerTacho();
-
-    initUARTESP();
-    openUARTESP();
-//    writeUARTInfinite(); // BLOCKING for testing
   
 //    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
@@ -71,8 +65,9 @@ void *mainThread(void *arg0)
 
     int numBufsSent = 0;
     robot->StartUp();
+    //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
-//    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
+//    writeUARTInfinite(); // BLOCKING for testing
 
     int speed = 1000;
     robot->motorDriver->DriveForwards(speed);

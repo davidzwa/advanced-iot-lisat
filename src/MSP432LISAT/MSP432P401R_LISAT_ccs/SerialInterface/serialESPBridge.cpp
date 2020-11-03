@@ -44,14 +44,17 @@ void openUARTESP() {
 
     if (uart == NULL) {
         /* UART_open() failed */
+        GPIO_write(LED_ERROR_2, 1);
         while (1);
     }
 }
 
-void writeUARTInfinite() {
+/*
+ * A function to process UART continuously, which is only meant to be done in a task/co-routine context.
+ */
+void waitUARTPacketInfinite() {
     UART_write(uart, echoPrompt, sizeof(echoPrompt));
 
-    /* Loop forever echoing */
     while (1) {
         UART_read(uart, &serialBuffer, 64);
         sem_wait(&uartbufSem);
@@ -59,9 +62,9 @@ void writeUARTInfinite() {
         int result = parseHeader(serialBuffer);
         if (result == 0) {
             GPIO_toggle(LED_TRIGGER_1);
-//            UART_write(uart, echoPrompt, sizeof(echoPrompt));
         }
         else {
+            // Drop the packet and
             GPIO_toggle(LED_ERROR_2);
         }
     }

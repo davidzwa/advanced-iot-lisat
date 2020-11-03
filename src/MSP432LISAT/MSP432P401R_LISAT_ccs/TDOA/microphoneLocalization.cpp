@@ -1,7 +1,7 @@
+#include <SerialInterface/serialDebugInterface.h>
 #include "TDOA/microphoneLocalization.h"
 #include "System/freeRunningTimer.h"
 #include "tdoaAlgorithm.h"
-#include "SerialInterface/serialInterface.h"
 
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;

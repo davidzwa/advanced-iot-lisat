@@ -1,4 +1,4 @@
-#include "serialInterface.h"
+#include <SerialInterface/serialDebugInterface.h>
 
 // States
 bool transmitting = false;
