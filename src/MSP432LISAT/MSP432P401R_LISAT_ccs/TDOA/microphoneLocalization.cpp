@@ -57,6 +57,7 @@ void openADCBuf() {
 
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
+        GPIO_write(LED_ERROR_2, 1);
         while(1);
     }
 }
@@ -79,7 +80,6 @@ void stopTimerIfStarted() {
         timerStarted = false;
     }
 }
-
 
 // CASPER's PLAYGROUND
 uint32_t getCurrentPreciseTime()
@@ -152,7 +152,9 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
         unsigned long inputTOAVector[3] = {lastTriggerMic1L, lastTriggerMic2M, lastTriggerMic3R};
         plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
-
+    }
+    else {
+        GPIO_toggle(LED_ERROR_2, 1);
     }
 
 // Not smart to do in interrupt/callback
@@ -170,7 +172,6 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     stopTimerIfStarted();
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
-
     GPIO_write(LED_TRIGGER_1, 0);
 
     if(mic1LTriggered && mic2MTriggered && mic3RTriggered)

@@ -32,7 +32,6 @@ void *mainThread(void *arg0)
     Display_Params displayParams;
     int32_t status;
     int numBufsSent = 0;
-    initADCBuf();
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     int speed = 1000;
@@ -42,7 +41,6 @@ void *mainThread(void *arg0)
     initTimerTacho();
 
     robot->StartUp();
-
     robot->motorDriver->DriveForwards(speed);
 
     // Some tests/debug things
@@ -66,7 +64,8 @@ void *mainThread(void *arg0)
     }
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
-  
+    initADCBuf();
+    initTimerTacho();
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
     initInterruptCallbacks();
     enableMicTriggerInterrupts();
