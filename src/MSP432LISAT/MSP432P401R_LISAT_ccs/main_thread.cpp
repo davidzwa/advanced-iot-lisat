@@ -98,10 +98,14 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
 
 //         Decide to send ADC buffer over the line
-        for (i = 0; i < ADCBUFFERSIZE; i++) {
+        for (int i = 0; i < ADCBUFFERSIZE; i++) {
             Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
         }
 
+//        Send mic time differences
+        Display_printf(display, 0, 0, "M1.%f", lastTriggerMic1L);
+        Display_printf(display, 0, 0, "M2.%f", lastTriggerMic2M);
+        Display_printf(display, 0, 0, "M3.%f", lastTriggerMic3R);
 //        Send DOA values for either Valin or CTP or algorithm
         Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
         Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
@@ -116,7 +120,7 @@ void *mainThread(void *arg0)
 #endif
     }
 
-//      Old math operations
+//      Old and useful math operations
 //    void DoMathOps()
 //    {
 //     Choose whether to filter or not, filterBuffer can be quite heavy, EMA is very light

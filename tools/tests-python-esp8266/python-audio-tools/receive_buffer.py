@@ -16,8 +16,10 @@ import dataclasses
 import simpleaudio as sa
 from scipy.signal import butter, lfilter, freqz
 
-# Parameters sent over Serial
+# Recognizable parameters sent over Serial
 algo_tag_dir = 'D'  # Direction output of TDOA inversion
+valin_tag_dir = 'Dv'  # Unused Valin tag
+ctp_tag_dir = 'Dp'  # Unused Ctp tag
 data_tag = 'v'
 measure_tag = 'M'
 RMS_tag = 'R'  # RMS value
@@ -46,10 +48,12 @@ if not os.path.exists(os.path.dirname(outputfile)):
         if exc.errno != errno.EEXIST:
             raise
 
+
 def split_data(serial_line, tag):
     decoded_line = serial_line.decode().rstrip()
     split = decoded_line.split(tag + '.')
     return int(split[1])
+
 
 def handle_parsing_error(serial_line):
     global received_sample_exceptions
@@ -129,6 +133,7 @@ def normalize_integer(value_list):
 # plt.xlabel('Frequency [Hz]')
 # plt.grid()
 
+
 fig = plt.figure()
 ax = fig.add_subplot(111)
 sound_vector = list()
@@ -136,111 +141,140 @@ line1, = ax.plot([], 'r-')
 plt.ion()
 plt.show()
 
-recording = False
 lastEspData = EspData()
 espDataSet = list()
 num_rounds = 0
 num_rounds_max = 300
 
-while True:
-    if recording is True:
-        serial_line = ser.readline()
-        if data_tag in str(serial_line):
-            received_samples += 1
-            try:
-                sound_value = split_data(serial_line, data_tag)
-                if sound_value < 16383:
-                    sound_vector.append(sound_value)
-            except Exception as e:
-                # print(traceback.format_exc())
-                handle_parsing_error(serial_line)
-                pass
-        elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
-            if algo_tag_dir + '1' in str(serial_line):
-                lastEspData.algoTdoaDir1 = split_data(
-                    serial_line, algo_tag_dir + '1')
-            elif algo_tag_dir + '2' in str(serial_line):
-                lastEspData.algoTdoaDir2 = split_data(
-                    serial_line, algo_tag_dir + '2')
-            elif algo_tag_dir + '3' in str(serial_line): # only in 4 mic config!
-                lastEspData.algoTdoaDir3 = split_data(
-                    serial_line, algo_tag_dir + '3')
-        elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
-            if measure_tag + '1' in str(serial_line):
-                lastEspData.mic1LTimeUs = split_data(
-                    serial_line, measure_tag + '1')
-            elif measure_tag + '2' in str(serial_line):
-                lastEspData.mic2MTimeUs = split_data(
-                    serial_line, measure_tag + '2')
-            elif measure_tag + '3' in str(serial_line):
-                lastEspData.mic3RTimeUs = split_data(
-                    serial_line, measure_tag + '3')
-            elif param_tag in str(serial_line):
-                lastEspData.samplingRate = split_data(serial_line, param_tag)
-        elif (RMS_tag + separator in str(serial_line)):
-            RMS = split_data(
+
+def do_experiment(x_pos, y_pos):
+
+    recording = False
+    # do something with `num_rounds to repeat x times`
+    while True:
+        if recording is True:
+            serial_line = ser.readline()
+            if data_tag in str(serial_line):
+                received_samples += 1
+                try:
+                    sound_value = split_data(serial_line, data_tag)
+                    if sound_value < 16383:
+                        sound_vector.append(sound_value)
+                except Exception as e:
+                    # print(traceback.format_exc())
+                    handle_parsing_error(serial_line)
+                    pass
+            elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
+                if algo_tag_dir + '1' in str(serial_line):
+                    lastEspData.algoTdoaDir1 = split_data(
+                        serial_line, algo_tag_dir + '1')
+                elif algo_tag_dir + '2' in str(serial_line):
+                    lastEspData.algoTdoaDir2 = split_data(
+                        serial_line, algo_tag_dir + '2')
+                # only in 4 mic config!
+                elif algo_tag_dir + '3' in str(serial_line):
+                    lastEspData.algoTdoaDir3 = split_data(
+                        serial_line, algo_tag_dir + '3')
+            elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
+                if measure_tag + '1' in str(serial_line):
+                    lastEspData.mic1LTimeUs = split_data(
+                        serial_line, measure_tag + '1')
+                elif measure_tag + '2' in str(serial_line):
+                    lastEspData.mic2MTimeUs = split_data(
+                        serial_line, measure_tag + '2')
+                elif measure_tag + '3' in str(serial_line):
+                    lastEspData.mic3RTimeUs = split_data(
+                        serial_line, measure_tag + '3')
+                elif param_tag in str(serial_line):
+                    lastEspData.samplingRate = split_data(
+                        serial_line, param_tag)
+            elif (RMS_tag + separator in str(serial_line)):
+                RMS = split_data(
                     serial_line, RMS_tag)
-            # if RMS >0:
-            print(RMS)
-        elif end_tag in str(serial_line):
-            received_samples = 0
-            rng_filename = "audio/" + get_random_string(3) + base_filename
-            # sound_vector = normalize_integer(sound_vector)
+                # if RMS >0:
+                print(RMS)
+            elif end_tag in str(serial_line):
+                received_samples = 0
+                rng_filename = "audio/" + get_random_string(3) + base_filename
+                # sound_vector = normalize_integer(sound_vector)
 
-            if len(sound_vector) < 200:
+                if len(sound_vector) < 200:
+                    recording = False
+                    continue
+                lastEspData.soundData = sound_vector
+
+                # Calculate RMS
+                sound_array = np.array(sound_vector)
+                lastEspData.rms = np.sqrt(np.mean(sound_array ** 2))
+                # arm_rms_q15 => vergelijken
+                # arm_max_q15 => vergelijken
+
+                print('RMS:', lastEspData.rms)
+
+                espDataSet.append(dataclasses.asdict(lastEspData))
+                dump_dataset(espDataSet, outputfile)
+                num_rounds += 1
+
+                # print(sound_array, rms)
+                # sound_array_filtered = butter_lowpass_filter(sound_array, cutoff, fs, order)
+                # plt.subplot(2, 1, 2)
+                plt.plot(sound_array)
+                # plt.plot(sound_array_filtered)
+
+                # plt.plot(np.fft.fft(sound_array).real**2 +
+                #          np.fft.fft(sound_array).imag**2)
+                plt.draw()
+                # plt.pause(0.01)
+                plt.pause(0.01)  # speakertest
+
+                # input("Press [enter] to continue.")
+                # Perform tasks
+                frequency = 10000
+                # write_audio(sound_vector, 1, frequency, rng_filename)
+                # playsound(rng_filename)
+
+                sound_vector = []
+                time_vector = []
+
+                # Answer back
+                # ser.write(bytes("ati", 'utf-8'))
+                # ser.writelines("V".encode());
                 recording = False
-                continue
-            lastEspData.soundData = sound_vector
-
-            # Calculate RMS
-            sound_array = np.array(sound_vector)
-            lastEspData.rms = np.sqrt(np.mean(sound_array ** 2))
-            # arm_rms_q15 => vergelijken
-            # arm_max_q15 => vergelijken
-
-            print('RMS:', lastEspData.rms)
-
-            espDataSet.append(dataclasses.asdict(lastEspData))
-            dump_dataset(espDataSet, outputfile)
-            num_rounds += 1
-
-            # print(sound_array, rms)
-            # sound_array_filtered = butter_lowpass_filter(sound_array, cutoff, fs, order)
-            # plt.subplot(2, 1, 2)
-            plt.plot(sound_array)
-            # plt.plot(sound_array_filtered)
-           
-            # plt.plot(np.fft.fft(sound_array).real**2 +
-            #          np.fft.fft(sound_array).imag**2)
-            plt.draw()
-            # plt.pause(0.01)
-            plt.pause(0.01) # speakertest
-
-            # input("Press [enter] to continue.")
-            # Perform tasks
-            frequency = 10000
-            # write_audio(sound_vector, 1, frequency, rng_filename)
-            # playsound(rng_filename)
-
-            sound_vector = []
-            time_vector = []
-
-            # Answer back
-            # ser.write(bytes("ati", 'utf-8'))
-            # ser.writelines("V".encode());
-            recording = False
-            # print(num_rounds)
-            # if num_rounds == num_rounds_max:
-            #     print("Enough rounds were performed. Done")
-            #     break
-        # elif overflow_tag in str(serial_line): # wont occur anymore
-        #     print('Buffer overflow exception!')
+                # print(num_rounds)
+                # if num_rounds == num_rounds_max:
+                #     print("Enough rounds were performed. Done")
+                #     break
+            # elif overflow_tag in str(serial_line): # wont occur anymore
+            #     print('Buffer overflow exception!')
+            else:
+                if not any(ext in str(serial_line) for ext in ignore_tags):
+                    print('Unrecognized reception: ', serial_line)
         else:
-            if not any(ext in str(serial_line) for ext in ignore_tags):
-                print('Unrecognized reception: ', serial_line)
-    else:
-        print("Playing sound")
-        wave_obj = sa.WaveObject.from_wave_file("data/audio/fingers_short.wav")
-        play_obj = wave_obj.play()
-        play_obj.wait_done()
-        recording = True
+            print("Playing sound")
+            wave_obj = sa.WaveObject.from_wave_file(
+                "data/audio/fingers_short.wav")
+            play_obj = wave_obj.play()
+            play_obj.wait_done()
+            recording = True
+
+
+if __name__ == '__main__':
+    for experimentIndex in range(0, 10):
+        print("Provide X:")
+        x_value = input()
+        # validate x_value being valid float
+        print("Provide Y:")
+        y_value = input()
+        # validate y_value being valid float
+
+        espDataSet:List[EspData] =do_experiment()
+        # print("Provide info:")
+
+        # create new DataSet
+        dataset = DataSet()
+        dataset.  # lijst toekennen: = espDataSet
+        dataset.PositionX = x_value
+        dataset.PositionY = y_value
+
+        save_experiment(# json file name , dataset)
+        # y_value = input()

@@ -154,20 +154,8 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
         plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
     }
     else {
-        GPIO_toggle(LED_ERROR_2, 1);
+        GPIO_toggle(LED_ERROR_2);
     }
-
-// Not smart to do in interrupt/callback
-//    transmittedData_t serialData = {
-//        lastTriggerMic1L,
-//        lastTriggerMic2M,
-//        lastTriggerMic3R,
-//        outputDirVector2D_valin[0],
-//        outputDirVector2D_valin[1],
-//        CHUNK_LENGTH,
-//        outputBuffer
-//    };
-    //transmitSerialData(&serialData);
 
     stopTimerIfStarted();
     enableMicTriggerInterrupts();

@@ -1,7 +1,7 @@
 #include "tdoaAlgorithm.h"
 #include <math.h> 
 
-// Function : 
+// Valin
 void TDOA_direction_estimation(int TDOA[2], float dir[2])
 {
     // TDOA = array of time differences
@@ -24,6 +24,7 @@ void TDOA_direction_estimation(int TDOA[2], float dir[2])
     dir[1] = dir[1] / mag;
 }
 
+// CTP
 void plane_cutting_direction_estimation(unsigned long TOA[3], float dir[2])
 {
     float X_pair[3][2] =  {{ 0.866f, -0.5f},{ 0.0f, -1.0f},{ -0.866f, -0.5f}};

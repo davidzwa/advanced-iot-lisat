@@ -31,9 +31,9 @@ int16_t rms_filt;
 sem_t adcbufSem;
 
 extern bool startAdcSampling;
-extern uint32_t lastTriggerMic1;
-extern uint32_t lastTriggerMic2;
-extern uint32_t lastTriggerMic3;
+extern unsigned long lastTriggerMic1L;
+extern unsigned long lastTriggerMic2M;
+extern unsigned long lastTriggerMic3R;
 
 // CASPER's TDOA PLAYGROUND
 
