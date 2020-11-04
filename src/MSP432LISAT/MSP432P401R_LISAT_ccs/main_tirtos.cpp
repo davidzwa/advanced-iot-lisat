@@ -13,6 +13,7 @@
 /* Driver configuration */
 #include "common.h"
 #include <ti/drivers/GPIO.h>
+#include <ti/drivers/PWM.h>
 #include <ti/drivers/Board.h>
 
 #include "SerialInterface/serialESPListener_task.h"
@@ -36,8 +37,9 @@ int main(void)
     /* Call driver init functions */
     Board_init();
 
-    // Initialize peripherals as some are shared between threads
+    /* Call driver init functions */
     ADCBuf_init();
+    PWM_init();
     Timer_init();
     GPIO_init();
     UART_init();
@@ -64,6 +66,7 @@ int main(void)
         while (1) {}
     }
 
+#if MSP_MIC_MEASUREMENT_PC_MODE==0
     // -- Serial ESP Thread
     priParam.sched_priority = 2;
     if (retc != 0) {
@@ -77,6 +80,7 @@ int main(void)
         GPIO_write(LED_ERROR_2, 1);
         while (1) {}
     }
+#endif
 
     BIOS_start();
 
