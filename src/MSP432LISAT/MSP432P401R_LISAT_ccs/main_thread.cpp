@@ -64,6 +64,8 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "Error creating adcbufSem\n");
         while(1);
     }
+
+    Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
   
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
     initInterruptCallbacks();
