@@ -12,12 +12,16 @@
 #include "TDOA/microphoneLocalization.h""
 
 //#include "DSP/fft.h"
-//#include "DSP/iirFilter.h"
+#include "DSP/iirFilter.h"
 
 /* DSP LPF Filter */
-//IirFilter* filter;
+IirFilter* filter;
 
 int32_t buffersCompletedCounter = 0;
+uint32_t maxIndex;
+uint32_t minIndex;
+int16_t minValue;
+int16_t maxValue;
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -87,10 +91,16 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "\r\n", //Buffer %u finished:
             (unsigned int)buffersCompletedCounter++);
 
+//        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
+        arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex);
+        Display_printf(display, 0, 0, "Mi.%d", minValue);
+        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
+        Display_printf(display, 0, 0, "Ma.%d", maxValue);
+
 //         Decide to send ADC buffer over the line
-//        for (i = 0; i < ADCBUFFERSIZE; i++) {
-//            Display_printf(display, 0, 0, "v.%d", outputBuffer_filtered[i]);
-//        }
+        for (i = 0; i < ADCBUFFERSIZE; i++) {
+            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
+        }
 
 //        Send DOA values for either Valin or CTP or algorithm
         Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
@@ -101,8 +111,7 @@ void *mainThread(void *arg0)
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
         arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
         Display_printf(display, 0, 0, "R.%d", rms);
-
-        Display_printf(display, 0, 0, "Sem++");
+        Display_printf(display, 0, 0, "--Done");
         numBufsSent++;
 #endif
     }
@@ -112,10 +121,11 @@ void *mainThread(void *arg0)
 //    {
 //     Choose whether to filter or not, filterBuffer can be quite heavy, EMA is very light
 //        filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
-//        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
+//
 //        int16_t maxValue;
 //        uint32_t maxIndex;
 //        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
+//        arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex)
 //        Display_printf(display, 0, 0, "%d", maxValue);
 //        doFFT(outputBuffer_filtered, fftOutput);
 //        arm_correlate_q15(outputBuffer_filtered, CHUNK_LENGTH, audioVector, AUDIO_LENGTH, correlation);

@@ -16,11 +16,13 @@ import dataclasses
 import simpleaudio as sa
 from scipy.signal import butter, lfilter, freqz
 
+# Parameters sent over Serial
+algo_tag_dir = 'D'  # Direction output of TDOA inversion
 data_tag = 'v'
 measure_tag = 'M'
 RMS_tag = 'R'  # RMS value
-algo_tag_dir = 'D'  # Direction output of TDOA inversion
 param_tag = 'P'  # Can be made generic to specify 'what parameter'
+
 separator = '.'
 end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
@@ -238,7 +240,7 @@ while True:
                 print('Unrecognized reception: ', serial_line)
     else:
         print("Playing sound")
-        wave_obj = sa.WaveObject.from_wave_file("audio/fingers_shortest2.wav")
+        wave_obj = sa.WaveObject.from_wave_file("data/audio/fingers_short.wav")
         play_obj = wave_obj.play()
         play_obj.wait_done()
         recording = True

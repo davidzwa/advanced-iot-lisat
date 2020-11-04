@@ -4,12 +4,20 @@ import numpy as np
 
 @dataclass
 class EspData(object):
-    algoTdoaDir1: float = None
-    algoTdoaDir2: float = None
-    algoTdoaDir3: float = None
-    samplingRate: int = None
-    rms: float = None
-    soundData: np.ndarray = None
     mic1LTimeUs: int = None
     mic2MTimeUs: int = None
     mic3RTimeUs: int = None
+
+    # Valin
+    algoTdoaDirX: float = None
+    algoTdoaDirY: float = None
+    
+    # CTP
+    algoCTPDirX: float = None
+    algoCTPDirY: float = None
+
+    min: int = None
+    max: int = None
+    rms: float = None
+    samplingRate: int = None
+    soundData: np.ndarray = None
