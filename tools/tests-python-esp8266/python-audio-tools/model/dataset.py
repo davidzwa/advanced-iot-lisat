@@ -1,21 +1,20 @@
 from typing import List
 from dataclasses import dataclass
 import numpy as np
-from espdata import EspData
-
+from model.espdata import EspData
 
 @dataclass
 class DataSet(object):
-    espDataSets: List[EspData]
+    espDataSets: List[EspData] = None
     positionExperimentX: int = None
     positionExperimentY: int = None
-    metadata: string = ""
+    metadata: str = ""
 
 
 # loopen a.h.v. sets [...10*(X,Y)]
     # input:
     # -- X
-    # -- Y
+    # -- Ys
     # -- info
 
     # experiment: save

@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import json
 import datetime
 from model.espdata import EspData
+from model.dataset import DataSet
 import dataclasses
 import simpleaudio as sa
 from scipy.signal import butter, lfilter, freqz
@@ -29,7 +30,7 @@ separator = '.'
 end_tag = '--Done'
 overflow_tag = '!Buffer overflow'
 ignore_tags = ['scandone', 'reconnect after', 'reconnect']
-ser = serial.Serial('COM6', 115200)  # 1000000
+ser = serial.Serial('COM4', 115200)  # 1000000
 ser.flushInput()
 data = []
 received_samples = 0
@@ -52,15 +53,15 @@ if not os.path.exists(os.path.dirname(outputfile)):
 def split_data(serial_line, tag):
     decoded_line = serial_line.decode().rstrip()
     split = decoded_line.split(tag + '.')
-    return int(split[1])
+    return int(float(split[1]))
 
 
 def handle_parsing_error(serial_line):
     global received_sample_exceptions
     print('illegal line or parsing error', serial_line)
     received_sample_exceptions = received_sample_exceptions + 1
-    if received_sample_exceptions > received_sample_exceptions_limit:
-        exit('Too many wrong data samples received (>100). Please debug.')
+    # if received_sample_exceptions > received_sample_exceptions_limit:
+    #     exit('Too many wrong data samples received (>100). Please debug.')
 
 
 def get_random_string(length):
@@ -136,35 +137,38 @@ def normalize_integer(value_list):
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-sound_vector = list()
 line1, = ax.plot([], 'r-')
 plt.ion()
 plt.show()
 
-lastEspData = EspData()
-espDataSet = list()
-num_rounds = 0
-num_rounds_max = 300
-
+#espDataSet = list()
 
 def do_experiment(x_pos, y_pos):
-
+    num_rounds = 0
+    num_rounds_max = 2
+    sound_vector = list()
+    received_samples = 0
     recording = False
+    lastEspData = EspData()
+    espDataSet = list()    
     # do something with `num_rounds to repeat x times`
-    while True:
+    while num_rounds < num_rounds_max:
         if recording is True:
             serial_line = ser.readline()
             if data_tag in str(serial_line):
+                print('data')
                 received_samples += 1
                 try:
                     sound_value = split_data(serial_line, data_tag)
                     if sound_value < 16383:
                         sound_vector.append(sound_value)
                 except Exception as e:
+                    print(e)
                     # print(traceback.format_exc())
                     handle_parsing_error(serial_line)
                     pass
             elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
+                print('algo_tag_dir')
                 if algo_tag_dir + '1' in str(serial_line):
                     lastEspData.algoTdoaDir1 = split_data(
                         serial_line, algo_tag_dir + '1')
@@ -176,6 +180,7 @@ def do_experiment(x_pos, y_pos):
                     lastEspData.algoTdoaDir3 = split_data(
                         serial_line, algo_tag_dir + '3')
             elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
+                print('measure_tag, param_tag')
                 if measure_tag + '1' in str(serial_line):
                     lastEspData.mic1LTimeUs = split_data(
                         serial_line, measure_tag + '1')
@@ -189,6 +194,7 @@ def do_experiment(x_pos, y_pos):
                     lastEspData.samplingRate = split_data(
                         serial_line, param_tag)
             elif (RMS_tag + separator in str(serial_line)):
+                print('RMS_tag')
                 RMS = split_data(
                     serial_line, RMS_tag)
                 # if RMS >0:
@@ -200,6 +206,7 @@ def do_experiment(x_pos, y_pos):
 
                 if len(sound_vector) < 200:
                     recording = False
+                    print('sound_vector length too short')
                     continue
                 lastEspData.soundData = sound_vector
 
@@ -256,7 +263,8 @@ def do_experiment(x_pos, y_pos):
             play_obj = wave_obj.play()
             play_obj.wait_done()
             recording = True
-
+    # num_rounds done 
+    return espDataSet
 
 if __name__ == '__main__':
     for experimentIndex in range(0, 10):
@@ -267,14 +275,14 @@ if __name__ == '__main__':
         y_value = input()
         # validate y_value being valid float
 
-        espDataSet:List[EspData] =do_experiment()
+        singleLocationSet: List[EspData] = do_experiment(x_value, y_value)
         # print("Provide info:")
 
         # create new DataSet
         dataset = DataSet()
-        dataset.  # lijst toekennen: = espDataSet
+        dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
         dataset.PositionX = x_value
         dataset.PositionY = y_value
-
-        save_experiment(# json file name , dataset)
-        # y_value = input()
+        
+        dump_dataset(dataset, outputfile)
+        # save_experiment("test" , dataset)
