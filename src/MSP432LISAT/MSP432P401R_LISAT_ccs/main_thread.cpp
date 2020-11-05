@@ -97,6 +97,7 @@ void *mainThread(void *arg0)
             Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
         }
 
+        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE);
         Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
 //        Send mic time differences
