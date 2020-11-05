@@ -157,6 +157,7 @@ def do_experiment(x_pos, y_pos):
             serial_line = ser.readline()
             if valin_tag_dir in str(serial_line):
                 # Do something with valin tag?
+                pass
             elif data_tag in str(serial_line):
                 print('data: ', serial_line)
                 received_samples += 1
