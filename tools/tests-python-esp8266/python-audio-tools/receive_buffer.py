@@ -25,6 +25,8 @@ data_tag = 'v'
 measure_tag = 'M'
 RMS_tag = 'R'  # RMS value
 param_tag = 'P'  # Can be made generic to specify 'what parameter'
+data_max_tag = 'Ma' # Maximum and Minimum value from buffer data
+data_min_tag = 'Mi'
 
 separator = '.'
 end_tag = '--Done'
@@ -155,7 +157,13 @@ def do_experiment(x_pos, y_pos):
     while num_rounds < num_rounds_max:
         if recording is True:
             serial_line = ser.readline()
-            if valin_tag_dir in str(serial_line):
+            if data_max_tag in str(serial_line):
+                lastEspData.max = split_data(
+                        serial_line, data_max_tag)
+            elif data_min_tag in str(serial_line):
+                lastEspData.min = split_data(
+                        serial_line, data_min_tag)               
+            elif valin_tag_dir in str(serial_line):
                 if valin_tag_dir + '1' in str(serial_line):
                     # process valin tag 1
                     pass
