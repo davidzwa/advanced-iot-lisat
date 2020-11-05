@@ -103,9 +103,9 @@ void *mainThread(void *arg0)
         }
 
 //        Send mic time differences
-        Display_printf(display, 0, 0, "M1.%f", lastTriggerMic1L);
-        Display_printf(display, 0, 0, "M2.%f", lastTriggerMic2M);
-        Display_printf(display, 0, 0, "M3.%f", lastTriggerMic3R);
+        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
+        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
+        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
 //        Send DOA values for either Valin or CTP or algorithm
         Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
         Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
