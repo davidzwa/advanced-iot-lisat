@@ -72,8 +72,8 @@ float calculateTicksPerInterruptRight() {
 
 void initTachometers() {
     // Setup the hooks for the tachometers ISRs
-    GPIO_setCallback(TACHO_LEFT, tachoLeftInterrupt);
-    GPIO_setCallback(TACHO_RIGHT, tachoRightInterrupt);
+    GPIO_setCallback(TACHO_LEFT_B, tachoLeftInterrupt);
+    GPIO_setCallback(TACHO_RIGHT_B, tachoRightInterrupt);
 }
 
 void enableTachometerInterrupts() {
@@ -83,14 +83,14 @@ void enableTachometerInterrupts() {
     lastTicksLeft = getTimerUsTacho();
     lastTicksRight = getTimerUsTacho();
 
-    GPIO_enableInt(TACHO_LEFT);
-    GPIO_enableInt(TACHO_RIGHT);
+    GPIO_enableInt(TACHO_LEFT_B);
+    GPIO_enableInt(TACHO_RIGHT_B);
 }
 
 void disableTachometerInterrupts() {
     stopTimerTacho();
-    GPIO_disableInt(TACHO_LEFT);
-    GPIO_disableInt(TACHO_RIGHT);
+    GPIO_disableInt(TACHO_LEFT_B);
+    GPIO_disableInt(TACHO_RIGHT_B);
 }
 
 void tachoLeftInterrupt(uint_least8_t index) {

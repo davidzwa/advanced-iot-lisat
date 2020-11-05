@@ -3,14 +3,8 @@
 #ifndef TDOA_DIFFTIMER_H_
 #define TDOA_DIFFTIMER_H_
 
-Timer_Handle timer0;
-Timer_Handle timer1;
+Timer_Handle timer33Khz;
 Timer_Params params;
-
-void initTimer();
-void startTimer();
-void stopTimer();
-uint32_t getTimerUs();
 
 void initTimerTacho();
 void startTimerTacho();

@@ -53,7 +53,6 @@ const Power    = scripting.addModule("/ti/drivers/Power");
 const RTOS     = scripting.addModule("/ti/drivers/RTOS");
 const Timer    = scripting.addModule("/ti/drivers/Timer", {}, false);
 const Timer1   = Timer.addInstance();
-const Timer2   = Timer.addInstance();
 const UART     = scripting.addModule("/ti/drivers/UART", {}, false);
 const UART1    = UART.addInstance();
 const LED      = scripting.addModule("/ti/drivers/apps/LED", {}, false);
@@ -123,12 +122,12 @@ GPIO12.$name           = "LED_ERROR_2";
 GPIO12.$hardware       = system.deviceData.board.components.LED1_RED;
 GPIO12.gpioPin.$assign = "P1.0.GPIO/EUSCI_A0_SPI.STE";
 
-GPIO13.$name            = "TACHO_LEFT";
 GPIO13.interruptTrigger = "Both Edges";
+GPIO13.$name            = "TACHO_LEFT_B";
 GPIO13.gpioPin.$assign  = "boosterpack.12";
 
-GPIO14.$name            = "TACHO_RIGHT";
 GPIO14.interruptTrigger = "Both Edges";
+GPIO14.$name            = "TACHO_RIGHT_B";
 GPIO14.gpioPin.$assign  = "boosterpack.13";
 
 GPIO15.$name            = "BUMPER_5_LEFT";
@@ -206,9 +205,11 @@ GPIO32.$name           = "LINE_IR_ODD_BACKLIGHT";
 GPIO32.gpioPin.$assign = "expansion.9";
 
 PWM1.$name                = "MOTOR_LEFT_PWM";
+PWM1.timer.$assign        = "Timer_A1";
 PWM1.timer.pwmPin.$assign = "boosterpack.40";
 
 PWM2.$name                = "MOTOR_RIGHT_PWM";
+PWM2.timer.$assign        = "Timer_A1";
 PWM2.timer.pwmPin.$assign = "boosterpack.39";
 
 Power.initialPerformanceLevel = 3;
@@ -219,12 +220,8 @@ Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
 
 RTOS.timer0.resource.$assign = "Timer_A0";
 
-Timer1.$name             = "CONFIG_TIMER_0_US_MEASURE";
-Timer1.interruptPriority = "1";
-Timer1.timerType         = "32 Bits";
-Timer1.timer.$assign     = "TIMER32_0";
-
-Timer2.$name = "TIMER_TACHO_MEASURE";
+Timer1.$name         = "TIMER_FREE_MEASURE";
+Timer1.timer.$assign = "Timer_A3";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
@@ -232,9 +229,8 @@ UART1.interruptPriority  = "5";
 UART1.uart.txPin.$assign = "boosterpack.3";
 UART1.uart.rxPin.$assign = "boosterpack.4";
 
-LED1.$hardware               = system.deviceData.board.components.LED2_BLUE;
-LED1.$name                   = "LED_BLUE_0";
-LED1.gpioPin.gpioPin.$assign = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
+LED1.$hardware = system.deviceData.board.components.LED2_BLUE;
+LED1.$name     = "LED_BLUE_0";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
@@ -244,7 +240,7 @@ LED1.gpioPin.gpioPin.$assign = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
 Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A2";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.33";
 ADCBuf1.adc.$suggestSolution                       = "ADC14";
@@ -254,7 +250,5 @@ GPIO3.gpioPin.$suggestSolution                     = "expansion.29";
 GPIO4.gpioPin.$suggestSolution                     = "boosterpack.15";
 GPIO5.gpioPin.$suggestSolution                     = "expansion.30";
 GPIO6.gpioPin.$suggestSolution                     = "boosterpack.7";
-PWM1.timer.$suggestSolution                        = "Timer_A1";
-PWM2.timer.$suggestSolution                        = "Timer_A1";
-Timer2.timer.$suggestSolution                      = "Timer_A2";
-UART1.uart.$suggestSolution                        = "EUSCI_A2";
+UART1.uart.$suggestSolution                        = "EUSCI_A1";
+LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";

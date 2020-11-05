@@ -16,6 +16,7 @@ scipy = "*"
 asyncio = "*"
 aioconsole = "*"
 aioserial = "*"
+paho-mqtt = "*"
 
 [requires]
 python_version = "3.7"

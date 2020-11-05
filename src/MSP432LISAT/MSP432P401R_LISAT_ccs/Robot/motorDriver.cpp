@@ -3,7 +3,7 @@
 
 MotorDriver::MotorDriver()
 {
-    PWM_init();
+    // We init the PWM before the BIOS starts
 }
 
 void MotorDriver::Initialize() {

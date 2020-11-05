@@ -13,11 +13,11 @@ sem_t uartbufSem; // Easy lock on receiving
 // COMMANDS
 const char INFO[] = "MSP!";
 
-int parsePacket(char* buffer) {
+int parseHeader(char* buffer) {
     return strncmp(buffer, INFO, 4);
 }
 
-void uartCallbactReceived(UART_Handle handle, void* buffer, size_t count) {
+void uartCallbackReceived(UART_Handle handle, void* buffer, size_t count) {
     sem_post(&uartbufSem);
 }
 
@@ -29,7 +29,7 @@ void initUARTESP() {
     uartParams.readReturnMode = UART_RETURN_NEWLINE;
     uartParams.readMode = UART_MODE_CALLBACK;
     uartParams.readEcho = UART_ECHO_OFF;
-    uartParams.readCallback = uartCallbactReceived;
+    uartParams.readCallback = uartCallbackReceived;
     uartParams.baudRate = 115200;
 
     sem_init(&uartbufSem, 0, 0);
@@ -40,24 +40,27 @@ void openUARTESP() {
 
     if (uart == NULL) {
         /* UART_open() failed */
+        GPIO_write(LED_ERROR_2, 1);
         while (1);
     }
 }
 
-void writeUARTInfinite() {
+/*
+ * A function to process UART continuously, which is only meant to be done in a task/co-routine context.
+ */
+void waitUARTPacketInfinite() {
     UART_write(uart, echoPrompt, sizeof(echoPrompt));
 
-    /* Loop forever echoing */
     while (1) {
         UART_read(uart, &serialBuffer, 64);
         sem_wait(&uartbufSem);
 
-        int result = parsePacket(serialBuffer);
+        int result = parseHeader(serialBuffer);
         if (result == 0) {
             GPIO_toggle(LED_TRIGGER_1);
-            UART_write(uart, echoPrompt, sizeof(echoPrompt));
         }
         else {
+            // Drop the packet and
             GPIO_toggle(LED_ERROR_2);
         }
     }

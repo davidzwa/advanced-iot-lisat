@@ -1,7 +1,7 @@
+#include <SerialInterface/serialDebugInterface.h>
 #include "TDOA/microphoneLocalization.h"
 #include "System/freeRunningTimer.h"
 #include "tdoaAlgorithm.h"
-#include "SerialInterface/serialInterface.h"
 
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;
@@ -57,6 +57,7 @@ void openADCBuf() {
 
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
+        GPIO_write(LED_ERROR_2, 1);
         while(1);
     }
 }
@@ -68,25 +69,24 @@ void closeADCBuf() {
 
 void startTimerIfStopped() {
     if (timerStarted == false) {
-        startTimer();
+        startTimerTacho();
         timerStarted = true;
     }
 }
 
 void stopTimerIfStarted() {
     if (timerStarted == true) {
-        stopTimer();
+        stopTimerTacho();
         timerStarted = false;
     }
 }
-
 
 // CASPER's PLAYGROUND
 uint32_t getCurrentPreciseTime()
 {
     // Timer example
     // https://dev.ti.com/tirex/explore/node?node=AKyVym.I2F89E.1HEd4gnA__z-lQYNj__LATEST
-    return getTimerUs(); // return time in us
+    return getTimerUsTacho(); // return time in us
 }
 
 void initInterruptCallbacks() {
@@ -97,6 +97,9 @@ void initInterruptCallbacks() {
 
 void enableMicTriggerInterrupts()
 {
+    GPIO_clearInt(MIC1L_D_OUT_INTRPT);
+    GPIO_clearInt(MIC2M_D_OUT_INTRPT);
+    GPIO_clearInt(MIC3R_D_OUT_INTRPT);
     GPIO_enableInt(MIC1L_D_OUT_INTRPT);
     GPIO_enableInt(MIC2M_D_OUT_INTRPT);
     GPIO_enableInt(MIC3R_D_OUT_INTRPT);
@@ -152,25 +155,14 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
         unsigned long inputTOAVector[3] = {lastTriggerMic1L, lastTriggerMic2M, lastTriggerMic3R};
         plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
-
     }
-
-// Not smart to do in interrupt/callback
-//    transmittedData_t serialData = {
-//        lastTriggerMic1L,
-//        lastTriggerMic2M,
-//        lastTriggerMic3R,
-//        outputDirVector2D_valin[0],
-//        outputDirVector2D_valin[1],
-//        CHUNK_LENGTH,
-//        outputBuffer
-//    };
-    //transmitSerialData(&serialData);
+    else {
+        GPIO_toggle(LED_ERROR_2);
+    }
 
     stopTimerIfStarted();
     enableMicTriggerInterrupts();
     resetWosMicMode(); // Reset all mics: we are ready for a new round
-
     GPIO_write(LED_TRIGGER_1, 0);
 
     if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
@@ -184,6 +176,10 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
 void interruptMic1LTriggered(uint_least8_t index)
 {
+    if (mic1LTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic1LTriggered = true;
     startTimerIfStopped();
     lastTriggerMic1L = getCurrentPreciseTime();
@@ -193,6 +189,10 @@ void interruptMic1LTriggered(uint_least8_t index)
 
 void interruptMic2MTriggered(uint_least8_t index)
 {
+    if (mic2MTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic2MTriggered = true;
     startTimerIfStopped();
     lastTriggerMic2M = getCurrentPreciseTime();
@@ -202,6 +202,10 @@ void interruptMic2MTriggered(uint_least8_t index)
 
 void interruptMic3RTriggered(uint_least8_t index)
 {
+    if (mic3RTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic3RTriggered = true;
     startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();
