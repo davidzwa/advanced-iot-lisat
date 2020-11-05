@@ -155,8 +155,10 @@ def do_experiment(x_pos, y_pos):
     while num_rounds < num_rounds_max:
         if recording is True:
             serial_line = ser.readline()
-            if data_tag in str(serial_line):
-                print('data')
+            if valin_tag_dir in str(serial_line):
+                # Do something with valin tag?
+            elif data_tag in str(serial_line):
+                print('data: ', serial_line)
                 received_samples += 1
                 try:
                     sound_value = split_data(serial_line, data_tag)
@@ -168,7 +170,7 @@ def do_experiment(x_pos, y_pos):
                     handle_parsing_error(serial_line)
                     pass
             elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
-                print('algo_tag_dir')
+                print('algo_tag_dir', str(serial_line))
                 if algo_tag_dir + '1' in str(serial_line):
                     lastEspData.algoTdoaDir1 = split_data(
                         serial_line, algo_tag_dir + '1')
@@ -180,7 +182,7 @@ def do_experiment(x_pos, y_pos):
                     lastEspData.algoTdoaDir3 = split_data(
                         serial_line, algo_tag_dir + '3')
             elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
-                print('measure_tag, param_tag')
+                print('measure_tag, param_tag: ', str(serial_line))
                 if measure_tag + '1' in str(serial_line):
                     lastEspData.mic1LTimeUs = split_data(
                         serial_line, measure_tag + '1')
