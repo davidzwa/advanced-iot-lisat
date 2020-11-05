@@ -6,9 +6,9 @@ from model.espdata import EspData
 @dataclass
 class DataSet(object):
     espDataSets: List[EspData] = None
-    positionExperimentX: int = None
-    positionExperimentY: int = None
-    metadata: str = ""
+    positionX: int = None
+    positionY: int = None
+    metadata: str = None
 
 
 # loopen a.h.v. sets [...10*(X,Y)]
