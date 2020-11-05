@@ -164,19 +164,21 @@ def do_experiment(x_pos, y_pos):
                 lastEspData.min = split_data(
                         serial_line, data_min_tag)               
             elif valin_tag_dir in str(serial_line):
+                print('valin: ', serial_line)
                 if valin_tag_dir + '1' in str(serial_line):
-                    # process valin tag 1
-                    pass
+                    lastEspData.algoTdoaDirX = split_data(
+                        serial_line, valin_tag_dir + '1')
                 elif valin_tag_dir + '2' in str(serial_line):
-                    # process valin tag 2
-                    pass
+                    lastEspData.algoTdoaDirY = split_data(
+                        serial_line, valin_tag_dir + '2')
             elif ctp_tag_dir in str(serial_line):
+                print('ctp: ', serial_line)
                 if ctp_tag_dir + '1' in str(serial_line):
-                    # process ctp tag 1
-                    pass
+                    lastEspData.algoCTPDirX = split_data(
+                        serial_line, ctp_tag_dir + '1')
                 elif ctp_tag_dir + '2' in str(serial_line):
-                    # process ctp tag 2 
-                    pass
+                    lastEspData.algoCTPDirY = split_data(
+                        serial_line, ctp_tag_dir + '2')
             elif data_tag in str(serial_line):
                 print('data: ', serial_line)
                 received_samples += 1
@@ -190,17 +192,18 @@ def do_experiment(x_pos, y_pos):
                     handle_parsing_error(serial_line)
                     pass
             elif algo_tag_dir in str(serial_line) and separator in str(serial_line):
-                print('algo_tag_dir', str(serial_line))
-                if algo_tag_dir + '1' in str(serial_line):
-                    lastEspData.algoTdoaDir1 = split_data(
-                        serial_line, algo_tag_dir + '1')
-                elif algo_tag_dir + '2' in str(serial_line):
-                    lastEspData.algoTdoaDir2 = split_data(
-                        serial_line, algo_tag_dir + '2')
-                # only in 4 mic config!
-                elif algo_tag_dir + '3' in str(serial_line):
-                    lastEspData.algoTdoaDir3 = split_data(
-                        serial_line, algo_tag_dir + '3')
+                # print('algo_tag_dir', str(serial_line))
+                # if algo_tag_dir + '1' in str(serial_line):
+                #     lastEspData.algoTdoaDir1 = split_data(
+                #         serial_line, algo_tag_dir + '1')
+                # elif algo_tag_dir + '2' in str(serial_line):
+                #     lastEspData.algoTdoaDir2 = split_data(
+                #         serial_line, algo_tag_dir + '2')
+                # # only in 4 mic config!
+                # elif algo_tag_dir + '3' in str(serial_line):
+                #     lastEspData.algoTdoaDir3 = split_data(
+                #         serial_line, algo_tag_dir + '3')
+                pass
             elif (measure_tag in str(serial_line) or param_tag in str(serial_line)) and separator in str(serial_line):
                 print('measure_tag, param_tag: ', str(serial_line))
                 if measure_tag + '1' in str(serial_line):
