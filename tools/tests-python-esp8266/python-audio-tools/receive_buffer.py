@@ -289,16 +289,13 @@ if __name__ == '__main__':
         y_value = input()
         # validate y_value being valid float
 
-    
-
         singleLocationSet: List[EspData] = do_experiment(x_value, y_value)
         # print("Provide info:")
 
         # create new DataSet
         dataset = DataSet()
-        dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
+        #dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
         dataset.positionX = x_value
         dataset.positionY = y_value
         print(dataset)
-        dump_dataset(dataset, outputfile)
-        # save_experiment("test" , dataset)
+        dump_dataset(dataclasses.asdict(dataset), outputfile)
