@@ -294,7 +294,7 @@ if __name__ == '__main__':
 
         # create new DataSet
         dataset = DataSet()
-        #dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
+        dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
         dataset.positionX = x_value
         dataset.positionY = y_value
         print(dataset)
