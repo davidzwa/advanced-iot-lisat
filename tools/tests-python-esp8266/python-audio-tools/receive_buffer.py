@@ -39,7 +39,7 @@ received_sample_exceptions_limit = 100
 last_sample = ''
 base_filename = 'output2.wav'
 dirname = os.path.dirname(__file__)
-outputfile = 'data/audio/output_experiment/dataset-' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
+outputfile = 'data/output_experiment/dataset-' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + \
     '.json'
 print(outputfile)
 if not os.path.exists(os.path.dirname(outputfile)):
