@@ -93,9 +93,9 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
 
 //         Decide to send ADC buffer over the line
-        for (int i = 0; i < ADCBUFFERSIZE; i++) {
-            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
-        }
+//        for (int i = 0; i < ADCBUFFERSIZE; i++) {
+//            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
+//        }
 
         Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE);
         Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);

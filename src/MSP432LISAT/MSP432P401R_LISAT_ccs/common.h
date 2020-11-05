@@ -25,9 +25,9 @@
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
 
 #define NUM_ADC_CHANNELS (1)
-#define CHUNK_LENGTH     1024
+#define CHUNK_LENGTH     512
 #define ADCBUFFERSIZE    (CHUNK_LENGTH)
-#define SAMPLE_FREQUENCY (5000)
+#define SAMPLE_FREQUENCY (10000)
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)

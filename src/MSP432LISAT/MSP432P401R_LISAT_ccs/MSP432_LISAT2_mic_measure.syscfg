@@ -223,8 +223,9 @@ Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
 
 RTOS.timer0.resource.$assign = "Timer_A0";
 
-Timer1.$name         = "TIMER_FREE_MEASURE";
-Timer1.timer.$assign = "Timer_A3";
+Timer1.$name             = "TIMER_FREE_MEASURE";
+Timer1.interruptPriority = "1";
+Timer1.timerType         = "32 Bits";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
@@ -250,5 +251,6 @@ ADCBuf1.adc.$suggestSolution                       = "ADC14";
 GPIO16.gpioPin.$suggestSolution                    = "boosterpack.34";
 GPIO18.gpioPin.$suggestSolution                    = "boosterpack.14";
 GPIO19.gpioPin.$suggestSolution                    = "boosterpack.15";
+Timer1.timer.$suggestSolution                      = "TIMER32_0";
 UART1.uart.$suggestSolution                        = "EUSCI_A1";
 LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
