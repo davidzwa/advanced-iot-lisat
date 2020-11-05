@@ -97,6 +97,9 @@ void initInterruptCallbacks() {
 
 void enableMicTriggerInterrupts()
 {
+    GPIO_clearInt(MIC1L_D_OUT_INTRPT);
+    GPIO_clearInt(MIC2M_D_OUT_INTRPT);
+    GPIO_clearInt(MIC3R_D_OUT_INTRPT);
     GPIO_enableInt(MIC1L_D_OUT_INTRPT);
     GPIO_enableInt(MIC2M_D_OUT_INTRPT);
     GPIO_enableInt(MIC3R_D_OUT_INTRPT);
@@ -173,6 +176,10 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
 void interruptMic1LTriggered(uint_least8_t index)
 {
+    if (mic1LTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic1LTriggered = true;
     startTimerIfStopped();
     lastTriggerMic1L = getCurrentPreciseTime();
@@ -182,6 +189,10 @@ void interruptMic1LTriggered(uint_least8_t index)
 
 void interruptMic2MTriggered(uint_least8_t index)
 {
+    if (mic2MTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic2MTriggered = true;
     startTimerIfStopped();
     lastTriggerMic2M = getCurrentPreciseTime();
@@ -191,6 +202,10 @@ void interruptMic2MTriggered(uint_least8_t index)
 
 void interruptMic3RTriggered(uint_least8_t index)
 {
+    if (mic3RTriggered == true) {
+        GPIO_toggle(LED_ERROR_2);
+        return;
+    }
     mic3RTriggered = true;
     startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();

@@ -6,7 +6,11 @@ void TDOA_direction_estimation(int TDOA[2], float dir[2])
 {
     // TDOA = array of time differences
     // dir = direction array (estimate array will be saved there)
-    const float inverse[2][2] = {{ 6.666666666666665, -3.3333333333333326},{ -9.527047717159588e-16, -5.773672055427252}};
+
+//    [[ 0. -9.]
+//     [-9.  7.]
+//     [ 9.  7.]]
+    const float inverse[2][2] = {{ -0.055555555555555566, 0.05555555555555555},{ 0.03125, 0.031249999999999993}};
     float mag;
 
     dir[0] = dir[1] = 0;
@@ -27,7 +31,7 @@ void TDOA_direction_estimation(int TDOA[2], float dir[2])
 // CTP
 void plane_cutting_direction_estimation(unsigned long TOA[3], float dir[2])
 {
-    float X_pair[3][2] =  {{ 0.866f, -0.5f},{ 0.0f, -1.0f},{ -0.866f, -0.5f}};
+    float X_pair[3][2] = {{ -0.49026123963255896, 0.8715755371245493},{ 0.49026123963255896, 0.8715755371245493},{ 1.0, 0.0}};
     float mag;
     int k = 0;
 
