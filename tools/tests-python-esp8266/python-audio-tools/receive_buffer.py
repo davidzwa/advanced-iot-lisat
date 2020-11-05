@@ -23,6 +23,7 @@ ctp_tag_dir = 'Dp'  # Unused Ctp tag
 data_tag = 'v'
 measure_tag = 'M'
 sampling_frequency_tag = 'F'
+sample_size_tag = 'S'
 RMS_tag = 'R'  # RMS value
 param_tag = 'P'  # Can be made generic to specify 'what parameter'
 data_max_tag = 'Ma'  # Maximum and Minimum value from buffer data
@@ -172,6 +173,9 @@ def do_experiment(x_pos, y_pos):
             elif check_tag_in_serialline(serial_line, data_min_tag):
                 lastEspData.min = split_data(
                     serial_line, data_min_tag)
+            elif check_tag_in_serialline(serial_line, sample_size_tag):
+                lastEspData.sampleSize = split_data(
+                    serial_line, sample_size_tag)
             elif check_tag_in_serialline(serial_line, sampling_frequency_tag):
                 lastEspData.samplingRate = split_data(
                     serial_line, sampling_frequency_tag)
@@ -231,6 +235,7 @@ def do_experiment(x_pos, y_pos):
                     recording=False
                     print('sound_vector length too short')
                     continue
+                elif len(sound_vector) > 
                 lastEspData.soundData=sound_vector
 
                 # Calculate RMS
@@ -249,6 +254,7 @@ def do_experiment(x_pos, y_pos):
                 print("min", lastEspData.min)
                 print("max", lastEspData.max)
                 print("sampling rate", lastEspData.samplingRate)
+                print("sample size", lastEspData.sampleSize)
                 print('RMS:', lastEspData.rms)
                 print('\n')
 
