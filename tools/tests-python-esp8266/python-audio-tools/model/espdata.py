@@ -20,4 +20,5 @@ class EspData(object):
     max: int = None
     rms: float = None
     samplingRate: int = None
+    sampleSize: int = None
     soundData: np.ndarray = None
