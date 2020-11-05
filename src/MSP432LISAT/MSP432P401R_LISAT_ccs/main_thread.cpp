@@ -85,11 +85,6 @@ void *mainThread(void *arg0)
         //        }
 #else
         sem_wait(&adcbufSem);
-        /*
-         * Start with a header message and print current buffer values
-         */
-        Display_printf(display, 0, 0, "\r\n", //Buffer %u finished:
-            (unsigned int)buffersCompletedCounter++);
 
 //        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
         arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex);
@@ -101,6 +96,8 @@ void *mainThread(void *arg0)
         for (int i = 0; i < ADCBUFFERSIZE; i++) {
             Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
         }
+
+        Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
 //        Send mic time differences
         Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);

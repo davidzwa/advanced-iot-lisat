@@ -54,7 +54,7 @@
             "name": "Python: SerialCapture File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/tests-python-esp8266/python-audio-tools/receive_buffer.py",
+            "program": "${workspaceFolder}/tools/tests-python-esp8266/python-audio-tools/receive_buffer.py",
             "console": "integratedTerminal"
         },
         {
