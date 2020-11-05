@@ -153,10 +153,9 @@ plt.show()
 
 # espDataSet = list()
 
-
 def do_experiment(x_pos, y_pos):
     num_rounds = 0
-    num_rounds_max = 2
+    num_rounds_max = 10 # number of trials per single location
     sound_vector = list()
     received_samples = 0
     recording = False
@@ -177,6 +176,7 @@ def do_experiment(x_pos, y_pos):
                 lastEspData.samplingRate = split_data(
                     serial_line, sampling_frequency_tag)
             elif check_tag_in_serialline(serial_line, valin_tag_dir):
+                #print('valin dir: ', str(serial_line))
                 if valin_tag_dir + '1' in str(serial_line):
                     lastEspData.algoTdoaDirX = split_data_float(
                         serial_line, valin_tag_dir + '1')
@@ -184,7 +184,7 @@ def do_experiment(x_pos, y_pos):
                     lastEspData.algoTdoaDirY = split_data_float(
                         serial_line, valin_tag_dir + '2')
             elif check_tag_in_serialline(serial_line, ctp_tag_dir):
-                print('ctp: ', serial_line)
+                #print('ctp dir: ', serial_line)
                 if ctp_tag_dir + '1' in str(serial_line):
                     lastEspData.algoCTPDirX = split_data_float(
                         serial_line, ctp_tag_dir + '1')
@@ -203,7 +203,7 @@ def do_experiment(x_pos, y_pos):
                     handle_parsing_error(serial_line)
                     pass
             elif check_tag_in_serialline(serial_line, measure_tag) or check_tag_in_serialline(serial_line, param_tag):
-                print('measure_tag, param_tag: ', str(serial_line))
+                #print('measure_tag, param_tag: ', str(serial_line))
                 if measure_tag + '1' in str(serial_line):
                     lastEspData.mic1LTimeUs=split_data(
                         serial_line, measure_tag + '1')
@@ -217,13 +217,12 @@ def do_experiment(x_pos, y_pos):
                     lastEspData.samplingRate=split_data(
                         serial_line, param_tag)
             elif (check_tag_in_serialline(serial_line, RMS_tag + separator)):
-                print('RMS_tag')
+                #print('RMS_tag')
                 RMS=split_data(
                     serial_line, RMS_tag)
                 # if RMS >0:
-                print(RMS)
             elif check_tag_in_serialline(serial_line, end_tag):
-                print("valin end", lastEspData.algoTdoaDirX)
+                #print("valin end", lastEspData.algoTdoaDirX)
                 received_samples=0
                 rng_filename="audio/" + get_random_string(3) + base_filename
                 # sound_vector = normalize_integer(sound_vector)
@@ -239,8 +238,19 @@ def do_experiment(x_pos, y_pos):
                 lastEspData.rms=np.sqrt(np.mean(sound_array ** 2))
                 # arm_rms_q15 => vergelijken
                 # arm_max_q15 => vergelijken
-
+                print("NEW SAMPLE ---")
+                print("mic1 time", lastEspData.mic1LTimeUs)
+                print("mic2 time", lastEspData.mic2MTimeUs)
+                print("mic3 time", lastEspData.mic3RTimeUs)
+                print("valin x", lastEspData.algoTdoaDirX)
+                print("valin y", lastEspData.algoTdoaDirY)
+                print("ctp x", lastEspData.algoCTPDirX)
+                print("ctp y", lastEspData.algoCTPDirY)
+                print("min", lastEspData.min)
+                print("max", lastEspData.max)
+                print("sampling rate", lastEspData.samplingRate)
                 print('RMS:', lastEspData.rms)
+                print('\n')
 
                 espDataSet.append(dataclasses.asdict(lastEspData))
                 dump_dataset(espDataSet, outputfile)
@@ -292,7 +302,8 @@ def do_experiment(x_pos, y_pos):
 
 
 if __name__ == '__main__':
-    for experimentIndex in range(0, 10):
+    number_of_locations = 10 # number of different locations at which measurements are performed
+    for experimentIndex in range(0, number_of_locations): 
         print("Provide X:")
         x_value=input()
         # validate x_value being valid float
@@ -308,5 +319,5 @@ if __name__ == '__main__':
         dataset.espDataSets=singleLocationSet  # lijst toekennen: = espDataSet
         dataset.positionX=x_value
         dataset.positionY=y_value
-        print(dataset)
+        #print(dataset)
         dump_dataset(dataclasses.asdict(dataset), outputfile)
