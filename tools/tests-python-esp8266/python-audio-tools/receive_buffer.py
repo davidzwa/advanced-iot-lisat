@@ -156,8 +156,19 @@ def do_experiment(x_pos, y_pos):
         if recording is True:
             serial_line = ser.readline()
             if valin_tag_dir in str(serial_line):
-                # Do something with valin tag?
-                pass
+                if valin_tag_dir + '1' in str(serial_line):
+                    # process valin tag 1
+                    pass
+                elif valin_tag_dir + '2' in str(serial_line):
+                    # process valin tag 2
+                    pass
+            elif ctp_tag_dir in str(serial_line):
+                if ctp_tag_dir + '1' in str(serial_line):
+                    # process ctp tag 1
+                    pass
+                elif ctp_tag_dir + '2' in str(serial_line):
+                    # process ctp tag 2 
+                    pass
             elif data_tag in str(serial_line):
                 print('data: ', serial_line)
                 received_samples += 1
@@ -278,14 +289,16 @@ if __name__ == '__main__':
         y_value = input()
         # validate y_value being valid float
 
+    
+
         singleLocationSet: List[EspData] = do_experiment(x_value, y_value)
         # print("Provide info:")
 
         # create new DataSet
         dataset = DataSet()
         dataset.espDataSets = singleLocationSet # lijst toekennen: = espDataSet
-        dataset.PositionX = x_value
-        dataset.PositionY = y_value
-        
+        dataset.positionX = x_value
+        dataset.positionY = y_value
+        print(dataset)
         dump_dataset(dataset, outputfile)
         # save_experiment("test" , dataset)
