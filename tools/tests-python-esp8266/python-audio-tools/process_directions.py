@@ -11,7 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 import datetime
-from model.espdata import EspData, DataSet
+from model.espdata import EspData
+from model.dataset import DataSet
 import dataclasses
 import simpleaudio as sa
 import os
@@ -36,35 +37,44 @@ def load_jsonfile(filename):
         return json.load(file)
 
 
-print(os.getcwd())
-scanned_files = [f for f in glob.glob(
-    "./" + folder_name + "/distancetests/dataset-2020*") if os.path.isfile(f)]
-print('Number of scanned files:', len(scanned_files))
+if __name__ == '__main__':
+    print(os.getcwd())
+    scanned_files = [f for f in glob.glob(
+        "./data/" + folder_name + "/tdifftests/dataset-2020*") if os.path.isfile(f)]
+    print('Number of scanned files:', len(scanned_files))
 
-distances = np.array([])
-rms_arrays = []
-# rms_arrays = rms_arrays.transpose()
-for filename in scanned_files:
-    filename_split = os.path.splitext(filename)[0]
-    distance_indicator = int(find_numbers(filename_split))
+    dataset_directions = np.array([])
+    tdiff_arrays = []
+    for filename in scanned_files:
+        # Parse file and extract the static direction of the experiments in the set
+        filename_split = os.path.splitext(filename)[0]
+        jsonBlob = load_jsonfile(filename)
+        dataset = DataSet(**jsonBlob)
+        direction = dataset.direction
+        dataset_directions = np.append(dataset_directions, direction)
 
-    jsonBlob = load_jsonfile(filename)
+        # Analyse time-differences of 2 mics
+        timediff_array = np.array([])
+        for entry in dataset.espDataSets:
+            jsonModel = EspData(**entry)
+            tdiff = jsonModel.mic1LTimeUs - jsonModel.mic2MTimeUs
+            timediff_array = np.append(
+                timediff_array, tdiff)
+        tdiff_arrays.append(timediff_array)
 
-    rms_array = np.array([])
-    for entry in jsonBlob:
-        jsonModel = EspData(**entry)
-        direction_array = np.append(direction_array, jsonModel.direction)
-    result = np.average(rms_array)
-    rms_arrays.append(rms_array)
-    distances = np.append(distances, distance_indicator)
-    print('file read', 'dist', distance_indicator, 'rms', result, 'items', len(jsonBlob))
+        average_tdiff = np.average(timediff_array)
+        print('file read',
+              'direction', direction,
+              'rms', average_tdiff,
+              'items', len(jsonBlob))
 
-index_sort = distances.argsort()
-sorted_rms_arrays = []
-for index in index_sort:
-    sorted_rms_arrays.append(rms_arrays[index])
+    index_sort = dataset_directions.argsort()
+    sorted_tdiff_arrays = []
+    for index in index_sort:
+        sorted_tdiff_arrays.append(tdiff_arrays[index])
 
-fig1, ax1 = plt.subplots()
-ax1.set_title('RMS vs Distance [X*0.25m] (10+ measurements per distance)')
-ax1.boxplot(sorted_rms_arrays)
-plt.show()
+    fig1, ax1 = plt.subplots()
+    ax1.set_title('Angle vs Time-difference between two microphones')
+    plt.ylabel('Time-difference (us)')
+    ax1.boxplot(sorted_tdiff_arrays, positions=dataset_directions[index_sort])
+    plt.show()
