@@ -7,8 +7,7 @@ from model.espdata import EspData
 class DataSet(object):
     espDataSets: List[EspData] = None
     positionX: int = None
-    positionY: int = None
-    metadata: str = None
+    direction: int = None
 
 
 # loopen a.h.v. sets [...10*(X,Y)]

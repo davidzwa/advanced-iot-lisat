@@ -41,7 +41,7 @@ data = []
 received_samples = 0
 received_sample_exceptions = 0
 received_sample_exceptions_limit = 100
-MAX_MIC_TIME = 100000000
+MAX_MIC_TIME = 20000
 last_sample = ''
 base_filename = 'output2.wav'
 dirname = os.path.dirname(__file__)
@@ -149,11 +149,11 @@ def check_tag_in_serialline(serial_line, tag):
 # plt.grid()
 
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-line1, = ax.plot([], 'r-')
-plt.ion()
-plt.show()
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# line1, = ax.plot([], 'r-')
+# plt.ion()
+# plt.show()
 
 # espDataSet = list()
 
@@ -161,12 +161,13 @@ def calculate_theta(x, y):
     if (x == 0 and y > 0):
         return math.pi/2
     if (x == 0 and y < 0):
-        return math.pi*(3/2)        
-    return (math.atan(y/x)*180/math.pi) 
+        return math.pi*(3/2)
+    return (math.atan(y/x)*180/math.pi)
 
-def do_experiment(x_pos, y_pos):
+
+def do_experiment():
     num_rounds = 0
-    num_rounds_max = 1000  # number of trials per single location
+    num_rounds_max = 10  # number of trials per single location
     received_samples = 0
     recording = False
     espDataSet = list()
@@ -177,8 +178,9 @@ def do_experiment(x_pos, y_pos):
     sound_vector = list()
     while num_rounds < num_rounds_max:
         if recording is True:
+            print("entered recording")
             serial_line = ser.readline()
-
+            print(serial_line)
             if check_tag_in_serialline(serial_line, data_max_tag):
                 lastEspData.max = split_data(
                     serial_line, data_max_tag)
@@ -242,7 +244,6 @@ def do_experiment(x_pos, y_pos):
                 received_samples = 0
                 rng_filename = "audio/" + get_random_string(3) + base_filename
                 # sound_vector = normalize_integer(sound_vector)
-                
 
                 if len(sound_vector) < lastEspData.sampleSize and len(sound_vector) > 0:
                     recording = False
@@ -252,7 +253,7 @@ def do_experiment(x_pos, y_pos):
                         lastEspData.sampleSize, len(sound_vector)))
                     recording = False
                     print('sound_vector length too long')
-                elif lastEspData.mic1LTimeUs > MAX_MIC_TIME or lastEspData.mic2MTimeUs > MAX_MIC_TIME or lastEspData.mic3RTimeUs > MAX_MIC_TIME:
+                elif lastEspData.mic1LTimeUs > MAX_MIC_TIME or lastEspData.mic2MTimeUs > MAX_MIC_TIME:
                     recording = False
                     print('sample started too late, dropped')
                 else:
@@ -262,7 +263,7 @@ def do_experiment(x_pos, y_pos):
                     sound_array = np.array(sound_vector)
                     lastEspData.rms = np.sqrt(np.mean(sound_array ** 2))
                     # If sample was valid but the same as previous sample, skip
-                    # if lastEspData == previousEspData:
+                    # if lastEspData == previousEspData:5
                     #     print('current sample was the same as previous sample')
                     # else:
                     previousEspData = lastEspData
@@ -270,36 +271,36 @@ def do_experiment(x_pos, y_pos):
                     print("NEW SAMPLE ---")
                     print("mic1 time", lastEspData.mic1LTimeUs)
                     print("mic2 time", lastEspData.mic2MTimeUs)
-                    print("mic3 time", lastEspData.mic3RTimeUs)
-                    print("valin x", lastEspData.algoTdoaDirX)
-                    print("valin y", lastEspData.algoTdoaDirY)
-                    print("ctp x", lastEspData.algoCTPDirX)
-                    print("ctp y", lastEspData.algoCTPDirY)
+                    # print("mic3 time", lastEspData.mic3RTimeUs)
+                    # print("valin x", lastEspData.algoTdoaDirX)
+                    # print("valin y", lastEspData.algoTdoaDirY)
+                    # print("ctp x", lastEspData.algoCTPDirX)
+                    # print("ctp y", lastEspData.algoCTPDirY)
                     #print("min", lastEspData.min)
                     #print("max", lastEspData.max)
                     #print("sampling rate", lastEspData.samplingRate)
                     #print("sample size", lastEspData.sampleSize)
                     print('RMS:', lastEspData.rms)
-                    print('dir valin:', calculate_theta(lastEspData.algoTdoaDirX, lastEspData.algoTdoaDirY))
-                    print('dir ctp:', calculate_theta(lastEspData.algoCTPDirX, lastEspData.algoCTPDirY))
-                    
+                    # print('dir valin:', calculate_theta(lastEspData.algoTdoaDirX, lastEspData.algoTdoaDirY))
+                    # print('dir ctp:', calculate_theta(lastEspData.algoCTPDirX, lastEspData.algoCTPDirY))
+
                     print('\n')
 
                     espDataSet.append(dataclasses.asdict(lastEspData))
-                    dump_dataset(espDataSet, outputfile)
-
+                    # dump_dataset(espDataSet, outputfile)
+                    num_rounds += 1
                     # sound_array_filtered = butter_lowpass_filter(sound_array, cutoff, fs, order)
                     # plt.subplot(2, 1, 2)
-                    
-                    #plt.plot(sound_array)
-                    
+
+                    # plt.plot(sound_array)
+
                     # plt.plot(sound_array_filtered)
 
                     # plt.plot(np.fft.fft(sound_array).real**2 +
                     #          np.fft.fft(sound_array).imag**2)
-                    
-                    #plt.draw()
-                    #plt.pause(0.01)  # speakertest
+
+                    # plt.draw()
+                    # plt.pause(0.01)  # speakertest
 
                 # input("Press [enter] to continue.")
                 # Perform tasks
@@ -322,9 +323,10 @@ def do_experiment(x_pos, y_pos):
         else:
             print("Playing sound")
             wave_obj = sa.WaveObject.from_wave_file(
-                "data/audio/amjad_single.wav")
+                "data/audio/fingers_short.wav")
             play_obj = wave_obj.play()
             play_obj.wait_done()
+            # time.sleep(1)
             recording = True
     # num_rounds done
     return espDataSet
@@ -332,22 +334,21 @@ def do_experiment(x_pos, y_pos):
 
 if __name__ == '__main__':
     # number of different locations at which measurements are performed
-    number_of_locations = 10
+    number_of_locations = 5
     for experimentIndex in range(0, number_of_locations):
-        print("Provide X:")
-        x_value = input()
+        print("Provide dir:")
+        dir = input()
         # validate x_value being valid float
-        print("Provide Y:")
-        y_value = input()
+        # print("Provide Y:")
+        # y_value = input()
         # validate y_value being valid float
 
-        singleLocationSet: List[EspData] = do_experiment(x_value, y_value)
+        singleLocationSet: List[EspData] = do_experiment()
         # print("Provide info:")
 
         # create new DataSet
         dataset = DataSet()
         dataset.espDataSets = singleLocationSet  # lijst toekennen: = espDataSet
-        dataset.positionX = x_value
-        dataset.positionY = y_value
+        dataset.direction = dir
         # print(dataset)
         dump_dataset(dataclasses.asdict(dataset), outputfile)

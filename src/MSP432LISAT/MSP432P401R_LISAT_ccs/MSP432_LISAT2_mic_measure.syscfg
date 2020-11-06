@@ -225,7 +225,7 @@ RTOS.timer0.resource.$assign = "Timer_A0";
 
 Timer1.$name             = "TIMER_FREE_MEASURE";
 Timer1.interruptPriority = "1";
-Timer1.timerType         = "32 Bits";
+Timer1.clockSource       = "SMCLK";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
@@ -244,13 +244,13 @@ LED1.$name     = "LED_BLUE_0";
 Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
 Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A2";
+ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.33";
 ADCBuf1.adc.$suggestSolution                       = "ADC14";
 GPIO16.gpioPin.$suggestSolution                    = "boosterpack.34";
 GPIO18.gpioPin.$suggestSolution                    = "boosterpack.14";
 GPIO19.gpioPin.$suggestSolution                    = "boosterpack.15";
-Timer1.timer.$suggestSolution                      = "TIMER32_0";
+Timer1.timer.$suggestSolution                      = "Timer_A2";
 UART1.uart.$suggestSolution                        = "EUSCI_A1";
 LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
