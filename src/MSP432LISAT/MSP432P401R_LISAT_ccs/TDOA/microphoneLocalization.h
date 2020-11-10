@@ -1,4 +1,5 @@
-#include "common.h"
+#include <common.h>
+#include <DSP/filter.h>
 
 #ifndef TDOA_EXTERNALINTERRUPT_H_
 #define TDOA_EXTERNALINTERRUPT_H_
@@ -10,9 +11,8 @@ enum MIC
     MIC_RIGHT = MIC3R_MODE_WOS
 };
 
-int16_t sampleBuffer1a[ADCBUFFERSIZE];
+int16_t sampleBuffer1a[ADCBUFFERSIZE]; // This is for long and short mode
 int16_t sampleBuffer1b[ADCBUFFERSIZE];
-//int16_t fftOutput[ADCBUFFERSIZE];
 #if NUM_ADC_CHANNELS >= 2
 int16_t sampleBuffer2a[ADCBUFFERSIZE];
 int16_t sampleBuffer2b[ADCBUFFERSIZE];
@@ -21,11 +21,8 @@ int16_t sampleBuffer2b[ADCBUFFERSIZE];
 int16_t sampleBuffer3a[ADCBUFFERSIZE];
 int16_t sampleBuffer3b[ADCBUFFERSIZE];
 #endif
-//int16_t correlation[CHUNK_LENGTH];
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
-int16_t rms;
-int16_t rms_filt;
 
 /* ADCBuf semaphore */
 sem_t adcbufSem;
@@ -34,6 +31,7 @@ extern bool startAdcSampling;
 extern unsigned long lastTriggerMic1L;
 extern unsigned long lastTriggerMic2M;
 extern unsigned long lastTriggerMic3R;
+extern int lastChannelCompleted;
 
 // CASPER's TDOA PLAYGROUND
 
@@ -46,7 +44,7 @@ void setWosMode(MIC micType);
 void setNormalMicMode(MIC micType);
 
 void initADCBuf();
-//void testADCBufOpened(); // Bit useless
+void openADCBuf();
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
                     void *completedADCBuffer, uint32_t completedChannel);
 void initInterruptCallbacks();

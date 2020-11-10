@@ -17,7 +17,16 @@ unsigned long lastTriggerMic3R = 0;
 bool mic3RTriggered = false;
 bool startAdcSampling = false;
 bool timerStarted = false;
+int lastChannelCompleted = -1;
 
+/* DSP LPF Filter */
+Filter* filter = new Filter();
+
+// Long: ADCBUFFERSIZE, short: ADCBUFFERSIZE_SHORT
+bool longConversion = false;
+void setAdcBufConversion(ADCBuf_Conversion* conversionStruct, bool shortConversion);
+void startTimerIfStarted();
+void stopTimerIfStarted();
 
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
@@ -26,35 +35,57 @@ void initADCBuf() {
     adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_ONE_SHOT; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
-    adcBuf = ADCBuf_open(CONFIG_ADCBUF0, &adcBufParams);
+    adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
 
     /* Configure the conversion struct for two channels on same sequencer */
-    continuousConversion[0].arg = NULL;
-    continuousConversion[0].adcChannel = CONFIG_ADCBUF0CHANNEL_0;
-    continuousConversion[0].sampleBuffer = sampleBuffer1a;
-    continuousConversion[0].sampleBufferTwo = sampleBuffer1b;
-    continuousConversion[0].samplesRequestedCount = ADCBUFFERSIZE;
+    setAdcBufConversion(&continuousConversion[0], true);
+}
+
+void setAdcBufConversion(ADCBuf_Conversion* conversionStruct, bool shortConversion) {
+    if (shortConversion) {
+        longConversion = false;
+        conversionStruct[0].arg = NULL;
+        conversionStruct[0].adcChannel = MIC_ADCBUFCHANNEL_0;
+        conversionStruct[0].sampleBuffer = sampleBuffer1a;
+        conversionStruct[0].sampleBufferTwo = sampleBuffer1b;
+        conversionStruct[0].samplesRequestedCount = ADCBUFFERSIZE_SHORT;
 #if NUM_ADC_CHANNELS >= 2
-    continuousConversion[1].arg = NULL;
-    continuousConversion[1].adcChannel = CONFIG_ADCBUF0CHANNEL_1;
-    continuousConversion[1].sampleBuffer = sampleBuffer2a;
-    continuousConversion[1].sampleBufferTwo = sampleBuffer2b;
-    continuousConversion[1].samplesRequestedCount = ADCBUFFERSIZE;
+        conversionStruct[1].arg = NULL;
+        conversionStruct[1].adcChannel = MIC_ADCBUFCHANNEL_1; // Mic 2
+        conversionStruct[1].sampleBuffer = sampleBuffer2a;
+        conversionStruct[1].sampleBufferTwo = sampleBuffer2b;
+        conversionStruct[1].samplesRequestedCount = ADCBUFFERSIZE_SHORT;
+#elif NUM_ADC_CHANNELS >= 3
+        conversionStruct[1].arg = NULL;
+        conversionStruct[1].adcChannel = MIC_ADCBUFCHANNEL_2; // Mic 2
+        conversionStruct[1].sampleBuffer = sampleBuffer3a;
+        conversionStruct[1].sampleBufferTwo = sampleBuffer3b;
+        conversionStruct[1].samplesRequestedCount = ADCBUFFERSIZE_SHORT;
 #endif
-#if NUM_ADC_CHANNELS == 3
-    continuousConversion[2].arg = NULL;
-    continuousConversion[2].adcChannel = CONFIG_ADCBUF0CHANNEL_2;
-    continuousConversion[2].sampleBuffer = sampleBuffer3a;
-    continuousConversion[2].sampleBufferTwo = sampleBuffer3b;
-    continuousConversion[2].samplesRequestedCount = ADCBUFFERSIZE;
-#endif
+    } else {
+        longConversion = true;
+        conversionStruct[0].arg = NULL;
+        conversionStruct[0].adcChannel = MIC_ADCBUFCHANNEL_0; // Mic 1
+        conversionStruct[0].sampleBuffer = sampleBuffer1a;
+        conversionStruct[0].sampleBufferTwo = sampleBuffer1b;
+        conversionStruct[0].samplesRequestedCount = ADCBUFFERSIZE;
+
+//        conversionStruct[1].arg = NULL;
+//        conversionStruct[1].adcChannel = MIC_ADCBUFCHANNEL_1; // Mic 2
+//        conversionStruct[1].sampleBuffer = sampleBuffer1a;
+//        conversionStruct[1].sampleBufferTwo = sampleBuffer1b;
+//        conversionStruct[1].samplesRequestedCount = ADCBUFFERSIZE;
+//
+//        conversionStruct[2].arg = NULL;
+//        conversionStruct[2].adcChannel = MIC_ADCBUFCHANNEL_2; // Mic 3
+//        conversionStruct[2].sampleBuffer = sampleBuffer1a;
+//        conversionStruct[2].sampleBufferTwo = sampleBuffer1b;
+//        conversionStruct[2].samplesRequestedCount = ADCBUFFERSIZE;
+    }
 }
 
 void openADCBuf() {
-    // Start ADCBuf here for measurements
-//    ADCBuf_open(CONFIG_ADCBUF0CHANNEL_0, &adcBufParams);
-    ADCBuf_convert(adcBuf, continuousConversion, NUM_ADC_CHANNELS);
-
+    ADCBuf_convert(adcBuf, continuousConversion, 3);
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
         GPIO_write(LED_ERROR_2, 1);
@@ -65,6 +96,52 @@ void openADCBuf() {
 void closeADCBuf() {
     // Start ADCBuf here for measurements
     ADCBuf_close(adcBuf);
+}
+
+/*
+ * This function is called whenever a buffer is full. The semaphore post is awaited in the main thread.
+ */
+void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
+    void *completedADCBuffer, uint32_t completedChannel) {
+    uint_fast16_t i;
+    uint16_t *completedBuffer = (uint16_t*) completedADCBuffer;
+    for (i = 0; i < conversion->samplesRequestedCount; i++) {
+        outputBuffer[i] = completedBuffer[i];
+    }
+    filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
+    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
+    {
+        int inputTDOAVector2D[2];
+        inputTDOAVector2D[0] = lastTriggerMic1L - lastTriggerMic2M;
+        inputTDOAVector2D[1] = lastTriggerMic1L - lastTriggerMic3R;
+        TDOA_direction_estimation(inputTDOAVector2D, outputDirVector2D_valin);
+
+        unsigned long inputTOAVector[3] = {lastTriggerMic1L, lastTriggerMic2M, lastTriggerMic3R};
+        plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
+    }
+    else {
+        GPIO_toggle(LED_ERROR_2);
+    }
+    stopTimerIfStarted();
+//    enableMicTriggerInterrupts();
+//    resetWosMicMode(); // Reset all mics: we are ready for a new round
+
+//    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
+//    {
+//             /* post adcbuf semaphore */
+//    }
+    lastChannelCompleted = completedChannel;
+    mic1LTriggered = false;
+    mic2MTriggered = false;
+    mic3RTriggered = false;
+
+    if (lastChannelCompleted == 0) {
+        sem_post(&adcbufSem);
+    }
+    else {
+        GPIO_toggle(LED_BLUE_2_GPIO);
+    }
+
 }
 
 void startTimerIfStopped() {
@@ -132,48 +209,6 @@ void setWosMode(MIC pinNumber)
     GPIO_write(pinNumber, 1);
 }
 
-/*
- * This function is called whenever a buffer is full. The semaphore post is awaited in the main thread.
- */
-void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
-    void *completedADCBuffer, uint32_t completedChannel) {
-
-    // Transfer buffer to our own
-    uint_fast16_t i;
-    uint16_t *completedBuffer = (uint16_t *) completedADCBuffer;
-    for (i = 0; i < CHUNK_LENGTH; i++) {
-        outputBuffer[i] = completedBuffer[i];
-    }
-
-    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
-    {
-        int inputTDOAVector2D[2];
-        inputTDOAVector2D[0] = lastTriggerMic1L - lastTriggerMic2M;
-        inputTDOAVector2D[1] = lastTriggerMic1L - lastTriggerMic3R;
-
-        TDOA_direction_estimation(inputTDOAVector2D, outputDirVector2D_valin);
-
-        unsigned long inputTOAVector[3] = {lastTriggerMic1L, lastTriggerMic2M, lastTriggerMic3R};
-        plane_cutting_direction_estimation(inputTOAVector, outputDirVector2D_plane_cutting);
-    }
-    else {
-        GPIO_toggle(LED_ERROR_2);
-    }
-
-    stopTimerIfStarted();
-    enableMicTriggerInterrupts();
-    resetWosMicMode(); // Reset all mics: we are ready for a new round
-    GPIO_write(LED_TRIGGER_1, 0);
-
-    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
-    {
-        sem_post(&adcbufSem);     /* post adcbuf semaphore */
-    }
-    mic1LTriggered = false;
-    mic2MTriggered = false;
-    mic3RTriggered = false;
-}
-
 void interruptMic1LTriggered(uint_least8_t index)
 {
     if (mic1LTriggered == true) {
@@ -212,6 +247,6 @@ void interruptMic3RTriggered(uint_least8_t index)
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
     GPIO_disableInt(MIC3R_D_OUT_INTRPT);
 
-    GPIO_write(LED_TRIGGER_1, 1);
+    GPIO_write(LED_GREEN_2, 1);
     openADCBuf();
 }

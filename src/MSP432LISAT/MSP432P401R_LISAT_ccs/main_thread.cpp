@@ -9,19 +9,15 @@
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
-#include "TDOA/microphoneLocalization.h""
-
-//#include "DSP/fft.h"
-#include "DSP/iirFilter.h"
-
-/* DSP LPF Filter */
-IirFilter* filter;
+#include "TDOA/microphoneLocalization.h"
+#include "TDOA/signalDetection.h"
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
 uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
+int16_t rms;
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -71,8 +67,8 @@ void *mainThread(void *arg0)
     initADCBuf();
     initTimerTacho();
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
-    initInterruptCallbacks();
-    enableMicTriggerInterrupts();
+//    initInterruptCallbacks();
+//    enableMicTriggerInterrupts();
 #endif
 
     while(1) {
@@ -84,35 +80,52 @@ void *mainThread(void *arg0)
         //            speed = 1000;
         //        }
 #else
+        openADCBuf();
         sem_wait(&adcbufSem);
 
-//        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
-        arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex);
+        arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
         Display_printf(display, 0, 0, "Mi.%d", minValue);
-        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
+        arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
+//        Send RMS value of ADCBuf for either Valin or CTP or algorithm
+        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
+        Display_printf(display, 0, 0, "R.%d", rms);
+
+        if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
+            if (lastChannelCompleted == 0) {
+                GPIO_write(LED_GREEN_2_GPIO, 1);
+            }
+            else {
+                GPIO_write(LED_BLUE_2_GPIO, 1);
+            }
+        }
+        else {
+            if (lastChannelCompleted == 0) {
+                GPIO_write(LED_GREEN_2_GPIO, 0);
+            }
+            else {
+                GPIO_write(LED_BLUE_2_GPIO, 0);
+            }
+        }
 
 //         Decide to send ADC buffer over the line
 //        for (int i = 0; i < ADCBUFFERSIZE; i++) {
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
 //        }
 
-        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE);
+        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
         Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
 //        Send mic time differences
-        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
-        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
-        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
+//        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
+//        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
+//        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
 //        Send DOA values for either Valin or CTP or algorithm
 //        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
 //        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
 //        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
 //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 
-//        Send RMS value of ADCBuf for either Valin or CTP or algorithm
-        arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
-        Display_printf(display, 0, 0, "R.%d", rms);
         Display_printf(display, 0, 0, "--Done");
         numBufsSent++;
 #endif
