@@ -4,7 +4,7 @@
 #ifndef DSP_IIRFILTER_H_
 #define DSP_IIRFILTER_H_
 
-class IirFilter
+class Filter
 {
 public:
 //    q15_t firCoeffs32LP[NUM_TAPS] = {272, 449, -266, -540, -55, -227, -1029, 745, 3927, 1699, -5616, -6594, 2766, 9228, 2766, -6594, -5616, 1699, 3927, 745, -1029, -227, -55, -540, -266, 449};
@@ -13,6 +13,7 @@ public:
 //                                     -144,-7217, -5492, 21835, -5492, -7217, -144,
 //                                     -1183, 3040, 462, 1449, -967, -710, -1899, 1856
 //    };
+    Filter();
 
     arm_fir_instance_q15 S;
     q15_t firStateF32[ADCBUFFERSIZE + FILTER_TAP_NUM -1];
@@ -22,8 +23,8 @@ public:
     int EMA_S_low = 0; //initialization of EMA S
     int EMA_S_high = 0;
     int16_t FilterEMA(int16_t value);
-    void ResetEMAState();
-    void FilterEMABuffer(int16_t* buffer, int16_t* outputBuffer);
+    void ResetEMAState(int16_t initialValue);
+    void FilterEMABuffer(int16_t* buffer, int16_t* outputBuffer, uint16_t length);
 
 //    arm_fir_instance_f32 S;
 //    float32_t firStateF32[CHUNK_LENGTH + NUM_TAPS - 1];
@@ -36,7 +37,6 @@ public:
 //            +0.0036977508f, +0.0000000000f, -0.0015879294f, -0.0018225230f
 //    };
 
-    IirFilter();
     void InitFilterState();
     void FilterBuffer(int16_t* buffer, int16_t* outputBuffer);
 };

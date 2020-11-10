@@ -1,4 +1,5 @@
-#include "common.h"
+#include <common.h>
+#include <DSP/filter.h>
 
 #ifndef TDOA_EXTERNALINTERRUPT_H_
 #define TDOA_EXTERNALINTERRUPT_H_
@@ -10,10 +11,8 @@ enum MIC
     MIC_RIGHT = MIC3R_MODE_WOS
 };
 
-int16_t sampleBuffer1a[ADCBUFFERSIZE];
+int16_t sampleBuffer1a[ADCBUFFERSIZE]; // This is for long and short mode
 int16_t sampleBuffer1b[ADCBUFFERSIZE];
-int16_t shortBuffer1a[ADCBUFFERSIZE_SHORT];
-int16_t shortBuffer1b[ADCBUFFERSIZE_SHORT];
 #if NUM_ADC_CHANNELS >= 2
 int16_t sampleBuffer2a[ADCBUFFERSIZE];
 int16_t sampleBuffer2b[ADCBUFFERSIZE];

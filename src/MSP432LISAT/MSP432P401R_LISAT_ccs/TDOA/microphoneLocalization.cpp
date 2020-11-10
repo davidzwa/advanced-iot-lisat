@@ -18,6 +18,9 @@ bool mic3RTriggered = false;
 bool startAdcSampling = false;
 bool timerStarted = false;
 
+/* DSP LPF Filter */
+Filter* filter;
+
 // Long: ADCBUFFERSIZE, short: ADCBUFFERSIZE_SHORT
 bool longConversion = false;
 void setAdcBufConversion(ADCBuf_Conversion* conversionStruct, bool shortConversion);
@@ -57,8 +60,8 @@ void setAdcBufConversion(ADCBuf_Conversion* conversionStruct, bool shortConversi
         longConversion = false;
         conversionStruct[0].arg = NULL;
         conversionStruct[0].adcChannel = MIC_ADCBUFCHANNEL_0;
-        conversionStruct[0].sampleBuffer = shortBuffer1a;
-        conversionStruct[0].sampleBufferTwo = shortBuffer1b;
+        conversionStruct[0].sampleBuffer = sampleBuffer1a;
+        conversionStruct[0].sampleBufferTwo = sampleBuffer1b;
         conversionStruct[0].samplesRequestedCount = ADCBUFFERSIZE_SHORT;
     } else {
         longConversion = true;
@@ -93,9 +96,10 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     // Transfer buffer to our own
     uint_fast16_t i;
     uint16_t *completedBuffer = (uint16_t *) completedADCBuffer;
-    for (i = 0; i < ADCBUFFERSIZE; i++) {
+    for (i = 0; i < conversion->samplesRequestedCount; i++) {
         outputBuffer[i] = completedBuffer[i];
     }
+    filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
 
     if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
     {

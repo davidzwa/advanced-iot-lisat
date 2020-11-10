@@ -10,10 +10,6 @@
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
 #include "TDOA/microphoneLocalization.h"
-#include "DSP/iirFilter.h"
-
-/* DSP LPF Filter */
-IirFilter* filter;
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
@@ -85,10 +81,9 @@ void *mainThread(void *arg0)
         openADCBuf();
         sem_wait(&adcbufSem);
 
-//        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);
-        arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex);
+        arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
         Display_printf(display, 0, 0, "Mi.%d", minValue);
-        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
+        arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
 
 //         Decide to send ADC buffer over the line
@@ -96,13 +91,13 @@ void *mainThread(void *arg0)
 //            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
 //        }
 
-        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE);
+        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
         Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
 //        Send mic time differences
-        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
-        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
-        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
+//        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
+//        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
+//        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
 //        Send DOA values for either Valin or CTP or algorithm
 //        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
 //        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
@@ -110,7 +105,7 @@ void *mainThread(void *arg0)
 //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
-        arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);
+        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
         Display_printf(display, 0, 0, "R.%d", rms);
         Display_printf(display, 0, 0, "--Done");
         numBufsSent++;
