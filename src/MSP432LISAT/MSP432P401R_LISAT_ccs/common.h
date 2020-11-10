@@ -22,7 +22,7 @@
 #include "ti_drivers_config.h"
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
-#define MSP_MIC_MEASUREMENT_PC_MODE (1)
+#define MSP_MIC_MEASUREMENT_PC_MODE (0)
 
 #define NUM_ADC_CHANNELS    (2)
 #define ADCBUFFERSIZE_SHORT (64)

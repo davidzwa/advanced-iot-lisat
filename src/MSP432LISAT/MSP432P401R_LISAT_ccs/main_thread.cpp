@@ -38,7 +38,6 @@ void *mainThread(void *arg0)
 
     initUARTESP();
     openUARTESP();
-    initTimerTacho();
 
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
