@@ -9,9 +9,7 @@
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
-#include "TDOA/microphoneLocalization.h""
-
-//#include "DSP/fft.h"
+#include "TDOA/microphoneLocalization.h"
 #include "DSP/iirFilter.h"
 
 /* DSP LPF Filter */
@@ -71,8 +69,8 @@ void *mainThread(void *arg0)
     initADCBuf();
     initTimerTacho();
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
-    initInterruptCallbacks();
-    enableMicTriggerInterrupts();
+//    initInterruptCallbacks();
+//    enableMicTriggerInterrupts();
 #endif
 
     while(1) {
@@ -84,6 +82,7 @@ void *mainThread(void *arg0)
         //            speed = 1000;
         //        }
 #else
+        openADCBuf();
         sem_wait(&adcbufSem);
 
 //        filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered);

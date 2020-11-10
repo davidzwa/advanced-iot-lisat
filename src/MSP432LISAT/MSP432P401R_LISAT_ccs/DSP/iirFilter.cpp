@@ -13,12 +13,12 @@ IirFilter::IirFilter()
 }
 
 void IirFilter::InitFilterState(){
-    arm_fir_init_q15(&this->S, FILTER_TAP_NUM, filter_taps, this->firStateF32, CHUNK_LENGTH);
+    arm_fir_init_q15(&this->S, FILTER_TAP_NUM, filter_taps, this->firStateF32, ADCBUFFERSIZE);
 }
 
 void IirFilter::FilterBuffer(int16_t* buffer, int16_t* outputBuffer)
 {
-    arm_fir_q15(&this->S, buffer, outputBuffer, CHUNK_LENGTH);
+    arm_fir_q15(&this->S, buffer, outputBuffer, ADCBUFFERSIZE);
 }
 
 void IirFilter::ResetEMAState() {
@@ -30,7 +30,7 @@ void IirFilter::ResetEMAState() {
 
 void IirFilter::FilterEMABuffer(int16_t* buffer, int16_t* outputBuffer) {
     this->ResetEMAState();
-    for(int i=0;i<CHUNK_LENGTH;i++) {
+    for(int i=0;i<ADCBUFFERSIZE;i++) {
         outputBuffer[i] = FilterEMA(buffer[i]);
     }
 }

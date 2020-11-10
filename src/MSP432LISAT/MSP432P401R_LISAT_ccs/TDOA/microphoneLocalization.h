@@ -12,7 +12,8 @@ enum MIC
 
 int16_t sampleBuffer1a[ADCBUFFERSIZE];
 int16_t sampleBuffer1b[ADCBUFFERSIZE];
-//int16_t fftOutput[ADCBUFFERSIZE];
+int16_t shortBuffer1a[ADCBUFFERSIZE_SHORT];
+int16_t shortBuffer1b[ADCBUFFERSIZE_SHORT];
 #if NUM_ADC_CHANNELS >= 2
 int16_t sampleBuffer2a[ADCBUFFERSIZE];
 int16_t sampleBuffer2b[ADCBUFFERSIZE];
@@ -21,7 +22,6 @@ int16_t sampleBuffer2b[ADCBUFFERSIZE];
 int16_t sampleBuffer3a[ADCBUFFERSIZE];
 int16_t sampleBuffer3b[ADCBUFFERSIZE];
 #endif
-//int16_t correlation[CHUNK_LENGTH];
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
 int16_t rms;
@@ -46,7 +46,7 @@ void setWosMode(MIC micType);
 void setNormalMicMode(MIC micType);
 
 void initADCBuf();
-//void testADCBufOpened(); // Bit useless
+void openADCBuf();
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
                     void *completedADCBuffer, uint32_t completedChannel);
 void initInterruptCallbacks();

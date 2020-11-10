@@ -12,11 +12,11 @@ FFT::FFT()
 
 }
 
-uint32_t fftSize = CHUNK_LENGTH;
+uint32_t fftSize = ADCBUFFERSIZE;
 uint32_t ifftFlag = 0;
 uint32_t doBitReverse = 1;
 volatile arm_status status;
-int16_t fftComplex[CHUNK_LENGTH*2];
+int16_t fftComplex[ADCBUFFERSIZE*2];
 
 void doFFT(int16_t* buffer, int16_t* bufferOutput){
     arm_rfft_instance_q15 instance;

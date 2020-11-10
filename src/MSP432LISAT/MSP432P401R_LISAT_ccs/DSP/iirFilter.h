@@ -15,7 +15,7 @@ public:
 //    };
 
     arm_fir_instance_q15 S;
-    q15_t firStateF32[CHUNK_LENGTH + FILTER_TAP_NUM -1];
+    q15_t firStateF32[ADCBUFFERSIZE + FILTER_TAP_NUM -1];
 
     float EMA_a_low = 0.6; //initialization of EMA alpha
     float EMA_a_high = 0.9;
