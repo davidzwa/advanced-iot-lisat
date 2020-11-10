@@ -55,7 +55,8 @@ void setAdcBufConversion(ADCBuf_Conversion* conversionStruct, bool shortConversi
         conversionStruct[1].sampleBuffer = sampleBuffer2a;
         conversionStruct[1].sampleBufferTwo = sampleBuffer2b;
         conversionStruct[1].samplesRequestedCount = ADCBUFFERSIZE_SHORT;
-#elif NUM_ADC_CHANNELS >= 3
+#endif
+#if NUM_ADC_CHANNELS >= 3
         conversionStruct[1].arg = NULL;
         conversionStruct[1].adcChannel = MIC_ADCBUFCHANNEL_2; // Mic 2
         conversionStruct[1].sampleBuffer = sampleBuffer3a;
