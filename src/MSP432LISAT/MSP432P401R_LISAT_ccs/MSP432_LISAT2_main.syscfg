@@ -45,6 +45,8 @@ const GPIO28   = GPIO.addInstance();
 const GPIO29   = GPIO.addInstance();
 const GPIO30   = GPIO.addInstance();
 const GPIO31   = GPIO.addInstance();
+const GPIO34   = GPIO.addInstance();
+const GPIO35   = GPIO.addInstance();
 const PWM      = scripting.addModule("/ti/drivers/PWM", {}, false);
 const PWM1     = PWM.addInstance();
 const PWM2     = PWM.addInstance();
@@ -207,6 +209,20 @@ GPIO30.gpioPin.$assign = "expansion.10";
 
 GPIO31.$name           = "LINE_IR_ODD_BACKLIGHT";
 GPIO31.gpioPin.$assign = "expansion.9";
+
+GPIO34.mode               = "Output";
+GPIO34.initialOutputState = "High";
+GPIO34.pull               = "Pull Up";
+GPIO34.$name              = "SPEAKER_PAUSE_PIN";
+GPIO34.outputType         = "Open Drain";
+GPIO34.gpioPin.$assign    = "boosterpack.37";
+
+GPIO35.mode               = "Output";
+GPIO35.initialOutputState = "High";
+GPIO35.pull               = "Pull Up";
+GPIO35.$name              = "SPEAKER_BACKWARD_PIN";
+GPIO35.outputType         = "Open Drain";
+GPIO35.gpioPin.$assign    = "boosterpack.17";
 
 PWM1.$name                = "MOTOR_LEFT_PWM";
 PWM1.timer.$assign        = "Timer_A1";

@@ -9,7 +9,7 @@
 #define ROBOT_BUMPERS_H_
 
 #include "common.h"
-
+#include <SpeakerInterface/speakerControl.h>
 void initBumpers(Robot*);
 void enableBumperInterrupts();
 void disableBumperInterrupts();
