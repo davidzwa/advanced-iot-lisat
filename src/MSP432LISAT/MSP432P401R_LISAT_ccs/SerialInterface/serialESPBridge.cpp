@@ -57,7 +57,7 @@ void waitUARTPacketInfinite() {
 
         int result = parseHeader(serialBuffer);
         if (result == 0) {
-            GPIO_toggle(LED_TRIGGER_1);
+            GPIO_toggle(LED_GREEN_2);
         }
         else {
             // Drop the packet and

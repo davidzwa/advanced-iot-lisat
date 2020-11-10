@@ -17,6 +17,7 @@ uint32_t maxIndex;
 uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
+int16_t rms;
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -91,10 +92,20 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "R.%d", rms);
 
         if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
-            GPIO_write(LED_TRIGGER_1, 1);
+            if (lastChannelCompleted == 0) {
+                GPIO_write(LED_GREEN_2_GPIO, 1);
+            }
+            else {
+                GPIO_write(LED_BLUE_2_GPIO, 1);
+            }
         }
         else {
-            GPIO_write(LED_TRIGGER_1, 0);
+            if (lastChannelCompleted == 0) {
+                GPIO_write(LED_GREEN_2_GPIO, 0);
+            }
+            else {
+                GPIO_write(LED_BLUE_2_GPIO, 0);
+            }
         }
 
 //         Decide to send ADC buffer over the line

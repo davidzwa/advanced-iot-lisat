@@ -27,7 +27,7 @@
 #define NUM_ADC_CHANNELS    (2)
 #define ADCBUFFERSIZE_SHORT (64)
 #define ADCBUFFERSIZE       (512)
-#define SAMPLE_FREQUENCY    (30000)
+#define SAMPLE_FREQUENCY    (44000)
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)

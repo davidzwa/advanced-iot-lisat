@@ -56,7 +56,7 @@ void performReading() {
 
     //test
     int test = GPIO_read(LINE_IR1_RIGHT);
-    GPIO_write(LED_BLUE_0_GPIO, test);
+    GPIO_write(LED_BLUE_2, test);
 
     // Turn off IR LEDs to save power
     GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);

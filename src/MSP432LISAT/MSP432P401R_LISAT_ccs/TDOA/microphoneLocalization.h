@@ -23,8 +23,6 @@ int16_t sampleBuffer3b[ADCBUFFERSIZE];
 #endif
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
-int16_t rms;
-int16_t rms_filt;
 
 /* ADCBuf semaphore */
 sem_t adcbufSem;
@@ -33,6 +31,7 @@ extern bool startAdcSampling;
 extern unsigned long lastTriggerMic1L;
 extern unsigned long lastTriggerMic2M;
 extern unsigned long lastTriggerMic3R;
+extern int lastChannelCompleted;
 
 // CASPER's TDOA PLAYGROUND
 

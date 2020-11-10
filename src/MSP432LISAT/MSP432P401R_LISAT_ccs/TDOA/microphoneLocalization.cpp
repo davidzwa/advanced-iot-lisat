@@ -17,6 +17,7 @@ unsigned long lastTriggerMic3R = 0;
 bool mic3RTriggered = false;
 bool startAdcSampling = false;
 bool timerStarted = false;
+int lastChannelCompleted = -1;
 
 /* DSP LPF Filter */
 Filter* filter = new Filter();
@@ -102,7 +103,6 @@ void closeADCBuf() {
  */
 void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
-
     uint_fast16_t i;
     uint16_t *completedBuffer = (uint16_t*) completedADCBuffer;
     for (i = 0; i < conversion->samplesRequestedCount; i++) {
@@ -122,20 +122,26 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     else {
         GPIO_toggle(LED_ERROR_2);
     }
-
     stopTimerIfStarted();
 //    enableMicTriggerInterrupts();
 //    resetWosMicMode(); // Reset all mics: we are ready for a new round
-//    GPIO_write(LED_TRIGGER_1, 0);
 
 //    if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
 //    {
 //             /* post adcbuf semaphore */
 //    }
-    sem_post(&adcbufSem);
+    lastChannelCompleted = completedChannel;
     mic1LTriggered = false;
     mic2MTriggered = false;
     mic3RTriggered = false;
+
+    if (lastChannelCompleted == 0) {
+        sem_post(&adcbufSem);
+    }
+    else {
+        GPIO_toggle(LED_BLUE_2_GPIO);
+    }
+
 }
 
 void startTimerIfStopped() {
@@ -241,6 +247,6 @@ void interruptMic3RTriggered(uint_least8_t index)
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
     GPIO_disableInt(MIC3R_D_OUT_INTRPT);
 
-    GPIO_write(LED_TRIGGER_1, 1);
+    GPIO_write(LED_GREEN_2, 1);
     openADCBuf();
 }
