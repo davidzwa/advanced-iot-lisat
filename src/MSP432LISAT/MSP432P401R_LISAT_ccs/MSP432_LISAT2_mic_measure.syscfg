@@ -68,8 +68,13 @@ Display1.uart.$name = "UART_DEBUG";
 ADCBuf1.interruptPriority              = "6";
 ADCBuf1.enableDMA                      = false;
 ADCBuf1.$name                          = "MIC_ADCBUF";
+ADCBuf1.channels                       = 3;
 ADCBuf1.adcBufChannel0.$name           = "CHANNEL_0";
 ADCBuf1.adcBufChannel0.referenceSource = "2.5V";
+ADCBuf1.adcBufChannel1.$name           = "CHANNEL_1";
+ADCBuf1.adcBufChannel1.referenceSource = "2.5V";
+ADCBuf1.adcBufChannel2.$name           = "CHANNEL_2";
+ADCBuf1.adcBufChannel2.referenceSource = "2.5V";
 
 DMA.interruptPriority = "2";
 
@@ -247,8 +252,12 @@ Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TX
 Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
 ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
 ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
-ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.33";
+ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.2";
 ADCBuf1.adc.$suggestSolution                       = "ADC14";
+ADCBuf1.adcBufChannel1.adc.$suggestSolution        = "ADC14";
+ADCBuf1.adcBufChannel1.adc.adcPin.$suggestSolution = "boosterpack.23";
+ADCBuf1.adcBufChannel2.adc.$suggestSolution        = "ADC14";
+ADCBuf1.adcBufChannel2.adc.adcPin.$suggestSolution = "boosterpack.33";
 GPIO16.gpioPin.$suggestSolution                    = "boosterpack.34";
 GPIO18.gpioPin.$suggestSolution                    = "boosterpack.14";
 GPIO19.gpioPin.$suggestSolution                    = "boosterpack.15";

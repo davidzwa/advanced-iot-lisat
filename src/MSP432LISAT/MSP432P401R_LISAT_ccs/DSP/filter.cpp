@@ -10,6 +10,7 @@
 
 Filter::Filter()
 {
+
 }
 
 void Filter::InitFilterState(){
@@ -22,23 +23,25 @@ void Filter::FilterBuffer(int16_t* buffer, int16_t* outputBuffer)
 }
 
 void Filter::ResetEMAState(int16_t initialValue) {
-    EMA_a_low = 0.1; //initialization of EMA alpha
-    EMA_a_high = 0.8;
-    EMA_S_low = initialValue; //initialization of EMA S
-    EMA_S_high = initialValue;
+    // initialization of EMA alpha
+    EMA_a_low = 0.1f;
+    EMA_a_high = 0.8f;
+    // initialization of EMA S
+    EMA_S_low = (float)initialValue;
+    EMA_S_high = (float)initialValue;
 }
 
 void Filter::FilterEMABuffer(int16_t* buffer, int16_t* outputFilteredBuffer, uint16_t length) {
-    this->ResetEMAState(buffer[0]);
-    for(int i=0;i<length;i++) {
-        int16_t analogValue = buffer[i];
-        outputFilteredBuffer[i] = FilterEMA(analogValue);
+    int16_t bufferState = buffer[0];
+    this->ResetEMAState(bufferState);
+    for(uint16_t i=0;i<length;i++) {
+        outputFilteredBuffer[i] = FilterEMA(buffer[i]);
     }
 }
 
 int16_t Filter::FilterEMA(int16_t analogValue) {
-    EMA_S_low = (float)(EMA_a_low * analogValue) + ((1 - EMA_a_low) * EMA_S_low); //run the EMA
-    EMA_S_high = (float)(EMA_a_high * analogValue) + ((1 - EMA_a_high) * EMA_S_high);
-    return EMA_S_high - EMA_S_low; //find the band-pass
+    EMA_S_low = (EMA_a_low * analogValue) + ((1 - EMA_a_low) * EMA_S_low); //run the EMA
+    EMA_S_high = (EMA_a_high * analogValue) + ((1 - EMA_a_high) * EMA_S_high);
+    return (int16_t)(EMA_S_high - EMA_S_low); //find the band-pass
 }
 

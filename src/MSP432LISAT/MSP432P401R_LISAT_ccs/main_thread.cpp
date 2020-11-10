@@ -10,6 +10,7 @@
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
 #include "TDOA/microphoneLocalization.h"
+#include "TDOA/signalDetection.h"
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
@@ -85,6 +86,16 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "Mi.%d", minValue);
         arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
+//        Send RMS value of ADCBuf for either Valin or CTP or algorithm
+        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
+        Display_printf(display, 0, 0, "R.%d", rms);
+
+        if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
+            GPIO_write(LED_TRIGGER_1, 1);
+        }
+        else {
+            GPIO_write(LED_TRIGGER_1, 0);
+        }
 
 //         Decide to send ADC buffer over the line
 //        for (int i = 0; i < ADCBUFFERSIZE; i++) {
@@ -104,9 +115,6 @@ void *mainThread(void *arg0)
 //        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
 //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 
-//        Send RMS value of ADCBuf for either Valin or CTP or algorithm
-        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
-        Display_printf(display, 0, 0, "R.%d", rms);
         Display_printf(display, 0, 0, "--Done");
         numBufsSent++;
 #endif

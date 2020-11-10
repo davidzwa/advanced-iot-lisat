@@ -20,8 +20,8 @@ public:
 
     float EMA_a_low = 0.6; //initialization of EMA alpha
     float EMA_a_high = 0.9;
-    int EMA_S_low = 0; //initialization of EMA S
-    int EMA_S_high = 0;
+    float EMA_S_low = 0.0f; //initialization of EMA S
+    float EMA_S_high = 0.0f;
     int16_t FilterEMA(int16_t value);
     void ResetEMAState(int16_t initialValue);
     void FilterEMABuffer(int16_t* buffer, int16_t* outputBuffer, uint16_t length);
