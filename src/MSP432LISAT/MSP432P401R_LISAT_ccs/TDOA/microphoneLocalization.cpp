@@ -167,11 +167,11 @@ void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
 
     if(mic1LTriggered && mic2MTriggered && mic3RTriggered)
     {
-        mic1LTriggered = false;
-        mic2MTriggered = false;
-        mic3RTriggered = false;
         sem_post(&adcbufSem);     /* post adcbuf semaphore */
     }
+    mic1LTriggered = false;
+    mic2MTriggered = false;
+    mic3RTriggered = false;
 }
 
 void interruptMic1LTriggered(uint_least8_t index)
@@ -180,9 +180,9 @@ void interruptMic1LTriggered(uint_least8_t index)
         GPIO_toggle(LED_ERROR_2);
         return;
     }
-    mic1LTriggered = true;
     startTimerIfStopped();
     lastTriggerMic1L = getCurrentPreciseTime();
+    mic1LTriggered = true;
     setNormalMicMode(MIC_LEFT); // Disable interrupt externally
     GPIO_disableInt(MIC1L_D_OUT_INTRPT);
 }
@@ -193,9 +193,9 @@ void interruptMic2MTriggered(uint_least8_t index)
         GPIO_toggle(LED_ERROR_2);
         return;
     }
-    mic2MTriggered = true;
     startTimerIfStopped();
     lastTriggerMic2M = getCurrentPreciseTime();
+    mic2MTriggered = true;
     setNormalMicMode(MIC_MID); // Disable interrupt externally
     GPIO_disableInt(MIC2M_D_OUT_INTRPT);
 }
@@ -206,9 +206,9 @@ void interruptMic3RTriggered(uint_least8_t index)
         GPIO_toggle(LED_ERROR_2);
         return;
     }
-    mic3RTriggered = true;
     startTimerIfStopped();
     lastTriggerMic3R = getCurrentPreciseTime();
+    mic3RTriggered = true;
     setNormalMicMode(MIC_RIGHT); // Disable interrupt externally
     GPIO_disableInt(MIC3R_D_OUT_INTRPT);
 

@@ -105,10 +105,10 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
         Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
 //        Send DOA values for either Valin or CTP or algorithm
-        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
-        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
-        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
-        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
+//        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
+//        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
+//        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
+//        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
         arm_rms_q15(outputBuffer, ADCBUFFERSIZE, &rms);

@@ -1,0 +1,17 @@
+{
+    "direction": 90,
+    "espDataSets": [
+        {
+            "mic1LTimeUs": 10000,
+            "mic2MTimeUs": 200
+        },
+        {
+            "mic1LTimeUs": 10000,
+            "mic2MTimeUs": 1200
+        },
+        {
+            "mic1LTimeUs": 10000,
+            "mic2MTimeUs": 1200
+        }
+    ]
+}
