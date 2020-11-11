@@ -9,6 +9,7 @@
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
+#include "System/kernelSingleTaskClock.h"
 #include "TDOA/microphoneLocalization.h"
 #include "TDOA/signalDetection.h"
 
@@ -18,6 +19,9 @@ uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
 int16_t rms;
+
+// Bumper tasks
+KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -42,6 +46,8 @@ void *mainThread(void *arg0)
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
 
+    singleBumperTask->setupClockHandler();
+    singleBumperTask->scheduleSingleTask(500);
     // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
     //    writeUARTInfinite(); // BLOCKING for testing
