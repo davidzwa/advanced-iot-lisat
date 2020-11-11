@@ -93,7 +93,6 @@ GPIO2.$name            = "MIC1L_D_OUT_INTRPT";
 GPIO3.$name              = "MIC2M_MODE_WOS";
 GPIO3.mode               = "Output";
 GPIO3.initialOutputState = "High";
-GPIO3.gpioPin.$assign    = "boosterpack.6";
 
 GPIO4.$name            = "MIC2M_D_OUT_INTRPT";
 GPIO4.interruptTrigger = "Rising Edge";
@@ -155,6 +154,7 @@ GPIO16.gpioPin.$assign  = "boosterpack.7";
 GPIO17.$name            = "BUMPER_2_RIGHT";
 GPIO17.pull             = "Pull Up";
 GPIO17.interruptTrigger = "Falling Edge";
+GPIO17.gpioPin.$assign  = "boosterpack.6";
 
 GPIO18.$name            = "BUMPER_1_RIGHT";
 GPIO18.pull             = "Pull Up";
@@ -213,12 +213,10 @@ GPIO31.gpioPin.$assign = "expansion.9";
 GPIO32.mode               = "Output";
 GPIO32.initialOutputState = "High";
 GPIO32.$name              = "SPEAKER_PAUSE_PIN";
-GPIO32.pull               = "Pull Up";
 GPIO32.gpioPin.$assign    = "boosterpack.37";
 
 GPIO33.mode               = "Output";
 GPIO33.initialOutputState = "High";
-GPIO33.pull               = "Pull Up";
 GPIO33.$name              = "SPEAKER_BACKWARD_PIN";
 GPIO33.gpioPin.$assign    = "boosterpack.17";
 
@@ -271,9 +269,9 @@ ADCBuf1.adcBufChannel1.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel1.adc.adcPin.$suggestSolution = "boosterpack.23";
 ADCBuf1.adcBufChannel2.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel2.adc.adcPin.$suggestSolution = "boosterpack.33";
-GPIO2.gpioPin.$suggestSolution                     = "boosterpack.34";
-GPIO15.gpioPin.$suggestSolution                    = "boosterpack.14";
-GPIO17.gpioPin.$suggestSolution                    = "boosterpack.15";
+GPIO2.gpioPin.$suggestSolution                     = "boosterpack.14";
+GPIO3.gpioPin.$suggestSolution                     = "expansion.28";
+GPIO15.gpioPin.$suggestSolution                    = "boosterpack.15";
 Timer1.timer.$suggestSolution                      = "Timer_A2";
 UART1.uart.$suggestSolution                        = "EUSCI_A1";
 LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";

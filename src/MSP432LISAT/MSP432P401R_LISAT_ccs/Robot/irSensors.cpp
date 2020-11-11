@@ -21,7 +21,6 @@ void changeSensorsIO(bool input) {
     GPIO_setConfig(LINE_IR6_LEFT, config);
     GPIO_setConfig(LINE_IR7_LEFT, config);
     GPIO_setConfig(LINE_IR8_LEFT, config);
-
 }
 
 void chargeCapacitors() {
