@@ -1,15 +1,15 @@
 clearvars
-close all
+%close all
 %quick test to see if cutting the plane method for direction determination
 %could work
 
 
-N_mic = 3;
-%mic_locs = [1,0; 0,1; 0,-1];
-mic_locs = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
+N_mic = 10;
+mic_locs = [0.05,0; 0,0.1; 0,-0.1] + [0.075,0];
+%mic_locs = 0.1*[cos(2*pi/N_mic*(0:N_mic-1)'), sin(2*pi/N_mic*(0:N_mic-1)')];
 
 
-%% comute unit distance vectors
+%% compute unit distance vectors
 vect = zeros(nchoosek(length(mic_locs),2),2);
 k = 1;
 for i = 1:length(mic_locs)
@@ -23,18 +23,17 @@ end
 
 %% source
 
-source = [-2,-2];
+source = [2,-0.5];
 
 %% TOA from mic to source 
 
 TOA = zeros(length(mic_locs),1);
-c = 343;
+c = 343;    %m/s
 
 for i = 1:length(mic_locs)
     TOA(i) = norm(source - mic_locs(i,:))/c;
+    
 end
-
-TOA = floor(TOA*10000);
 
 %% direction estimation
 
@@ -61,7 +60,7 @@ ang = ang/norm(ang)
 figure
 
 hold on
-%scatter(source(1), source(2),'k^','filled');
+scatter(source(1), source(2),'k^','filled');
 grid
 
 
@@ -87,7 +86,7 @@ for i = 1:length(mic_locs)
 end
 
 
-%quiver(0,0,ang(1), ang(2),'k');
+quiver(0,0,ang(1), ang(2),0.1,'k');
 
 
 axis([-3, 3, -3, 3]);

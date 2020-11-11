@@ -33,17 +33,29 @@ Z = flip(Z,1);
 min_err = min(err(:,2));
 max_err = max(err(:,2));
 
-[h, c] = polarPcolor(ring_distances, angle, rad2deg(Z),'labelR','[m]');
+pos = [0.11, 0.3, 0.5, 0.7, 0.9, 1]
+
+[h, c] = polarPcolor(ring_distances, angle, rad2deg(Z),'labelR','r [m]','circlesPos',pos, 'Nspokes', 9);
 ylabel(c,'Angular error [degrees]');
-title("Angular error");
+c.FontSize = 16;
+h.Annotation.LegendInformation.IconDisplayStyle = 'off';
+% title("Angular error");
+
+l = findobj('Type', 'Line');
+for i = 1:length(l)
+   l(i).Annotation.LegendInformation.IconDisplayStyle = 'off';
+end
+
+
 
 hold on
 
 quiver(0,0,cos(env.robots(1,3)+0.5*pi),sin(env.robots(1,3)+0.5*pi),0.1,...
          'ok','DisplayName', "robot","MaxHeadSize",0.7);
-s = scatter(-env.mics(:,2,1),env.mics(:,1,1),'+k');
-s.Annotation.LegendInformation.IconDisplayStyle = 'off';
+s = scatter(-env.mics(:,2,1),env.mics(:,1,1),'+k',"DisplayName", "Microphone");
+% s.Annotation.LegendInformation.IconDisplayStyle = 'off';
 
+legend
 %caxis([min(Z(:)),max(Z(:))])
 
 
