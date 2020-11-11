@@ -5,7 +5,7 @@
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;
 ADCBuf_Params adcBufParams;
-ADCBuf_Conversion continuousConversion[2];
+ADCBuf_Conversion continuousConversion[3];
 
 // Timer: Auxiliary variables
 bool startAdcSampling = false;
