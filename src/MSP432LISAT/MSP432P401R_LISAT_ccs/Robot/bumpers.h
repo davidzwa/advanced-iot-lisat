@@ -9,6 +9,7 @@
 #define ROBOT_BUMPERS_H_
 
 #include "common.h"
+
 void initBumpers(Robot*);
 void enableBumperInterrupts();
 void disableBumperInterrupts();
