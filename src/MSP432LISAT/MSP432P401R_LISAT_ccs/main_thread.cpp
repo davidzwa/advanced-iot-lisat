@@ -12,6 +12,7 @@
 #include "System/kernelSingleTaskClock.h"
 #include "TDOA/microphoneLocalization.h"
 #include "TDOA/signalDetection.h"
+#include "SpeakerInterface/speakerControl.h"
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
@@ -47,8 +48,10 @@ void *mainThread(void *arg0)
     robot->motorDriver->DriveForwards(speed);
 
     singleBumperTask->setupClockHandler();
-    singleBumperTask->scheduleSingleTask(500);
-    // Some tests/debug things
+    /* Pass clock handle to speaker control for reference (start/stop) */
+    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
+    singleBumperTask->scheduleSingleTask(200);
+   // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
     //    writeUARTInfinite(); // BLOCKING for testing
 #else

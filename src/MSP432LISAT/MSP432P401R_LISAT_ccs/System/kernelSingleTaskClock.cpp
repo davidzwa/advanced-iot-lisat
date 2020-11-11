@@ -43,3 +43,7 @@ void KernelSingleTaskClock::scheduleSingleTask(uint32_t period) {
     Clock_setTimeout(myClock, period);
     Clock_start(myClock);
 }
+
+Clock_Handle* KernelSingleTaskClock::getClockHandle() {
+    return &this->myClock;
+}

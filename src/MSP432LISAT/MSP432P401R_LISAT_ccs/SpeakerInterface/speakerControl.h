@@ -9,7 +9,10 @@
 #define SPEAKERINTERFACE_SPEAKERCONTROL_H_
 
 #include "common.h"
+#include <System/kernelSingleTaskClock.h>
 
+void taskPressPauseCallback(UArg args);
+void attachSpeakerTaskClockHandle(Clock_Handle* );
 void speakerPressPause();
 void speakerPressBackward();
 void speakerPlaySound();
