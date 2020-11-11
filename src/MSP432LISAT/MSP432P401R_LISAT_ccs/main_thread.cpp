@@ -78,8 +78,8 @@ void *mainThread(void *arg0)
 
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-        usleep(50000);
         robot->UpdateRobotPosition();
+        sem_wait(&adcbufSem);
         //        speed += 10;
         //        if (speed > 4500) {
         //            speed = 1000;

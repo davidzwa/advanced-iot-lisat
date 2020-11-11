@@ -39,7 +39,7 @@ void KernelSingleTaskClock::setupClockHandler() {
     }
 }
 
-void KernelSingleTaskClock::scheduleSingleTask(uint32_t delay) {
-    Clock_setPeriod(myClock, delay);
+void KernelSingleTaskClock::scheduleSingleTask(uint32_t period) {
+    Clock_setTimeout(myClock, period);
     Clock_start(myClock);
 }
