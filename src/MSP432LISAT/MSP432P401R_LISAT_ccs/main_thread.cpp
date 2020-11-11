@@ -54,7 +54,6 @@ void *mainThread(void *arg0)
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
 
-
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
     //    writeUARTInfinite(); // BLOCKING for testing
@@ -77,11 +76,7 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
-    initTimerTacho();
-    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
-//    initInterruptCallbacks();
-//    enableMicTriggerInterrupts();
-
+//    initTimerTacho();
 #endif
 
     while(1) {
