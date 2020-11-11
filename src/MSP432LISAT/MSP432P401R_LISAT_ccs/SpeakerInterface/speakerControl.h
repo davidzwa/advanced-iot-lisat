@@ -8,6 +8,8 @@
 #ifndef SPEAKERINTERFACE_SPEAKERCONTROL_H_
 #define SPEAKERINTERFACE_SPEAKERCONTROL_H_
 
+#include "common.h"
+
 void speakerPressPause();
 void speakerPressBackward();
 void speakerPlaySound();

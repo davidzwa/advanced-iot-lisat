@@ -19,20 +19,22 @@ void bumperInterrupt(uint_least8_t index) {
     }
     switch(index) {
         case BUMPER_0_RIGHT:
+            GPIO_write(SPEAKER_PAUSE_PIN, 0);
             GPIO_toggle(LED_BLUE_2_GPIO);
-            speakerPressPause();
+            //speakerPressPause();
             break;
         case BUMPER_1_RIGHT:
+            GPIO_write(SPEAKER_PAUSE_PIN, 1);
             GPIO_toggle(LED_BLUE_2_GPIO);
-            speakerPressBackward();
+           //speakerPressBackward();
             break;
         case BUMPER_2_RIGHT:
             bRobot->Stop();
-            GPIO_toggle(LED_BLUE_2_GPIO);
+            //GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_3_LEFT:
             bRobot->Stop();
-            GPIO_toggle(LED_BLUE_2_GPIO);
+            //GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_4_LEFT:
             //GPIO_toggle(LED_BLUE_2_GPIO);
