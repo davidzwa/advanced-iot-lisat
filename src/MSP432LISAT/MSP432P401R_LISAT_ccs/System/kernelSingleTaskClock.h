@@ -17,8 +17,7 @@ class KernelSingleTaskClock
 {
 public:
     KernelSingleTaskClock();
-    void setupClockHandler();
-    void scheduleSingleTask(uint32_t delay);
+    void setupClockHandler(uint32_t delay);
     Clock_Handle* getClockHandle();
     private:
     Clock_Params clockParams;

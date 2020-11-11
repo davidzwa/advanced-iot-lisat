@@ -19,7 +19,7 @@ void taskDelayCallback(UArg arg0)
     time = Clock_getTicks();
 }
 
-void KernelSingleTaskClock::setupClockHandler() {
+void KernelSingleTaskClock::setupClockHandler(uint32_t delay) {
 //     Example Clock setup, which shows that the microcontroller timerA0 is used on 1ms per tick,
 //     giving the following handler an update rate of 1kHz
 
@@ -37,11 +37,7 @@ void KernelSingleTaskClock::setupClockHandler() {
     if (myClock == NULL) {
         System_abort("Clock create failed");
     }
-}
-
-void KernelSingleTaskClock::scheduleSingleTask(uint32_t period) {
-    Clock_setTimeout(myClock, period);
-    Clock_start(myClock);
+    Clock_setTimeout(myClock, delay);
 }
 
 Clock_Handle* KernelSingleTaskClock::getClockHandle() {

@@ -101,11 +101,9 @@ GPIO4.gpioPin.$assign  = "boosterpack.26";
 GPIO5.$name              = "MIC3R_MODE_WOS";
 GPIO5.mode               = "Output";
 GPIO5.initialOutputState = "High";
-GPIO5.gpioPin.$assign    = "boosterpack.27";
 
 GPIO6.$name            = "MIC3R_D_OUT_INTRPT";
 GPIO6.interruptTrigger = "Rising Edge";
-GPIO6.gpioPin.$assign  = "boosterpack.8";
 
 GPIO7.mode               = "Output";
 GPIO7.initialOutputState = "High";
@@ -145,11 +143,12 @@ GPIO14.gpioPin.$assign  = "boosterpack.28";
 GPIO15.$name            = "BUMPER_4_LEFT";
 GPIO15.interruptTrigger = "Falling Edge";
 GPIO15.pull             = "Pull Up";
+GPIO15.gpioPin.$assign  = "boosterpack.8";
 
 GPIO16.$name            = "BUMPER_3_LEFT";
 GPIO16.pull             = "Pull Up";
 GPIO16.interruptTrigger = "Falling Edge";
-GPIO16.gpioPin.$assign  = "boosterpack.7";
+GPIO16.gpioPin.$assign  = "boosterpack.27";
 
 GPIO17.$name            = "BUMPER_2_RIGHT";
 GPIO17.pull             = "Pull Up";
@@ -269,9 +268,10 @@ ADCBuf1.adcBufChannel1.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel1.adc.adcPin.$suggestSolution = "boosterpack.23";
 ADCBuf1.adcBufChannel2.adc.$suggestSolution        = "ADC14";
 ADCBuf1.adcBufChannel2.adc.adcPin.$suggestSolution = "boosterpack.33";
-GPIO2.gpioPin.$suggestSolution                     = "boosterpack.14";
+GPIO2.gpioPin.$suggestSolution                     = "boosterpack.15";
 GPIO3.gpioPin.$suggestSolution                     = "expansion.28";
-GPIO15.gpioPin.$suggestSolution                    = "boosterpack.15";
+GPIO5.gpioPin.$suggestSolution                     = "expansion.29";
+GPIO6.gpioPin.$suggestSolution                     = "boosterpack.7";
 Timer1.timer.$suggestSolution                      = "Timer_A2";
 UART1.uart.$suggestSolution                        = "EUSCI_A1";
 LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";

@@ -56,12 +56,7 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
-#if MSP_SPEAKER_INTERRUPTS != 1
-    singleBumperTask->setupClockHandler();
-    /* Pass clock handle to speaker control for reference (start/stop) */
-    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
-    singleBumperTask->scheduleSingleTask(200);
-#endif
+
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
@@ -93,6 +88,12 @@ void *mainThread(void *arg0)
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
     generateAndTransmitSignatureSignal();
+#endif
+
+#if MSP_SPEAKER_INTERRUPTS != 1
+    singleBumperTask->setupClockHandler(200);
+    /* Pass clock handle to speaker control for reference (start/stop) */
+    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
 #endif
 
     while(1) {
