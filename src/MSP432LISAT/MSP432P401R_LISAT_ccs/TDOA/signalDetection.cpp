@@ -8,7 +8,7 @@
 #include <TDOA/SignalDetection.h>
 
 bool StupidDetectionBlackBox(int16_t* outputBuffer_filtered, int16_t length, int16_t rms) {
-    return (rms > 1000);
+    return (rms > 2000);
 }
 
 SignalDetection::SignalDetection()
