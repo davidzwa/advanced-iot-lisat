@@ -9,8 +9,10 @@
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
 #include "System/freeRunningTimer.h"
+#include "System/kernelSingleTaskClock.h"
 #include "TDOA/microphoneLocalization.h"
 #include "TDOA/signalDetection.h"
+#include "SpeakerInterface/speakerControl.h"
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
@@ -18,6 +20,9 @@ uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
 int16_t rms;
+
+// Bumper tasks
+KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -33,6 +38,13 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
+#if MSP_SPEAKER_INTERRUPTS != 1
+    singleBumperTask->setupClockHandler();
+    /* Pass clock handle to speaker control for reference (start/stop) */
+    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
+    singleBumperTask->scheduleSingleTask(200);
+#endif
+
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     int speed = 1000;
 
@@ -42,7 +54,7 @@ void *mainThread(void *arg0)
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
 
-    // Some tests/debug things
+   // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
     //    writeUARTInfinite(); // BLOCKING for testing
 #else
@@ -64,16 +76,13 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
-    initTimerTacho();
-    resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
-//    initInterruptCallbacks();
-//    enableMicTriggerInterrupts();
+//    initTimerTacho();
 #endif
 
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-        usleep(50000);
         robot->UpdateRobotPosition();
+        sem_wait(&adcbufSem);
         //        speed += 10;
         //        if (speed > 4500) {
         //            speed = 1000;

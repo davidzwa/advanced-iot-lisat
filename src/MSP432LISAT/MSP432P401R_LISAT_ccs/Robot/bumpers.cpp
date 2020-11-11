@@ -7,6 +7,7 @@
 
 #include <Robot/robot.h>
 #include <Robot/bumpers.h>
+#include <SpeakerInterface/speakerControl.h>
 #include <ti/sysbios/knl/Clock.h>
 
 Robot* bRobot;
@@ -18,24 +19,28 @@ void bumperInterrupt(uint_least8_t index) {
     }
     switch(index) {
         case BUMPER_0_RIGHT:
+            speakerPlaySound();
             GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_1_RIGHT:
+            speakerPressPause();
             GPIO_toggle(LED_BLUE_2_GPIO);
+           //speakerPressBackward();
             break;
         case BUMPER_2_RIGHT:
-            bRobot->Stop();
+            speakerPressBackward();
+            //bRobot->Stop();
             GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_3_LEFT:
             bRobot->Stop();
-            GPIO_toggle(LED_BLUE_2_GPIO);
+            //GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_4_LEFT:
-            GPIO_toggle(LED_BLUE_2_GPIO);
+            //GPIO_toggle(LED_BLUE_2_GPIO);
             break;
         case BUMPER_5_LEFT:
-            GPIO_toggle(LED_BLUE_2_GPIO);
+            //GPIO_toggle(LED_BLUE_2_GPIO);
             break;
     }
     bumper_last_called = Clock_getTicks();
