@@ -56,8 +56,6 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
-
-
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
     openUARTESP();
