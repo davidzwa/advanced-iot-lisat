@@ -21,17 +21,31 @@
 
 #include "ti_drivers_config.h"
 
+enum MIC
+{
+    MIC_LEFT = MIC1L_MODE_WOS,
+    MIC_MID = MIC2M_MODE_WOS,
+    MIC_RIGHT = MIC3R_MODE_WOS
+};
+
+// Signature signal generator properties
+const double chirpInterval = 2.0;       // ms
+const double chirpFrequencyStart = 5.0; // kHz
+const double chirpFrequencyEnd = 15.0;  // kHz
+#define CHIRP_SAMPLE_COUNT 88     // Count
+
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
 // Switch flag to indicate whether MSP handles speakers commands  (only works in robots mode with bumper interrupts)
 #define MSP_SPEAKER_INTERRUPTS (1)
 
-#define NUM_ADC_CHANNELS    (2)
-#define ADCBUFFERSIZE_SHORT (64)
+#define NUM_ADC_CHANNELS    (1)
+#define ADCBUFFERSIZE_SHORT (128) // Set it to high for easy sanity checks
 #define ADCBUFFERSIZE       (512)
 #define SAMPLE_FREQUENCY    (44000)
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
+
 
 #endif // COMMON__H
