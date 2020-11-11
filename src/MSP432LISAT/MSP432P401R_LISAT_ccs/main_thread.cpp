@@ -1,18 +1,27 @@
 /* DriverLib Includes */
 #include <stdint.h>
 #include <stdio.h>
-#include <SerialInterface/serialDebugInterface.h>
 #include <unistd.h>
+
+// Bios interaction
+#include <ti/sysbios/BIOS.h>
 
 // Our common defines and entrypoint
 #include "common.h"
 #include "Robot/robot.h"
 #include "SerialInterface/serialESPBridge.h"
+#include <SerialInterface/serialDebugInterface.h>
 #include "System/freeRunningTimer.h"
 #include "System/kernelSingleTaskClock.h"
 #include "TDOA/microphoneLocalization.h"
 #include "TDOA/signalDetection.h"
+#include <DSP/signalGenerator.h>
 #include "SpeakerInterface/speakerControl.h"
+
+// Chirp buffah
+int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
+#define CORRELATION_LENGTH (2*ADCBUFFERSIZE_SHORT-1)
+int16_t correlationChirp[CORRELATION_LENGTH];
 
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
@@ -28,7 +37,16 @@ const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
+int speed = 1000;
 
+void generateAndTransmitSignatureSignal() {
+    generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
+    Display_printf(display, 0, 0, "BEGIN");
+    for (int i = 0; i < CHIRP_SAMPLE_COUNT; i++) {
+        Display_printf(display, 0, 0, "%d", tsjirpBuffah[i]);
+    }
+    Display_printf(display, 0, 0, "END");
+}
 /*
  *  ======== mainThread ========
  */
@@ -46,8 +64,6 @@ void *mainThread(void *arg0)
 #endif
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-    int speed = 1000;
-
     initUARTESP();
     openUARTESP();
 
@@ -76,7 +92,7 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
-//    initTimerTacho();
+    generateAndTransmitSignatureSignal();
 #endif
 
     while(1) {
@@ -90,6 +106,14 @@ void *mainThread(void *arg0)
 #else
         openADCBuf();
         sem_wait(&adcbufSem);
+
+        // 2 * max(srcALen, srcBLen) - 1
+//        arm_correlate_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, tsjirpBuffah, CHIRP_SAMPLE_COUNT, correlationChirp);
+//        Display_printf(display, 0, 0, "BEGIN-CORR");
+//        for (int i = 0; i < CORRELATION_LENGTH; i++) {
+//            Display_printf(display, 0, 0, "%d", correlationChirp[i]);
+//        }
+//        Display_printf(display, 0, 0, "END-CORR");
 
         arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
         Display_printf(display, 0, 0, "Mi.%d", minValue);

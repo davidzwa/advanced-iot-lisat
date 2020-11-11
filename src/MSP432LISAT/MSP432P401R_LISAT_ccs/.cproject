@@ -104,7 +104,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="MSP432_LISAT_oldrobot.syscfg|MSP432_LISAT2_mic_measure.syscfg|MSP430_LISAT2.syscfg|MSP432_LISAT2_new.syscfg|MSP432_LISAT.syscfg" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MSP432_LISAT_oldrobot.syscfg|MSP430_LISAT2.syscfg" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
