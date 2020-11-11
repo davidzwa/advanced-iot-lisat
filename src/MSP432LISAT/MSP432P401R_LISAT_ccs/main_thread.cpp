@@ -38,6 +38,13 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
+#if MSP_SPEAKER_INTERRUPTS != 1
+    singleBumperTask->setupClockHandler();
+    /* Pass clock handle to speaker control for reference (start/stop) */
+    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
+    singleBumperTask->scheduleSingleTask(200);
+#endif
+
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     int speed = 1000;
 
@@ -47,10 +54,7 @@ void *mainThread(void *arg0)
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
 
-    singleBumperTask->setupClockHandler();
-    /* Pass clock handle to speaker control for reference (start/stop) */
-    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
-    singleBumperTask->scheduleSingleTask(200);
+
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
     //    writeUARTInfinite(); // BLOCKING for testing
@@ -77,6 +81,7 @@ void *mainThread(void *arg0)
     resetWosMicMode(); // Override each mode pin to be HIGH (just to be sure)
 //    initInterruptCallbacks();
 //    enableMicTriggerInterrupts();
+
 #endif
 
     while(1) {
