@@ -106,6 +106,9 @@ void *mainThread(void *arg0)
         //            speed = 1000;
         //        }
 #else
+#if MIC_CONTINUOUS_SAMPLE != 1
+        openADCBuf();
+#endif
         sem_wait(&adcbufSem);
 
         // 2 * max(srcALen, srcBLen) - 1

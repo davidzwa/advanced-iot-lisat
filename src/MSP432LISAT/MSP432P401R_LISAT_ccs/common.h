@@ -42,6 +42,7 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
 // Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
 #define MSP_SPEAKER_INTERRUPTS (1)
+#define MIC_CONTINUOUS_SAMPLE (1) // If not the main_thread will have to kick it when it can to continue.
 
 #define NUM_ADC_CHANNELS    (3)
 #define ADCBUFFERSIZE_SHORT (64)

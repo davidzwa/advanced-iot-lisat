@@ -22,7 +22,11 @@ bool allChannelsCompleted(int setCompletedChannel);
 void initADCBuf() {
     ADCBuf_Params_init(&adcBufParams);
     adcBufParams.callbackFxn = adcBufCompletionCallback;
-    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_CONTINUOUS; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
+#if MIC_CONTINUOUS_SAMPLE == 1
+    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_CONTINUOUS;
+#else
+    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_ONE_SHOT; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
+#endif
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
     adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
