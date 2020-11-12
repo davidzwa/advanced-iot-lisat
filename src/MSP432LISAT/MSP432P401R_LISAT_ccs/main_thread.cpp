@@ -126,9 +126,13 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "R.%d", rms);
 
         if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
+            setAdcBufConversionMode(false);
+            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {
+            setAdcBufConversionMode(true);
+            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 0);
         }
 

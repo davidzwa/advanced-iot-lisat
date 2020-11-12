@@ -95,7 +95,6 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
     if (allChannelsCompleted(completedChannel)) {
         GPIO_toggle(LED_BLUE_2_GPIO);
         startAdcSampling = false;
-        openADCBuf();
         sem_post(&adcbufSem);
     }
 }
