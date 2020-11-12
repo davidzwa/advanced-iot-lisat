@@ -24,7 +24,6 @@ extern bool startAdcSampling;
 
 void initADCBuf();
 void openADCBuf();
-void adcBufCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
-                    void *completedADCBuffer, uint32_t completedChannel);
+void setAdcBufConversionMode(bool shortConversion);
 
 #endif /* TDOA_EXTERNALINTERRUPT_H_ */
