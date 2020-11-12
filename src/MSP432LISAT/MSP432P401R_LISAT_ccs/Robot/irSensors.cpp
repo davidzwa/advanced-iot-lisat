@@ -8,6 +8,7 @@
 #include <Robot/robot.h>
 #include <Robot/irSensors.h>
 #include <ti/sysbios/knl/Clock.h>
+#include <System/IrSensorsTimer.h>
 
 Robot* irRobot;
 
@@ -34,32 +35,42 @@ void chargeCapacitors() {
     GPIO_write(LINE_IR8_LEFT, 1);
 }
 
-void initIrSensors(Robot* pRobot) {
-    irRobot = pRobot;
-}
+bool ir_caps_charged = true;
 
-void performReading() {
-    // Turn on IR LEDs
+void irPerformReading() {
     GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
     GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
-
-    // Set light sensor pins as output and charge caps
     changeSensorsIO(0);
     chargeCapacitors();
-    //todo: set timer interrupt to wait for 10 us
-    usleep(10);
-    // Set light sensor pins as output and read white/black value
-    changeSensorsIO(1);
-    //todo: set timer interrupt to wait for 1000 us
-    usleep(1000);
-
-    //test
-    int test = GPIO_read(LINE_IR1_RIGHT);
-    GPIO_write(LED_BLUE_2, test);
-
-    // Turn off IR LEDs to save power
-    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
-    GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
+    ir_caps_charged = true;
+    irTimerSetPeriodUs(10);
+    irTimerStart();
 }
+
+void irTimerCallback() {
+    // Turn on IR LEDs
+    if (ir_caps_charged) {
+        /* Set light sensor pins as output and read white/black value */
+        changeSensorsIO(1);
+        ir_caps_charged = false;
+        /* Wait for 1000 us to read capacitor values */
+        irTimerSetPeriodUs(1000);
+        irTimerStart();
+    } else {
+        int values = GPIO_read(LINE_IR1_RIGHT);
+        GPIO_write(LED_BLUE_2, values);
+        // Turn off IR LEDs to save power
+        GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
+        GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
+    }
+}
+
+void initIrSensors(Robot* pRobot) {
+    irRobot = pRobot;
+    initIrTimer( (Timer_CallBackFxn) &irTimerCallback);
+    irPerformReading();
+}
+
+
 
 

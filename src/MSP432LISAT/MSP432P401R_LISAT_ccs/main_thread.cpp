@@ -18,6 +18,7 @@
 #include <DSP/signalGenerator.h>
 #include "SpeakerInterface/speakerControl.h"
 #include <System/IrSensorsTimer.h>
+#include <Robot/irSensors.h>
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
@@ -89,11 +90,13 @@ void *mainThread(void *arg0)
     openADCBuf();
 #endif
 
-#if MSP_SPEAKER_INTERRUPTS != 1
+#if MSP_SPEAKER_INTERRUPTS == 1
     singleBumperTask->setupClockHandler(200);
     /* Pass clock handle to speaker control for reference (start/stop) */
     attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
 #endif
+
+    initIrSensors(robot);
 
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
