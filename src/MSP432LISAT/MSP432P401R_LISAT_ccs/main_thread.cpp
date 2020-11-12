@@ -55,6 +55,9 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
+    robot->StartUp();
+    robot->motorDriver->DriveForwards(speed);
+
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
     openUARTESP();
@@ -123,20 +126,10 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "R.%d", rms);
 
         if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
-            if (lastChannelCompleted == 0) {
-                GPIO_write(LED_GREEN_2_GPIO, 1);
-            }
-            else {
-                GPIO_write(LED_BLUE_2_GPIO, 1);
-            }
+            GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {
-            if (lastChannelCompleted == 0) {
-                GPIO_write(LED_GREEN_2_GPIO, 0);
-            }
-            else {
-                GPIO_write(LED_BLUE_2_GPIO, 0);
-            }
+            GPIO_write(LED_GREEN_2_GPIO, 0);
         }
 
 //         Decide to send ADC buffer over the line

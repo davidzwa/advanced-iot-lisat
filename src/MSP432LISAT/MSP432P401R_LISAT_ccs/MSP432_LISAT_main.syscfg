@@ -67,16 +67,19 @@ Display1.$name      = "CONFIG_Display_0";
 Display1.$hardware  = system.deviceData.board.components.XDS110UART;
 Display1.uart.$name = "UART_DEBUG";
 
-ADCBuf1.interruptPriority              = "6";
-ADCBuf1.enableDMA                      = false;
-ADCBuf1.$name                          = "MIC_ADCBUF";
-ADCBuf1.channels                       = 3;
-ADCBuf1.adcBufChannel0.$name           = "CHANNEL_0";
-ADCBuf1.adcBufChannel0.referenceSource = "2.5V";
-ADCBuf1.adcBufChannel1.$name           = "CHANNEL_1";
-ADCBuf1.adcBufChannel1.referenceSource = "2.5V";
-ADCBuf1.adcBufChannel2.$name           = "CHANNEL_2";
-ADCBuf1.adcBufChannel2.referenceSource = "2.5V";
+ADCBuf1.interruptPriority                 = "6";
+ADCBuf1.enableDMA                         = false;
+ADCBuf1.$name                             = "MIC_ADCBUF";
+ADCBuf1.channels                          = 3;
+ADCBuf1.adcBufChannel0.$name              = "CHANNEL_0";
+ADCBuf1.adcBufChannel0.referenceSource    = "2.5V";
+ADCBuf1.adcBufChannel0.adc.adcPin.$assign = "boosterpack.2";
+ADCBuf1.adcBufChannel1.$name              = "CHANNEL_1";
+ADCBuf1.adcBufChannel1.referenceSource    = "2.5V";
+ADCBuf1.adcBufChannel1.adc.adcPin.$assign = "boosterpack.23";
+ADCBuf1.adcBufChannel2.$name              = "CHANNEL_2";
+ADCBuf1.adcBufChannel2.referenceSource    = "2.5V";
+ADCBuf1.adcBufChannel2.adc.adcPin.$assign = "boosterpack.33";
 
 DMA.interruptPriority = "2";
 
@@ -257,21 +260,18 @@ LED2.gpioPin.gpioPin.$assign = "P2.1.GPIO/EUSCI_A1_SPI.CLK";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-Display1.uart.uart.$suggestSolution                = "EUSCI_A0";
-Display1.uart.uart.txPin.$suggestSolution          = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
-Display1.uart.uart.rxPin.$suggestSolution          = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
-ADCBuf1.timer.$suggestSolution                     = "Timer_A3";
-ADCBuf1.adcBufChannel0.adc.$suggestSolution        = "ADC14";
-ADCBuf1.adcBufChannel0.adc.adcPin.$suggestSolution = "boosterpack.2";
-ADCBuf1.adc.$suggestSolution                       = "ADC14";
-ADCBuf1.adcBufChannel1.adc.$suggestSolution        = "ADC14";
-ADCBuf1.adcBufChannel1.adc.adcPin.$suggestSolution = "boosterpack.23";
-ADCBuf1.adcBufChannel2.adc.$suggestSolution        = "ADC14";
-ADCBuf1.adcBufChannel2.adc.adcPin.$suggestSolution = "boosterpack.33";
-GPIO2.gpioPin.$suggestSolution                     = "boosterpack.15";
-GPIO3.gpioPin.$suggestSolution                     = "expansion.28";
-GPIO5.gpioPin.$suggestSolution                     = "expansion.29";
-GPIO6.gpioPin.$suggestSolution                     = "boosterpack.7";
-Timer1.timer.$suggestSolution                      = "Timer_A2";
-UART1.uart.$suggestSolution                        = "EUSCI_A1";
-LED1.gpioPin.gpioPin.$suggestSolution              = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
+Display1.uart.uart.$suggestSolution         = "EUSCI_A0";
+Display1.uart.uart.txPin.$suggestSolution   = "P1.3.GPIO/EUSCI_A0_UART.TXD/EUSCI_A0_SPI.SIMO";
+Display1.uart.uart.rxPin.$suggestSolution   = "P1.2.GPIO/EUSCI_A0_UART.RXD/EUSCI_A0_SPI.SOMI";
+ADCBuf1.timer.$suggestSolution              = "Timer_A3";
+ADCBuf1.adcBufChannel0.adc.$suggestSolution = "ADC14";
+ADCBuf1.adc.$suggestSolution                = "ADC14";
+ADCBuf1.adcBufChannel1.adc.$suggestSolution = "ADC14";
+ADCBuf1.adcBufChannel2.adc.$suggestSolution = "ADC14";
+GPIO2.gpioPin.$suggestSolution              = "boosterpack.15";
+GPIO3.gpioPin.$suggestSolution              = "expansion.28";
+GPIO5.gpioPin.$suggestSolution              = "expansion.29";
+GPIO6.gpioPin.$suggestSolution              = "boosterpack.7";
+Timer1.timer.$suggestSolution               = "Timer_A2";
+UART1.uart.$suggestSolution                 = "EUSCI_A1";
+LED1.gpioPin.gpioPin.$suggestSolution       = "P2.2.GPIO/EUSCI_A1_UART.RXD/EUSCI_A1_SPI.SOMI";
