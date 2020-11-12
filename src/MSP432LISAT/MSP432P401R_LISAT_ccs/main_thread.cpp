@@ -17,6 +17,7 @@
 #include "TDOA/signalDetection.h"
 #include <DSP/signalGenerator.h>
 #include "SpeakerInterface/speakerControl.h"
+#include <System/IrSensorsTimer.h>
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
