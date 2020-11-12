@@ -55,9 +55,6 @@ void *mainThread(void *arg0)
     int32_t status;
     int numBufsSent = 0;
 
-    robot->StartUp();
-    robot->motorDriver->DriveForwards(speed);
-
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
     openUARTESP();
