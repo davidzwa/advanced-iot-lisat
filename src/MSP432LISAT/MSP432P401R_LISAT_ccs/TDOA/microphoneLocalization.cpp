@@ -1,4 +1,5 @@
-#include <SerialInterface/serialDebugInterface.h>
+#include <common.h>
+
 #include "TDOA/microphoneLocalization.h"
 #include "tdoaAlgorithm.h"
 
@@ -11,15 +12,17 @@ Filter* filter = new Filter();
 
 bool startAdcSampling = false;
 int lastChannelCompleted = -1;
+bool completedChannels[3] = {false, false, false};
 bool shortBufferMode = false;
-
+int16_t rms;
 void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion, void *completedADCBuffer, uint32_t completedChannel);
+bool allChannelsCompleted(int setCompletedChannel);
 
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
     ADCBuf_Params_init(&adcBufParams);
     adcBufParams.callbackFxn = adcBufCompletionCallback;
-    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_ONE_SHOT; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
+    adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_CONTINUOUS; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
     adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
@@ -35,7 +38,6 @@ void setAdcBufConversionMode(bool shortConversion) {
     }else {
         bufferLength = ADCBUFFERSIZE;
     }
-    shortBufferMode = shortConversion;
 
     conversionStruct[0].arg = NULL;
     conversionStruct[0].adcChannel = MIC_ADCBUFCHANNEL_0;
@@ -56,6 +58,7 @@ void setAdcBufConversionMode(bool shortConversion) {
     conversionStruct[2].sampleBufferTwo = sampleBuffer3b;
     conversionStruct[2].samplesRequestedCount = bufferLength;
 #endif
+    shortBufferMode = shortConversion;
 }
 
 void openADCBuf() {
@@ -87,13 +90,26 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
         outputBuffer[i] = completedBuffer[i];
     }
     filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
-    lastChannelCompleted = completedChannel;
+    arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
 
-    if (lastChannelCompleted == 0) {
+    if (allChannelsCompleted(completedChannel)) {
+        GPIO_toggle(LED_BLUE_2_GPIO);
+        startAdcSampling = false;
+        openADCBuf();
         sem_post(&adcbufSem);
     }
-    else {
-        GPIO_toggle(LED_BLUE_2_GPIO);
+}
+
+bool allChannelsCompleted(int setCompletedChannel) {
+    completedChannels[setCompletedChannel] = true;
+    bool syncCompletion = completedChannels[0] && completedChannels[1] && completedChannels[2];
+
+    // All channels completed, reset
+    if (syncCompletion) {
+        completedChannels[0]=false;
+        completedChannels[1]=false;
+        completedChannels[2]=false;
     }
-    startAdcSampling = false;
+    lastChannelCompleted = setCompletedChannel;
+    return syncCompletion;
 }

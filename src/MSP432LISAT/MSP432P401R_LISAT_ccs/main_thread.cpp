@@ -28,7 +28,6 @@ uint32_t maxIndex;
 uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
-int16_t rms;
 
 // Bumper tasks
 KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
@@ -37,7 +36,7 @@ const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
-int speed = 1000;
+int speed = 2000;
 
 void generateAndTransmitSignatureSignal() {
     generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
@@ -86,6 +85,7 @@ void *mainThread(void *arg0)
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
     generateAndTransmitSignatureSignal();
+    openADCBuf();
 #endif
 
 #if MSP_SPEAKER_INTERRUPTS != 1
@@ -103,7 +103,6 @@ void *mainThread(void *arg0)
         //            speed = 1000;
         //        }
 #else
-        openADCBuf();
         sem_wait(&adcbufSem);
 
         // 2 * max(srcALen, srcBLen) - 1
@@ -118,8 +117,9 @@ void *mainThread(void *arg0)
         Display_printf(display, 0, 0, "Mi.%d", minValue);
         arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
         Display_printf(display, 0, 0, "Ma.%d", maxValue);
+
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
-        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
+//        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
         Display_printf(display, 0, 0, "R.%d", rms);
 
         if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
