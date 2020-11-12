@@ -18,9 +18,10 @@ public:
     arm_fir_instance_q15 S;
     q15_t firStateF32[ADCBUFFERSIZE + FILTER_TAP_NUM -1];
 
-    float EMA_a_low = 0.6; //initialization of EMA alpha
-    float EMA_a_high = 0.9;
-    float EMA_S_low = 0.0f; //initialization of EMA S
+    float EMA_a_low = EMA_A_LOW;
+    float EMA_a_high = EMA_A_HIGH;
+    // Initial state of filter
+    float EMA_S_low = 0.0f;
     float EMA_S_high = 0.0f;
     int16_t FilterEMA(int16_t value);
     void ResetEMAState(int16_t initialValue);

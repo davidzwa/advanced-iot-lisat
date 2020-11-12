@@ -28,18 +28,22 @@ enum MIC
     MIC_RIGHT = MIC3R_MODE_WOS
 };
 
+// Short buffer EMA BPF filter
+#define EMA_A_LOW (0.8f)
+#define EMA_A_HIGH (0.9f)
+
 // Signature signal generator properties
 const double chirpInterval = 2.0;       // ms
 const double chirpFrequencyStart = 5.0; // kHz
 const double chirpFrequencyEnd = 15.0;  // kHz
-#define CHIRP_SAMPLE_COUNT 88     // Count
+#define CHIRP_SAMPLE_COUNT (88)         // Count
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
 // Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
 #define MSP_SPEAKER_INTERRUPTS (1)
 
-#define NUM_ADC_CHANNELS    (2)
+#define NUM_ADC_CHANNELS    (3)
 #define ADCBUFFERSIZE_SHORT (64)
 #define ADCBUFFERSIZE       (512)
 #define SAMPLE_FREQUENCY    (44000)
