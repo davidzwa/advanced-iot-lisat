@@ -6,8 +6,8 @@
  */
 
 #include <Robot/irSensors.h>
+#include <System/highSpeedTimer.h>
 #include <System/kernelSingleTaskClock.h>
-#include <System/IrSensorsTimer.h>
 
 bool ir_caps_charged = true;
 KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
@@ -31,8 +31,8 @@ void taskPerformIrReading() {
     changeSensorsIO(0);
     chargeCapacitors();
     ir_caps_charged = true;
-    irTimerSetPeriodUs(10);
-    irTimerStart();
+    SetPeriodUsHighSpeedTimer(10);
+    StartHighSpeedTimer();
     GPIO_toggle(LED_BLUE_2_GPIO);
 }
 
@@ -66,8 +66,8 @@ void irTimerCallback() {
         changeSensorsIO(1);
         ir_caps_charged = false;
         /* Wait for 1000 us to read capacitor values */
-        irTimerSetPeriodUs(1000);
-        irTimerStart();
+        SetPeriodUsHighSpeedTimer(1000);
+        StartHighSpeedTimer();
     } else {
         int values = GPIO_read(LINE_IR1_RIGHT);
         //GPIO_write(LED_BLUE_2, values);

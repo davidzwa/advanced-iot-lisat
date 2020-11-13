@@ -17,10 +17,10 @@ class KernelSingleTaskClock
 {
 public:
     KernelSingleTaskClock();
-    void setupClockTask(uint32_t delayClockTicks, uint16_t periodClockTicks, Clock_FuncPtr clockCallback);
+    void setupClockTask(uint32_t delayClockTicks, uint16_t periodClockTicks, void(*callback)());
     void startClockTask();
     void stopClockTask();
-    void setClockCallback(Clock_FuncPtr callback);
+    void setClockCallback(void(*callback)());
     void setClockTimeout(uint32_t timeout);
     void setClockPeriod(uint16_t period);
 private:
