@@ -16,7 +16,7 @@ SpeakerState state = IDLE_STATE;
 void taskSpeakerCallback();
 
 void initSpeakerTaskClock() {
-    speakerTaskClock->setupClockTask(SPEAKER_CLOCK_TIMEOUT, SPEAKER_CLOCK_PERIOD_BUTTON, taskSpeakerCallback);
+    speakerTaskClock->setupClockTask(SPEAKER_CLOCK_INITIAL_OFFSET, SPEAKER_CLOCK_PERIOD_BUTTON, taskSpeakerCallback);
 }
 
 void startSpeakerTaskClock() {

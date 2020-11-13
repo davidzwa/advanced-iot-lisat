@@ -13,10 +13,11 @@
 Timer_Handle highSpeedTimer;
 Timer_Params highSpeedTimerParams;
 
-void initHighSpeedTimer(Timer_CallBackFxn callback);
-void StartHighSpeedTimer();
-void StopHighSpeedTimer();
-void SetPeriodUsHighSpeedTimer(uint32_t periodUs);
+void initHighSpeedTimer(void(*callback)());
+void startHighSpeedTimer();
+void stopHighSpeedTimer();
+void setCallbackHighSpeedTimer(void(*callback)());
+void setPeriodUsHighSpeedTimer(uint32_t periodUs);
 uint32_t getCountsHighSpeedTimer();
 
 #endif /* SYSTEM_IRSENSORSTIMER_H_ */

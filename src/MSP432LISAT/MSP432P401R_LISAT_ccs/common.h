@@ -44,6 +44,8 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define MSP_SPEAKER_INTERRUPTS (1)
 #define MIC_CONTINUOUS_SAMPLE (1) // If not the main_thread will have to kick it when it can to continue.
 #define MSP_SPEAKER_INTERRUPTS (0)
+// Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
+#define MSP_IR_SENSORS (1)
 
 #define NUM_ADC_CHANNELS    (3)
 #define ADCBUFFERSIZE_SHORT (64)
@@ -51,13 +53,14 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define SAMPLE_FREQUENCY    (44000)
 
 /* Speakers */
-#define SPEAKER_CLOCK_TIMEOUT 0
-#define SPEAKER_CLOCK_PERIOD_SOUND 4000 // currently in ms, depends on kernel clock config
-#define SPEAKER_CLOCK_PERIOD_BUTTON 200 //
+//currently in ms, depends on kernel clock config
+#define SPEAKER_CLOCK_INITIAL_OFFSET    4000 // needs to be larger than 0 for clock to start
+#define SPEAKER_CLOCK_PERIOD_SOUND      4000 // duration before rewind button is pressed
+#define SPEAKER_CLOCK_PERIOD_BUTTON     200
 
 /* IR sensors */
-#define IR_SENSORS_CLOCK_TIMEOUT 0
-#define IR_SENSORS_CLOCK_PERIOD 100
+#define IRSENSORS_CLOCK_INITIAL_OFFSET  100    // needs to be larger than 0 for clock to start
+#define IRSENSORS_CLOCK_PERIOD          100
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)

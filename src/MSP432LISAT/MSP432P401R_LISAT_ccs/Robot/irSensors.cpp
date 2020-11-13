@@ -9,16 +9,16 @@
 #include <System/highSpeedTimer.h>
 #include <System/kernelSingleTaskClock.h>
 
-bool ir_caps_charged = true;
+bool irCapsCharged = true;
 KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
 
 void changeSensorsIO(bool);
 void chargeCapacitors();
 void taskPerformIrReading();
+void irTimerCallback();
 
 void initIrTaskClock() {
-    irSensorsTaskClock->setupClockTask(IR_SENSORS_CLOCK_TIMEOUT, IR_SENSORS_CLOCK_PERIOD, taskPerformIrReading);
-    //initIrTimer((Timer_CallBackFxn) &irTimerCallback); // do in main timer32 init
+    irSensorsTaskClock->setupClockTask(IRSENSORS_CLOCK_INITIAL_OFFSET, IRSENSORS_CLOCK_PERIOD, taskPerformIrReading);
 }
 
 void startIrTaskClock() {
@@ -30,9 +30,9 @@ void taskPerformIrReading() {
     GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
     changeSensorsIO(0);
     chargeCapacitors();
-    ir_caps_charged = true;
-    SetPeriodUsHighSpeedTimer(10);
-    StartHighSpeedTimer();
+    irCapsCharged = true;
+    setPeriodUsHighSpeedTimer(10);
+    startHighSpeedTimer();
     GPIO_toggle(LED_BLUE_2_GPIO);
 }
 
@@ -61,13 +61,13 @@ void chargeCapacitors() {
 
 void irTimerCallback() {
     // Turn on IR LEDs
-    if (ir_caps_charged) {
+    if (irCapsCharged) {
         /* Set light sensor pins as output and read white/black value */
         changeSensorsIO(1);
-        ir_caps_charged = false;
+        irCapsCharged = false;
         /* Wait for 1000 us to read capacitor values */
-        SetPeriodUsHighSpeedTimer(1000);
-        StartHighSpeedTimer();
+        setPeriodUsHighSpeedTimer(1000);
+        startHighSpeedTimer();
     } else {
         int values = GPIO_read(LINE_IR1_RIGHT);
         //GPIO_write(LED_BLUE_2, values);

@@ -8,7 +8,7 @@
 #include <System/highSpeedTimer.h>
 #include "common.h"
 
-void initHighSpeedTimer(Timer_CallBackFxn callback) {
+void initHighSpeedTimer(void(*callback)()) {
     /*
      * Setting up the high-speed timer in one-shot mode
      *
@@ -17,7 +17,7 @@ void initHighSpeedTimer(Timer_CallBackFxn callback) {
     Timer_Params_init(&highSpeedTimerParams);
     highSpeedTimerParams.periodUnits = Timer_PERIOD_US;
     highSpeedTimerParams.timerMode = Timer_ONESHOT_CALLBACK;
-    highSpeedTimerParams.timerCallback = callback;
+    highSpeedTimerParams.timerCallback = (Timer_CallBackFxn) callback;
     highSpeedTimer = Timer_open(TIMER_HIGH_SPEED, &highSpeedTimerParams);
     if (highSpeedTimer == NULL) {
         /* Failed to initialized timer */
@@ -25,18 +25,28 @@ void initHighSpeedTimer(Timer_CallBackFxn callback) {
     }
 }
 
-void StartHighSpeedTimer() {
+void startHighSpeedTimer() {
     uint32_t status = Timer_start(highSpeedTimer);
     if (status != Timer_STATUS_SUCCESS) {
         GPIO_write(LED_ERROR_2, 1);
     }
 }
 
-void StopHighSpeedTimer() {
+void stopHighSpeedTimer() {
     Timer_stop(highSpeedTimer);
 }
 
-void SetPeriodUsHighSpeedTimer(uint32_t period_us) {
+void setCallbackHighSpeedTimer(void(*callback)()) {
+    Timer_close(highSpeedTimer);
+    highSpeedTimerParams.timerCallback = (Timer_CallBackFxn) callback;
+    highSpeedTimer = Timer_open(TIMER_HIGH_SPEED, &highSpeedTimerParams);
+    if (highSpeedTimer == NULL) {
+        /* Failed to initialized timer */
+        GPIO_write(LED_ERROR_2, 1);
+    }
+}
+
+void setPeriodUsHighSpeedTimer(uint32_t period_us) {
     uint32_t status = Timer_setPeriod(highSpeedTimer, Timer_PERIOD_US, period_us);
     if (status != Timer_STATUS_SUCCESS) {
         GPIO_write(LED_ERROR_2, 1);
@@ -46,5 +56,3 @@ void SetPeriodUsHighSpeedTimer(uint32_t period_us) {
 uint32_t getCountsHighSpeedTimer() {
     return Timer_getCount(highSpeedTimer);
 }
-
-
