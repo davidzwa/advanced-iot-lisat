@@ -17,7 +17,7 @@ void chargeCapacitors();
 void taskPerformIrReading();
 
 void initIrTaskClock() {
-    irSensorsTaskClock->setupClockTask(IR_SENSORS_CLOCK_TIMEOUT, IR_SENSORS_CLOCK_PERIOD, (Clock_FuncPtr) taskPerformIrReading);
+    irSensorsTaskClock->setupClockTask(IR_SENSORS_CLOCK_TIMEOUT, IR_SENSORS_CLOCK_PERIOD, taskPerformIrReading);
     //initIrTimer((Timer_CallBackFxn) &irTimerCallback); // do in main timer32 init
 }
 
