@@ -6,10 +6,35 @@
  */
 
 #include <Robot/irSensors.h>
+#include <System/kernelSingleTaskClock.h>
+#include <System/IrSensorsTimer.h>
 
-Robot* irRobot;
+bool ir_caps_charged = true;
+KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
 
-Clock_Handle* irSensorsClockHandle;
+void changeSensorsIO(bool);
+void chargeCapacitors();
+void taskPerformIrReading();
+
+void initIrTaskClock() {
+    irSensorsTaskClock->setupClockTask(IR_SENSORS_CLOCK_TIMEOUT, IR_SENSORS_CLOCK_PERIOD, (Clock_FuncPtr) taskPerformIrReading);
+    //initIrTimer((Timer_CallBackFxn) &irTimerCallback); // do in main timer32 init
+}
+
+void startIrTaskClock() {
+    irSensorsTaskClock->startClockTask();
+}
+
+void taskPerformIrReading() {
+    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
+    GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
+    changeSensorsIO(0);
+    chargeCapacitors();
+    ir_caps_charged = true;
+    irTimerSetPeriodUs(10);
+    irTimerStart();
+    GPIO_toggle(LED_BLUE_2_GPIO);
+}
 
 void changeSensorsIO(bool input) {
     GPIO_PinConfig config = input == 1 ? GPIO_CFG_IN_NOPULL : GPIO_CFG_OUT_STD;
@@ -34,19 +59,6 @@ void chargeCapacitors() {
     GPIO_write(LINE_IR8_LEFT, 1);
 }
 
-bool ir_caps_charged = true;
-
-void taskPerformIrReading() {
-    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
-    GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
-    changeSensorsIO(0);
-    chargeCapacitors();
-    ir_caps_charged = true;
-    irTimerSetPeriodUs(10);
-    irTimerStart();
-    GPIO_toggle(LED_BLUE_2_GPIO);
-}
-
 void irTimerCallback() {
     // Turn on IR LEDs
     if (ir_caps_charged) {
@@ -65,19 +77,6 @@ void irTimerCallback() {
     }
 }
 
-void initIrSensors(Robot* pRobot) {
-    irRobot = pRobot;
-    initIrTimer( (Timer_CallBackFxn) &irTimerCallback);
-}
-
-void attachIrSensorsTaskClockHandle(Clock_Handle* clockHandle) {
-    irSensorsClockHandle = clockHandle;
-    Clock_setFunc(*irSensorsClockHandle, (ti_sysbios_knl_Clock_FuncPtr) taskPerformIrReading, NULL); // not sure why cast is needed here but not in speakerControl.cpp ...
-    Clock_setTimeout(*irSensorsClockHandle, SOUND_PLAY_DURATION); // not sure which function to call
-    Clock_setPeriod(*irSensorsClockHandle, SOUND_PLAY_DURATION);
-    Clock_start(*irSensorsClockHandle);
-
-}
 
 
 
