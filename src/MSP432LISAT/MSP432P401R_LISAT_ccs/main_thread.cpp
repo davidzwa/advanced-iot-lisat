@@ -32,7 +32,6 @@ int16_t minValue;
 int16_t maxValue;
 
 // Bumper tasks
-KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};

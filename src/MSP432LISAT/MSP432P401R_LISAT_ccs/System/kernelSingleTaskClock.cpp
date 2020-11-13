@@ -13,7 +13,7 @@ KernelSingleTaskClock::KernelSingleTaskClock()
     // TODO Auto-generated constructor stub
 }
 
-void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodClockTicks, Clock_FuncPtr irTimerCallback) {
+void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodClockTicks, void(*callback)() ) {
 /*   Examples for clock setup:   */
 //     https://dev.ti.com/tirex/explore/node?node=ABPpE.IWPsTrdNbHg2sxgw__z-lQYNj__1.40.01.00
 //     https://e2e.ti.com/support/microcontrollers/msp430/f/166/t/611213?RTOS-MSP432-RTOS-SYS-BIOS-Runtime-clock
@@ -25,7 +25,7 @@ void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodCloc
     clockParams.startFlag = FALSE;
     clockParams.arg = (UArg)0x5555;
 
-    myClock = Clock_create(irTimerCallback, timeout, &clockParams, &eb);
+    myClock = Clock_create((Clock_FuncPtr) callback, timeout, &clockParams, &eb);
     if (myClock == NULL) {
         GPIO_write(LED_ERROR_2, 1);
         System_abort("Clock create failed");
@@ -40,8 +40,8 @@ void KernelSingleTaskClock::stopClockTask() {
     Clock_stop(myClock);
 }
 
-void KernelSingleTaskClock::setClockCallback(Clock_FuncPtr callback) {
-    Clock_setFunc(myClock, callback, NULL);
+void KernelSingleTaskClock::setClockCallback(void(*callback)()) {
+    Clock_setFunc(myClock, (Clock_FuncPtr) callback, NULL);
 }
 
 void KernelSingleTaskClock::setClockTimeout(uint32_t timeout) {
