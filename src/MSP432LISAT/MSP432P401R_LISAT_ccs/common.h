@@ -50,6 +50,13 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define ADCBUFFERSIZE       (512)
 #define SAMPLE_FREQUENCY    (44000)
 
+/* Speakers */
+#define SOUND_PLAY_DURATION 4000 // in ms
+
+/* IR sensors */
+
+#define IR_READ_TASK_PERIOD 1000 // in ms
+
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
 

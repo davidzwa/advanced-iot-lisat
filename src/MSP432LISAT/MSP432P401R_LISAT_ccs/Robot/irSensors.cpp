@@ -5,12 +5,11 @@
  *      Author: Tomas
  */
 
-#include <Robot/robot.h>
 #include <Robot/irSensors.h>
-#include <ti/sysbios/knl/Clock.h>
-#include <System/IrSensorsTimer.h>
 
 Robot* irRobot;
+
+Clock_Handle* irSensorsClockHandle;
 
 void changeSensorsIO(bool input) {
     GPIO_PinConfig config = input == 1 ? GPIO_CFG_IN_NOPULL : GPIO_CFG_OUT_STD;
@@ -37,7 +36,7 @@ void chargeCapacitors() {
 
 bool ir_caps_charged = true;
 
-void irPerformReading() {
+void taskPerformIrReading() {
     GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
     GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
     changeSensorsIO(0);
@@ -45,6 +44,7 @@ void irPerformReading() {
     ir_caps_charged = true;
     irTimerSetPeriodUs(10);
     irTimerStart();
+    GPIO_toggle(LED_BLUE_2_GPIO);
 }
 
 void irTimerCallback() {
@@ -58,7 +58,7 @@ void irTimerCallback() {
         irTimerStart();
     } else {
         int values = GPIO_read(LINE_IR1_RIGHT);
-        GPIO_write(LED_BLUE_2, values);
+        //GPIO_write(LED_BLUE_2, values);
         // Turn off IR LEDs to save power
         GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
         GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
@@ -68,7 +68,15 @@ void irTimerCallback() {
 void initIrSensors(Robot* pRobot) {
     irRobot = pRobot;
     initIrTimer( (Timer_CallBackFxn) &irTimerCallback);
-    irPerformReading();
+}
+
+void attachIrSensorsTaskClockHandle(Clock_Handle* clockHandle) {
+    irSensorsClockHandle = clockHandle;
+    Clock_setFunc(*irSensorsClockHandle, (ti_sysbios_knl_Clock_FuncPtr) taskPerformIrReading, NULL); // not sure why cast is needed here but not in speakerControl.cpp ...
+    Clock_setTimeout(*irSensorsClockHandle, SOUND_PLAY_DURATION); // not sure which function to call
+    Clock_setPeriod(*irSensorsClockHandle, SOUND_PLAY_DURATION);
+    Clock_start(*irSensorsClockHandle);
+
 }
 
 
