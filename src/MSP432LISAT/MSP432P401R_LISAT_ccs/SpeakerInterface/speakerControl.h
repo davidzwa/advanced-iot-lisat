@@ -11,8 +11,16 @@
 #include "common.h"
 #include <System/kernelSingleTaskClock.h>
 
-void taskPressPauseCallback(UArg args);
-void attachSpeakerTaskClockHandle(Clock_Handle* );
+typedef enum {
+    IDLE_STATE,
+    REWIND_PRESSED,
+    REWIND_RELEASED,
+    PAUSE_PRESSED,
+} SpeakerState;
+
+void initSpeakerTaskClock();
+void startSpeakerTaskClock();
+void taskPressPauseCallback();
 void speakerPressPause();
 void speakerPressBackward();
 void speakerPlaySound();
