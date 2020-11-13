@@ -19,7 +19,7 @@ void taskSpeakerCallback(UArg arg0)
         GPIO_write(SPEAKER_BACKWARD_PIN, 1);
         speaker_state = 1;
         Clock_stop(*speakerClockHandle);
-        Clock_setTimeout(*speakerClockHandle, 4000);
+        Clock_setTimeout(*speakerClockHandle, SOUND_PLAY_DURATION);
         Clock_start(*speakerClockHandle);
     }
     else if (speaker_state == 1) {

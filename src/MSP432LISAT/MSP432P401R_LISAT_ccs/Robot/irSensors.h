@@ -9,8 +9,12 @@
 #define ROBOT_IRSENSORS_H_
 
 #include "common.h"
+#include <Robot/robot.h>
+#include <System/kernelSingleTaskClock.h>
+#include <System/IrSensorsTimer.h>
 
-void initIrSensors(Robot*);
-void performReading();
+void initIrSensors(Robot* robot);
+void irTimerCallback();
+void attachIrSensorsTaskClockHandle(Clock_Handle* clock_handle);
 
 #endif /* ROBOT_IRSENSORS_H_ */

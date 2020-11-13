@@ -12,7 +12,7 @@ void initIrTimer(Timer_CallBackFxn callback) {
     /*
      * Setting up the IR timer in one-shot mode
      *
-     * Period is set dynamically at usage (irSensors.cpp)
+     * Period is set dynamically at usage
      */
     Timer_Params_init(&irTimerParams);
     irTimerParams.periodUnits = Timer_PERIOD_US;

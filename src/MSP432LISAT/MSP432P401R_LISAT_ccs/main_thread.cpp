@@ -33,6 +33,7 @@ int16_t maxValue;
 
 // Bumper tasks
 KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
+KernelSingleTaskClock* irSensorsTask = new KernelSingleTaskClock();
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -100,6 +101,8 @@ void *mainThread(void *arg0)
 #endif
 
     initIrSensors(robot);
+    irSensorsTask->setupClockHandler(0);
+    attachIrSensorsTaskClockHandle(irSensorsTask->getClockHandle());
 
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
