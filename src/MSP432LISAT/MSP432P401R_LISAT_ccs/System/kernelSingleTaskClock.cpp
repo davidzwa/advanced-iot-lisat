@@ -30,6 +30,7 @@ void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodCloc
         GPIO_write(LED_ERROR_2, 1);
         System_abort("Clock create failed");
     }
+    Clock_setTimeout(myClock, timeout); // Important: if this function is not explicitly called the clock will not start
 }
 
 void KernelSingleTaskClock::startClockTask() {

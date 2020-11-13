@@ -12,5 +12,6 @@
 
 void initIrTaskClock();
 void startIrTaskClock();
+void irTimerCallback();
 
 #endif /* ROBOT_IRSENSORS_H_ */
