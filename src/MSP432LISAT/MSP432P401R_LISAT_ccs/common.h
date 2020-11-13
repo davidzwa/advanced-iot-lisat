@@ -49,11 +49,13 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define SAMPLE_FREQUENCY    (44000)
 
 /* Speakers */
-#define SOUND_PLAY_DURATION 4000 // in ms
+#define SPEAKER_CLOCK_TIMEOUT 0
+#define SPEAKER_CLOCK_PERIOD_SOUND 4000 // currently in ms, depends on kernel clock config
+#define SPEAKER_CLOCK_PERIOD_BUTTON 200 //
 
 /* IR sensors */
-
-#define IR_READ_TASK_PERIOD 1000 // in ms
+#define IR_SENSORS_CLOCK_TIMEOUT 0
+#define IR_SENSORS_CLOCK_PERIOD 100
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
