@@ -41,7 +41,7 @@ void KernelSingleTaskClock::stopClockTask() {
     Clock_stop(myClock);
 }
 
-void KernelSingleTaskClock::setClockCallback(void(*callback)()) {
+void KernelSingleTaskClock::adjustClockCallback(void(*callback)()) {
     Clock_setFunc(myClock, (Clock_FuncPtr) callback, NULL);
 }
 
