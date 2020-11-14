@@ -4,8 +4,8 @@ close all
 Fs = 44000;
 %% Pulse generation
 pulse_length = 0.002;
-chirp_f0 = 5000;
-chirp_f1 = 15000;
+chirp_f0 = 1500;
+chirp_f1 = 6000;
 
 T_pulse = 0: 1/Fs: pulse_length-1/Fs;
 Y_pulse = chirp(T_pulse,chirp_f0,pulse_length,15000);
