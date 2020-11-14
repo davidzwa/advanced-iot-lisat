@@ -17,9 +17,13 @@ class KernelSingleTaskClock
 {
 public:
     KernelSingleTaskClock();
-    void setupClockHandler(uint32_t delay);
-    Clock_Handle* getClockHandle();
-    private:
+    void setupClockTask(uint32_t delayClockTicks, uint16_t periodClockTicks, void(*callback)());
+    void startClockTask();
+    void stopClockTask();
+    void adjustClockCallback(void(*callback)());
+    void setClockTimeout(uint32_t timeout);
+    void setClockPeriod(uint16_t period);
+private:
     Clock_Params clockParams;
     Clock_Handle myClock;
 };

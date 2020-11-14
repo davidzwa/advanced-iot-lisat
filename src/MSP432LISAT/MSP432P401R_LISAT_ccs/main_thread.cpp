@@ -17,6 +17,8 @@
 #include "TDOA/signalDetection.h"
 #include <DSP/signalGenerator.h>
 #include "SpeakerInterface/speakerControl.h"
+#include <Robot/irSensors.h>
+#include <System/highSpeedTimer.h>
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
@@ -28,9 +30,6 @@ uint32_t maxIndex;
 uint32_t minIndex;
 int16_t minValue;
 int16_t maxValue;
-
-// Bumper tasks
-KernelSingleTaskClock* singleBumperTask = new KernelSingleTaskClock();
 
 const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
@@ -88,10 +87,15 @@ void *mainThread(void *arg0)
     openADCBuf();
 #endif
 
-#if MSP_SPEAKER_INTERRUPTS != 1
-    singleBumperTask->setupClockHandler(200);
-    /* Pass clock handle to speaker control for reference (start/stop) */
-    attachSpeakerTaskClockHandle(singleBumperTask->getClockHandle());
+#if MSP_SPEAKER_INTERRUPTS == 1
+    initSpeakerTaskClock();
+    startSpeakerTaskClock();
+#endif
+
+#if MSP_IR_SENSORS == 1
+    initHighSpeedTimer(irTimerCallback);
+    initIrTaskClock();
+    startIrTaskClock();
 #endif
 
     while(1) {

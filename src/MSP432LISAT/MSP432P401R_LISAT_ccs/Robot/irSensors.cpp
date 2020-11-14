@@ -5,11 +5,36 @@
  *      Author: Tomas
  */
 
-#include <Robot/robot.h>
 #include <Robot/irSensors.h>
-#include <ti/sysbios/knl/Clock.h>
+#include <System/highSpeedTimer.h>
+#include <System/kernelSingleTaskClock.h>
 
-Robot* irRobot;
+bool irCapsCharged = true;
+KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
+
+void changeSensorsIO(bool);
+void chargeCapacitors();
+void taskPerformIrReading();
+void irTimerCallback();
+
+void initIrTaskClock() {
+    irSensorsTaskClock->setupClockTask(IRSENSORS_CLOCK_INITIAL_OFFSET, IRSENSORS_CLOCK_PERIOD, taskPerformIrReading);
+}
+
+void startIrTaskClock() {
+    irSensorsTaskClock->startClockTask();
+}
+
+void taskPerformIrReading() {
+    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
+    GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
+    changeSensorsIO(0);
+    chargeCapacitors();
+    irCapsCharged = true;
+    setPeriodUsHighSpeedTimer(10);
+    startHighSpeedTimer();
+    GPIO_toggle(LED_BLUE_2_GPIO);
+}
 
 void changeSensorsIO(bool input) {
     GPIO_PinConfig config = input == 1 ? GPIO_CFG_IN_NOPULL : GPIO_CFG_OUT_STD;
@@ -34,32 +59,25 @@ void chargeCapacitors() {
     GPIO_write(LINE_IR8_LEFT, 1);
 }
 
-void initIrSensors(Robot* pRobot) {
-    irRobot = pRobot;
-}
-
-void performReading() {
+void irTimerCallback() {
     // Turn on IR LEDs
-    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 1);
-    GPIO_write(LINE_IR_ODD_BACKLIGHT, 1);
-
-    // Set light sensor pins as output and charge caps
-    changeSensorsIO(0);
-    chargeCapacitors();
-    //todo: set timer interrupt to wait for 10 us
-    usleep(10);
-    // Set light sensor pins as output and read white/black value
-    changeSensorsIO(1);
-    //todo: set timer interrupt to wait for 1000 us
-    usleep(1000);
-
-    //test
-    int test = GPIO_read(LINE_IR1_RIGHT);
-    GPIO_write(LED_BLUE_2, test);
-
-    // Turn off IR LEDs to save power
-    GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
-    GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
+    if (irCapsCharged) {
+        /* Set light sensor pins as output and read white/black value */
+        changeSensorsIO(1);
+        irCapsCharged = false;
+        /* Wait for 1000 us to read capacitor values */
+        setPeriodUsHighSpeedTimer(1000);
+        startHighSpeedTimer();
+    } else {
+        int values = GPIO_read(LINE_IR1_RIGHT);
+        //GPIO_write(LED_BLUE_2, values);
+        // Turn off IR LEDs to save power
+        GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
+        GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
+    }
 }
+
+
+
 
 

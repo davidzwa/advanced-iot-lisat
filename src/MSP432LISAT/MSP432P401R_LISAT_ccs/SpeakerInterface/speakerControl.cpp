@@ -6,77 +6,87 @@
  */
 
 #include "speakerControl.h"
+#include <System/kernelSingleTaskClock.h>
 
-Clock_Handle* speakerClockHandle;
+KernelSingleTaskClock* speakerTaskClock = new KernelSingleTaskClock();
 
 // FSM state for single play sound cycle
-int speaker_state = 0;
+SpeakerState state = IDLE_STATE;
 
-void taskSpeakerCallback(UArg arg0)
+void taskSpeakerCallback();
+
+void initSpeakerTaskClock() {
+    speakerTaskClock->setupClockTask(SPEAKER_CLOCK_INITIAL_OFFSET, SPEAKER_CLOCK_PERIOD_BUTTON, taskSpeakerCallback);
+}
+
+void startSpeakerTaskClock() {
+    speakerTaskClock->startClockTask();
+}
+
+void taskSpeakerCallback()
 {
-    if (speaker_state == 0) {
+    if (state == REWIND_PRESSED) {
         /* Release backward button and wait for sound to play out */
         GPIO_write(SPEAKER_BACKWARD_PIN, 1);
-        speaker_state = 1;
-        Clock_stop(*speakerClockHandle);
-        Clock_setTimeout(*speakerClockHandle, 4000);
-        Clock_start(*speakerClockHandle);
+        state = REWIND_RELEASED;
+        speakerTaskClock->stopClockTask();
+        speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_SOUND);
+        speakerTaskClock->startClockTask();
     }
-    else if (speaker_state == 1) {
+    else if (state == REWIND_RELEASED) {
         /* Press pause button */
         GPIO_write(SPEAKER_PAUSE_PIN, 0);
-        speaker_state = 2;
-        Clock_stop(*speakerClockHandle);
-        Clock_setTimeout(*speakerClockHandle, 200);
-        Clock_start(*speakerClockHandle);
+        state = PAUSE_PRESSED;
+        speakerTaskClock->stopClockTask();
+        speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
+        speakerTaskClock->startClockTask();
     }
-    else if (speaker_state == 2) {
+    else if (state == PAUSE_PRESSED) {
         /* Release pause button, cycle done */
         GPIO_write(SPEAKER_PAUSE_PIN, 1);
-        Clock_stop(*speakerClockHandle);
-        speaker_state = 0;
+        speakerTaskClock->startClockTask();
+        state = IDLE_STATE;
+    }
+    else {
+        /* Wrong state */
+        GPIO_write(LED_ERROR_2, 1);
     }
 }
 
-void taskPressPauseCallback(UArg arg0)
+void taskPressPauseCallback()
 {
     GPIO_write(SPEAKER_PAUSE_PIN, 1);
-    Clock_stop(*speakerClockHandle);
+    speakerTaskClock->stopClockTask();
 }
 
-void taskPressBackwardCallback(UArg arg0)
+void taskPressBackwardCallback()
 {
     GPIO_write(SPEAKER_BACKWARD_PIN, 1);
-    Clock_stop(*speakerClockHandle);
+    speakerTaskClock->stopClockTask();
 }
 
 void speakerPressPause() {
     /* Set callback function for press pause functionality */
-    Clock_setFunc(*speakerClockHandle, taskPressPauseCallback, NULL);
+    speakerTaskClock->setClockCallback(taskPressPauseCallback);
     /* Set time before button is 'unpressed' (200ms) */
-    Clock_setTimeout(*speakerClockHandle, 200);
+    speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
     /* Press button */
     GPIO_write(SPEAKER_PAUSE_PIN, 0);
     /* Wait for button to be unpressed */
-    Clock_start(*speakerClockHandle);
+    speakerTaskClock->startClockTask();
 }
 
 void speakerPressBackward() {
-    Clock_setFunc(*speakerClockHandle, taskPressBackwardCallback, NULL);
-    Clock_setTimeout(*speakerClockHandle, 200);
+    speakerTaskClock->setClockCallback(taskPressBackwardCallback);
+    speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
     GPIO_write(SPEAKER_BACKWARD_PIN, 0);
-    Clock_start(*speakerClockHandle);
+    speakerTaskClock->startClockTask();
 }
 
 void speakerPlaySound() {
-    Clock_setFunc(*speakerClockHandle, taskSpeakerCallback, NULL);
-    Clock_setTimeout(*speakerClockHandle, 200);
-    speaker_state = 0;
+    speakerTaskClock->setClockCallback(taskSpeakerCallback);
+    speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
+    state = REWIND_PRESSED;
     GPIO_write(SPEAKER_BACKWARD_PIN, 0);
-    Clock_start(*speakerClockHandle);
-}
-
-void attachSpeakerTaskClockHandle(Clock_Handle* clockHandle) {
-    speakerClockHandle = clockHandle;
-    Clock_setFunc(*speakerClockHandle, taskSpeakerCallback, NULL);
+    speakerTaskClock->startClockTask();
 }

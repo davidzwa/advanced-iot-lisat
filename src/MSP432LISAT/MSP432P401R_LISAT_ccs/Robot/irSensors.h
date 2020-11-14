@@ -10,7 +10,8 @@
 
 #include "common.h"
 
-void initIrSensors(Robot*);
-void performReading();
+void initIrTaskClock();
+void startIrTaskClock();
+void irTimerCallback();
 
 #endif /* ROBOT_IRSENSORS_H_ */
