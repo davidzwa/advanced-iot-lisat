@@ -59,7 +59,7 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 // Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
 #define MSP_SPEAKER_INTERRUPTS (1)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
-#define MSP_IR_SENSORS (1)
+#define MSP_IR_SENSORS (0)
 
 /* Speakers */
 //currently in ms, depends on kernel clock config

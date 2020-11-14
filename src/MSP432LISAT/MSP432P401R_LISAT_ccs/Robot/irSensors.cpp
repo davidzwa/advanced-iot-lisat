@@ -33,7 +33,6 @@ void taskPerformIrReading() {
     irCapsCharged = true;
     setPeriodUsHighSpeedTimer(10);
     startHighSpeedTimer();
-    GPIO_toggle(LED_BLUE_2_GPIO);
 }
 
 void changeSensorsIO(bool input) {

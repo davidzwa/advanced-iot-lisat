@@ -6,7 +6,8 @@
  */
 
 #include <TDOA/signalPreambleDetector.h>
-
+q15_t correlation_output;
+q15_t match_score = 0;
 q15_t preambleMatch(q15_t* mic_buffer);
 uint16_t hammingWeight(uint16_t N);
 
@@ -34,9 +35,7 @@ bool signalPreambleDetector(q15_t* mic_buffer, uint32_t* detection_history)
 q15_t preambleMatch(q15_t* mic_buffer)
 {
     q15_t multiplication_array[ADCBUFFERSIZE_SHORT];
-    q15_t correlation_output;
     q15_t absolute_correlation_output;
-    q15_t match_score = 0;
 
     for( int16_t i = 0; i < (PREAMBLE_SINE_PERIOD/2); i++)
     {
