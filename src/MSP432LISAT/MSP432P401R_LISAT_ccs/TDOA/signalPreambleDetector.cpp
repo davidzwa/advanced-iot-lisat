@@ -5,13 +5,13 @@
  *      Author: david
  */
 
-#include <TDOA/signalSyncDetector.h>
+#include <TDOA/signalPreambleDetector.h>
 
 bool StupidDetectionBlackBox(int16_t* outputBuffer_filtered, int16_t length, int16_t rms) {
     return (rms > 1100);
 }
 
-SignalSyncDetector::SignalSyncDetector()
+SignalPreambleDetector::SignalPreambleDetector()
 {
     // TODO Auto-generated constructor stub
 

@@ -5,6 +5,7 @@
 
 // Bios interaction
 #include <ti/sysbios/BIOS.h>
+#include <TDOA/signalPreambleDetector.h>
 
 // Our common defines and entrypoint
 #include "common.h"
@@ -18,7 +19,6 @@
 #include "SerialInterface/serialESPBridge.h"
 #include "SerialInterface/serialDebugInterface.h"
 #include "TDOA/microphoneLocalization.h"
-#include "TDOA/signalSyncDetector.h"
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
@@ -45,6 +45,7 @@ void generateAndTransmitSignatureSignal() {
     }
     Display_printf(display, 0, 0, "END");
 }
+
 /*
  *  ======== mainThread ========
  */
@@ -112,7 +113,7 @@ void *mainThread(void *arg0)
 #endif
         sem_wait(&adcbufSem);
 
-        // 2 * max(srcALen, srcBLen) - 1
+//      2 * max(srcALen, srcBLen) - 1
 //        arm_correlate_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, tsjirpBuffah, CHIRP_SAMPLE_COUNT, correlationChirp);
 //        Display_printf(display, 0, 0, "BEGIN-CORR");
 //        for (int i = 0; i < CORRELATION_LENGTH; i++) {

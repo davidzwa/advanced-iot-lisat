@@ -1,7 +1,9 @@
-#include <common.h>
+#include <ti/sysbios/knl/Clock.h>
 
+#include "common.h"
 #include "TDOA/microphoneLocalization.h"
 #include "tdoaAlgorithm.h"
+
 
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;
@@ -88,9 +90,8 @@ void closeADCBuf() {
  */
 void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
-    uint_fast16_t i;
     uint16_t *completedBuffer = (uint16_t*) completedADCBuffer;
-    for (i = 0; i < conversion->samplesRequestedCount; i++) {
+    for (uint_fast16_t i = 0; i < conversion->samplesRequestedCount; i++) {
         outputBuffer[i] = completedBuffer[i];
     }
     filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);

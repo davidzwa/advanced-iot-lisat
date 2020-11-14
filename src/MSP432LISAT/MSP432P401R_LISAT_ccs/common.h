@@ -5,7 +5,11 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <semaphore.h>
+/* Advanced dsp math */
+#include <arm_math.h>
+#include <arm_const_structs.h>
 
+#include "ti_drivers_config.h"
 #include <ti/devices/msp432p4xx/inc/msp.h>
 
 /* Peripheral Header files */
@@ -14,12 +18,6 @@
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/ADCBuf.h>
 #include <ti/drivers/Timer.h>
-
-/* Advanced dsp math */
-#include <arm_math.h>
-#include <arm_const_structs.h>
-
-#include "ti_drivers_config.h"
 
 enum MIC
 {

@@ -12,10 +12,10 @@
 
 bool StupidDetectionBlackBox(int16_t* outputBuffer_filtered, int16_t length, int16_t rms);
 
-class SignalSyncDetector
+class SignalPreambleDetector
 {
 public:
-    SignalSyncDetector();
+    SignalPreambleDetector();
 };
 
 #endif /* TDOA_SIGNALDETECTION_H_ */
