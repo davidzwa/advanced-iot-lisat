@@ -37,7 +37,7 @@ q15_t preambleMatch(q15_t* mic_buffer)
     q15_t multiplication_array[ADCBUFFERSIZE_SHORT];
     q15_t absolute_correlation_output;
 
-    for( int16_t i = 0; i < (PREAMBLE_SINE_PERIOD/2); i++)
+    for(int16_t i = 0; i < (PREAMBLE_SINE_PERIOD/2); i++)
     {
         // (A, B, output, length)
         arm_mult_q15(mic_buffer, preprocessed_reference_preamble + i, multiplication_array, ADCBUFFERSIZE_SHORT);
