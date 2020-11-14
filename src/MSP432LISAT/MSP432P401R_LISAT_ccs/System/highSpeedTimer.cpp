@@ -36,16 +36,6 @@ void stopHighSpeedTimer() {
     Timer_stop(highSpeedTimer);
 }
 
-void setCallbackHighSpeedTimer(void(*callback)()) {
-    Timer_close(highSpeedTimer);
-    highSpeedTimerParams.timerCallback = (Timer_CallBackFxn) callback;
-    highSpeedTimer = Timer_open(TIMER_HIGH_SPEED, &highSpeedTimerParams);
-    if (highSpeedTimer == NULL) {
-        /* Failed to initialized timer */
-        GPIO_write(LED_ERROR_2, 1);
-    }
-}
-
 void setPeriodUsHighSpeedTimer(uint32_t period_us) {
     uint32_t status = Timer_setPeriod(highSpeedTimer, Timer_PERIOD_US, period_us);
     if (status != Timer_STATUS_SUCCESS) {

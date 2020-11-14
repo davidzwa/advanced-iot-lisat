@@ -16,7 +16,6 @@ Timer_Params highSpeedTimerParams;
 void initHighSpeedTimer(void(*callback)());
 void startHighSpeedTimer();
 void stopHighSpeedTimer();
-void setCallbackHighSpeedTimer(void(*callback)());
 void setPeriodUsHighSpeedTimer(uint32_t periodUs);
 uint32_t getCountsHighSpeedTimer();
 
