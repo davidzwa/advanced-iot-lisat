@@ -40,9 +40,9 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
+#define MIC_CONTINUOUS_SAMPLE (1) // If not the main_thread will have to kick it when it can to continue.
 // Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
 #define MSP_SPEAKER_INTERRUPTS (1)
-#define MSP_SPEAKER_INTERRUPTS (0)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
 #define MSP_IR_SENSORS (1)
 
