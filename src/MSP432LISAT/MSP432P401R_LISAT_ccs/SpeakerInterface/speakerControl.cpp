@@ -67,7 +67,7 @@ void taskPressBackwardCallback()
 
 void speakerPressPause() {
     /* Set callback function for press pause functionality */
-    speakerTaskClock->setClockCallback(taskPressPauseCallback);
+    speakerTaskClock->adjustClockCallback(taskPressPauseCallback);
     /* Set time before button is 'unpressed' (200ms) */
     speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
     /* Press button */
@@ -77,14 +77,14 @@ void speakerPressPause() {
 }
 
 void speakerPressBackward() {
-    speakerTaskClock->setClockCallback(taskPressBackwardCallback);
+    speakerTaskClock->adjustClockCallback(taskPressBackwardCallback);
     speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
     GPIO_write(SPEAKER_BACKWARD_PIN, 0);
     speakerTaskClock->startClockTask();
 }
 
 void speakerPlaySound() {
-    speakerTaskClock->setClockCallback(taskSpeakerCallback);
+    speakerTaskClock->adjustClockCallback(taskSpeakerCallback);
     speakerTaskClock->setClockTimeout(SPEAKER_CLOCK_PERIOD_BUTTON);
     state = REWIND_PRESSED;
     GPIO_write(SPEAKER_BACKWARD_PIN, 0);

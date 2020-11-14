@@ -9,16 +9,16 @@
 // Our common defines and entrypoint
 #include "common.h"
 #include "Robot/robot.h"
-#include "SerialInterface/serialESPBridge.h"
-#include <SerialInterface/serialDebugInterface.h>
-#include "System/freeRunningTimer.h"
+#include "Robot/irSensors.h"
 #include "System/kernelSingleTaskClock.h"
-#include "TDOA/microphoneLocalization.h"
-#include "TDOA/signalDetection.h"
-#include <DSP/signalGenerator.h>
+#include "System/freeRunningTimer.h"
+#include "System/highSpeedTimer.h"
+#include "DSP/signalGenerator.h"
 #include "SpeakerInterface/speakerControl.h"
-#include <Robot/irSensors.h>
-#include <System/highSpeedTimer.h>
+#include "SerialInterface/serialESPBridge.h"
+#include "SerialInterface/serialDebugInterface.h"
+#include "TDOA/microphoneLocalization.h"
+#include "TDOA/signalSyncDetector.h"
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
