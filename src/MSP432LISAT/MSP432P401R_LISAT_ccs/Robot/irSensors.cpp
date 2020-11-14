@@ -77,7 +77,3 @@ void irTimerCallback() {
     }
 }
 
-
-
-
-

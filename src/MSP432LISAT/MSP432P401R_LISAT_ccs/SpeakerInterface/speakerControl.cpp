@@ -49,7 +49,7 @@ void taskSpeakerCallback()
     }
     else {
         /* Wrong state */
-        GPIO_write(LED_ERROR_2, 1);
+//        GPIO_write(LED_ERROR_2, 1);
     }
 }
 
