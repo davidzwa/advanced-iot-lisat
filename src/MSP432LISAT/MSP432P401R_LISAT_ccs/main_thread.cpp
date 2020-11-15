@@ -35,7 +35,7 @@ const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
-int speed = 2000;
+int speed = 250;
 
 void generateSignatureSignals() {
     generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
@@ -55,6 +55,9 @@ void *mainThread(void *arg0)
     Display_Params displayParams;
     int32_t status;
     int numBufsSent = 0;
+
+    robot->StartUp();
+    robot->motorDriver->DriveForwards(speed);
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
