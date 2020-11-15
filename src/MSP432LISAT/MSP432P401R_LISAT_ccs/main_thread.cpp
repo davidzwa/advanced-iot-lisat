@@ -5,6 +5,7 @@
 
 // Bios interaction
 #include <ti/sysbios/BIOS.h>
+#include <TDOA/signalPreambleDetector.h>
 
 // Our common defines and entrypoint
 #include "common.h"
@@ -18,7 +19,6 @@
 #include "SerialInterface/serialESPBridge.h"
 #include "SerialInterface/serialDebugInterface.h"
 #include "TDOA/microphoneLocalization.h"
-#include "TDOA/signalSyncDetector.h"
 
 // Chirp buffah
 int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
@@ -37,14 +37,16 @@ uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
 int speed = 2000;
 
-void generateAndTransmitSignatureSignal() {
+void generateSignatureSignals() {
     generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
-    Display_printf(display, 0, 0, "BEGIN");
-    for (int i = 0; i < CHIRP_SAMPLE_COUNT; i++) {
-        Display_printf(display, 0, 0, "%d", tsjirpBuffah[i]);
-    }
-    Display_printf(display, 0, 0, "END");
+    generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);
+//    Display_printf(display, 0, 0, "BEGIN");
+//    for (int i = 0; i < CHIRP_SAMPLE_COUNT; i++) {
+//        Display_printf(display, 0, 0, "%d", tsjirpBuffah[i]);
+//    }
+//    Display_printf(display, 0, 0, "END");
 }
+
 /*
  *  ======== mainThread ========
  */
@@ -83,7 +85,7 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
-    generateAndTransmitSignatureSignal();
+    generateSignatureSignals();
     openADCBuf();
 #endif
 
@@ -112,7 +114,7 @@ void *mainThread(void *arg0)
 #endif
         sem_wait(&adcbufSem);
 
-        // 2 * max(srcALen, srcBLen) - 1
+//      2 * max(srcALen, srcBLen) - 1
 //        arm_correlate_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, tsjirpBuffah, CHIRP_SAMPLE_COUNT, correlationChirp);
 //        Display_printf(display, 0, 0, "BEGIN-CORR");
 //        for (int i = 0; i < CORRELATION_LENGTH; i++) {
@@ -127,11 +129,13 @@ void *mainThread(void *arg0)
 
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
 //        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
-        Display_printf(display, 0, 0, "R.%d", rms);
+//        Display_printf(display, 0, 0, "R.%d", rms);
 
-        if (StupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
-            setAdcBufConversionMode(false);
-            openADCBuf();
+//        if (stupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
+        if(wasPreambleDetected()) {
+//            setAdcBufConversionMode(false);
+            resetPreambleDetectionHistory();
+//            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {

@@ -25,7 +25,7 @@ public:
     float EMA_S_high = 0.0f;
     int16_t FilterEMA(int16_t value);
     void ResetEMAState(int16_t initialValue);
-    void FilterEMABuffer(int16_t* buffer, int16_t* outputBuffer, uint16_t length);
+    void FilterEMABuffer(uint16_t* buffer, int16_t* outputBuffer, uint16_t length);
 
 //    arm_fir_instance_f32 S;
 //    float32_t firStateF32[CHUNK_LENGTH + NUM_TAPS - 1];

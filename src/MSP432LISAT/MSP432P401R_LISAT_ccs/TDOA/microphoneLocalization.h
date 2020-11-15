@@ -5,17 +5,21 @@
 #define TDOA_EXTERNALINTERRUPT_H_
 
 int16_t sampleBuffer1a[ADCBUFFERSIZE]; // This is for long and short mode
-int16_t sampleBuffer1b[ADCBUFFERSIZE*2];
+int16_t sampleBuffer1b[ADCBUFFERSIZE];
 #if NUM_ADC_CHANNELS >= 2
 int16_t sampleBuffer2a[ADCBUFFERSIZE];
-int16_t sampleBuffer2b[ADCBUFFERSIZE*2];
+int16_t sampleBuffer2b[ADCBUFFERSIZE];
 #endif
 #if NUM_ADC_CHANNELS >= 3
 int16_t sampleBuffer3a[ADCBUFFERSIZE];
-int16_t sampleBuffer3b[ADCBUFFERSIZE*2];
+int16_t sampleBuffer3b[ADCBUFFERSIZE];
 #endif
 int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
+
+uint32_t detection_history_mics[3];
+void resetPreambleDetectionHistory();
+bool wasPreambleDetected();
 
 /* ADCBuf semaphore */
 sem_t adcbufSem;

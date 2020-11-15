@@ -1,7 +1,10 @@
-#include <common.h>
+#include <ti/sysbios/knl/Clock.h>
 
+#include "common.h"
 #include "TDOA/microphoneLocalization.h"
+#include <TDOA/signalPreambleDetector.h>
 #include "tdoaAlgorithm.h"
+
 
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;
@@ -88,16 +91,18 @@ void closeADCBuf() {
  */
 void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
-    uint_fast16_t i;
     uint16_t *completedBuffer = (uint16_t*) completedADCBuffer;
-    for (i = 0; i < conversion->samplesRequestedCount; i++) {
-        outputBuffer[i] = completedBuffer[i];
+//    for (uint_fast16_t i = 0; i < conversion->samplesRequestedCount; i++) {
+//        outputBuffer[i] = completedBuffer[i];
+//    }
+    filter->FilterEMABuffer(completedBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
+
+    if (shortBufferMode) {
+        // Track history - short buffer only
+        signalPreambleDetector(outputBuffer_filtered, &detection_history_mics[completedChannel]);
     }
-    filter->FilterEMABuffer(outputBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
-    arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
 
     if (allChannelsCompleted(completedChannel)) {
-        GPIO_toggle(LED_BLUE_2_GPIO);
         startAdcSampling = false;
         sem_post(&adcbufSem);
     }
@@ -115,4 +120,16 @@ bool allChannelsCompleted(int setCompletedChannel) {
     }
     lastChannelCompleted = setCompletedChannel;
     return syncCompletion;
+}
+
+void resetPreambleDetectionHistory()
+{
+    detection_history_mics[0] = false;
+    detection_history_mics[1] = false;
+    detection_history_mics[2] = false;
+}
+
+bool wasPreambleDetected()
+{
+    return detection_history_mics[0] && detection_history_mics[1] && detection_history_mics[2];
 }

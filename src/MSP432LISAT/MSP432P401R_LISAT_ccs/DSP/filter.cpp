@@ -31,7 +31,7 @@ void Filter::ResetEMAState(int16_t initialValue) {
     EMA_S_high = (float)initialValue;
 }
 
-void Filter::FilterEMABuffer(int16_t* buffer, int16_t* outputFilteredBuffer, uint16_t length) {
+void Filter::FilterEMABuffer(uint16_t* buffer, int16_t* outputFilteredBuffer, uint16_t length) {
     int16_t bufferState = buffer[0];
     this->ResetEMAState(bufferState);
     for(uint16_t i=0;i<length;i++) {
