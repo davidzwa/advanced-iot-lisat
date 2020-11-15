@@ -97,9 +97,15 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
 //    }
     filter->FilterEMABuffer(completedBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
 
-    if (shortBufferMode) {
+    if (shortBufferMode && completedChannel == 0) {
         // Track history - short buffer only
-        signalPreambleDetector(outputBuffer_filtered, &detection_history_mics[completedChannel]);
+        bool result = signalPreambleDetector(outputBuffer_filtered, &detection_history_mics[completedChannel]);
+        if (result) {
+            GPIO_write(LED_GREEN_2_GPIO, 1);
+        }
+        else {
+            GPIO_write(LED_GREEN_2_GPIO, 0);
+        }
     }
 
     if (allChannelsCompleted(completedChannel)) {

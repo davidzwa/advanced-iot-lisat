@@ -8,6 +8,7 @@
 #include <TDOA/signalPreambleDetector.h>
 q15_t correlation_output;
 q15_t match_score = 0;
+q15_t absolute_correlation_output;
 q15_t preambleMatch(q15_t* mic_buffer);
 uint16_t hammingWeight(uint16_t N);
 
@@ -35,15 +36,16 @@ bool signalPreambleDetector(q15_t* mic_buffer, uint32_t* detection_history)
 q15_t preambleMatch(q15_t* mic_buffer)
 {
     q15_t multiplication_array[ADCBUFFERSIZE_SHORT];
-    q15_t absolute_correlation_output;
-
+    absolute_correlation_output = 0;
+    correlation_output = 0;
+    match_score = 0;
     for(int16_t i = 0; i < (PREAMBLE_SINE_PERIOD/2); i++)
     {
         // (A, B, output, length)
         arm_mult_q15(mic_buffer, preprocessed_reference_preamble + i, multiplication_array, ADCBUFFERSIZE_SHORT);
-        for( int16_t j = 0; j < ADCBUFFERSIZE_SHORT; j++)
+        for(int16_t j = 0; j < ADCBUFFERSIZE_SHORT; j++)
         {
-            arm_add_q15(&correlation_output, multiplication_array + i, &correlation_output, 1);
+            arm_add_q15(&correlation_output, multiplication_array + j, &correlation_output, 1);
         }
         arm_abs_q15(&correlation_output, &absolute_correlation_output, 1);
 
@@ -58,7 +60,7 @@ q15_t preambleMatch(q15_t* mic_buffer)
 
 uint16_t hammingWeight(uint16_t N)
 {
-    uint16_t result;
+    uint16_t result = 0;
     while(N)
     {
         result++;
