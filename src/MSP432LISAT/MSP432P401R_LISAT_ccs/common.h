@@ -37,7 +37,7 @@ enum MIC
 #define ADCBUFFERSIZE_SHORT (PREAMBLE_SINE_PERIOD*3) // 22*3 = 66 samples
 #define PREAMBLE_REF_LENGTH (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
 #define HISTORY_LENGTH (20)
-#define MATCH_THRESHOLD (32768/2) // Each signal correlator threshold 'round'
+#define MATCH_THRESHOLD (3000) // Each signal correlator threshold 'round'
 #define DETECTION_THRESHOLD (15) // Enough matching 'rounds'
 
 // Non-preamble signature signal generator properties
@@ -50,7 +50,7 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 #define CHIRP_SAMPLE_COUNT (88)         // Count
 
 // Short buffer EMA BPF filter
-#define EMA_A_LOW (0.8f)
+#define EMA_A_LOW (0.5f)
 #define EMA_A_HIGH (0.9f)
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
