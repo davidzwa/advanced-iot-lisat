@@ -2,11 +2,11 @@ clearvars
 close all
 
 Fs = 44000;
-buffer_length = 66;
+buffer_length = 12;
 
 %% Pulse generation
-pulse_length = 0.05;
-pulse_frequency = 2000;
+pulse_length = 0.02;
+pulse_frequency = 11000;
 
 T_pulse = 0: 1/Fs: pulse_length-1/Fs;
 Y_pulse = sin(2*pi*pulse_frequency*T_pulse);
@@ -18,7 +18,7 @@ plot(T_pulse, Y_pulse);
 signal_length = ceil((length(T_pulse) + 500)/buffer_length)*buffer_length;
 
 sample_delay = randi(500);
-snr = 0.1;
+snr = 10;
 
 % True TDOAs form sample delays, with value 1 as reference
 
