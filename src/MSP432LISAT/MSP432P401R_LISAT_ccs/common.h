@@ -30,7 +30,7 @@ enum MIC
 #define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
 #define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
 #define SAMPLE_FREQUENCY        (NUM_ADC_CHANNELS*44000)
-#define TARGET_FREQUENCY        (33000)
+#define TARGET_FREQUENCY        (39000)
 #define PREAMBLE_SINE_PERIOD    (TARGET_FREQUENCY/CARRIER_FREQUENCY) // 22 (@44 kHz)
 #if (PREAMBLE_SINE_PERIOD*CARRIER_FREQUENCY) != TARGET_FREQUENCY
 #error Preamble length should be an integer number.
