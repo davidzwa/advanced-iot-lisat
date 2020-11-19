@@ -5,6 +5,8 @@
 #include <TDOA/signalPreambleDetector.h>
 #include "tdoaAlgorithm.h"
 
+// Ease of debugging
+int adcshort = ADCBUFFERSIZE_SHORT;
 
 // ADCBuf driver structs
 ADCBuf_Handle adcBuf;
@@ -24,14 +26,14 @@ bool allChannelsCompleted(int setCompletedChannel);
 /* Set up an ADCBuf peripheral in ADCBuf_RECURRENCE_MODE_CONTINUOUS */
 void initADCBuf() {
     ADCBuf_Params_init(&adcBufParams);
-    adcBufParams.callbackFxn = adcBufCompletionCallback;
+    adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
 #if MIC_CONTINUOUS_SAMPLE == 1
     adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_CONTINUOUS;
 #else
     adcBufParams.recurrenceMode = ADCBuf_RECURRENCE_MODE_ONE_SHOT; // ADCBuf_RECURRENCE_MODE_CONTINUOUS;
 #endif
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
-    adcBufParams.samplingFrequency = SAMPLE_FREQUENCY;
+    adcBufParams.callbackFxn = adcBufCompletionCallback;
     adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
 
     /* Configure the conversion struct for 1-3 channels on same sequencer */
@@ -49,27 +51,33 @@ void setAdcBufConversionMode(bool shortConversion) {
     conversionStruct[0].arg = NULL;
     conversionStruct[0].adcChannel = MIC_ADCBUFCHANNEL_0;
     conversionStruct[0].sampleBuffer = sampleBuffer1a;
+#if MIC_CONTINUOUS_SAMPLE
     conversionStruct[0].sampleBufferTwo = sampleBuffer1b;
+#endif
     conversionStruct[0].samplesRequestedCount = bufferLength;
 #if NUM_ADC_CHANNELS >= 2
     conversionStruct[1].arg = NULL;
     conversionStruct[1].adcChannel = MIC_ADCBUFCHANNEL_1; // Mic 2
     conversionStruct[1].sampleBuffer = sampleBuffer2a;
+#if MIC_CONTINUOUS_SAMPLE
     conversionStruct[1].sampleBufferTwo = sampleBuffer2b;
+#endif
     conversionStruct[1].samplesRequestedCount = bufferLength;
 #endif
 #if NUM_ADC_CHANNELS >= 3
     conversionStruct[2].arg = NULL;
     conversionStruct[2].adcChannel = MIC_ADCBUFCHANNEL_2; // Mic 2
     conversionStruct[2].sampleBuffer = sampleBuffer3a;
+#if MIC_CONTINUOUS_SAMPLE
     conversionStruct[2].sampleBufferTwo = sampleBuffer3b;
+#endif
     conversionStruct[2].samplesRequestedCount = bufferLength;
 #endif
     shortBufferMode = shortConversion;
 }
 
 void openADCBuf() {
-    ADCBuf_convert(adcBuf, conversionStruct, 3);
+    ADCBuf_convert(adcBuf, conversionStruct, NUM_ADC_CHANNELS);
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
         GPIO_write(LED_ERROR_2, 1);
@@ -91,22 +99,15 @@ void closeADCBuf() {
  */
 void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion,
     void *completedADCBuffer, uint32_t completedChannel) {
+#if MSP_MIC_RAW_MODE == 0
     uint16_t *completedBuffer = (uint16_t*) completedADCBuffer;
-//    for (uint_fast16_t i = 0; i < conversion->samplesRequestedCount; i++) {
-//        outputBuffer[i] = completedBuffer[i];
-//    }
     filter->FilterEMABuffer(completedBuffer, outputBuffer_filtered, conversion->samplesRequestedCount);
 
-    if (shortBufferMode && completedChannel == 0) {
+    if (shortBufferMode) {
         // Track history - short buffer only
         bool result = signalPreambleDetector(outputBuffer_filtered, &detection_history_mics[completedChannel]);
-        if (result) {
-            GPIO_write(LED_GREEN_2_GPIO, 1);
-        }
-        else {
-            GPIO_write(LED_GREEN_2_GPIO, 0);
-        }
     }
+#endif
 
     if (allChannelsCompleted(completedChannel)) {
         startAdcSampling = false;
@@ -116,7 +117,9 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
 
 bool allChannelsCompleted(int setCompletedChannel) {
     completedChannels[setCompletedChannel] = true;
-    bool syncCompletion = completedChannels[0] && completedChannels[1] && completedChannels[2];
+    bool syncCompletion = completedChannels[0]
+                                            && (completedChannels[1] || NUM_ADC_CHANNELS<2)
+                                            && (completedChannels[2] || NUM_ADC_CHANNELS<3);
 
     // All channels completed, reset
     if (syncCompletion) {

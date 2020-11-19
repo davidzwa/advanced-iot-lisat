@@ -14,7 +14,6 @@ int16_t sampleBuffer2b[ADCBUFFERSIZE];
 int16_t sampleBuffer3a[ADCBUFFERSIZE];
 int16_t sampleBuffer3b[ADCBUFFERSIZE];
 #endif
-int16_t outputBuffer[ADCBUFFERSIZE];
 int16_t outputBuffer_filtered[ADCBUFFERSIZE];
 
 uint32_t detection_history_mics[3];

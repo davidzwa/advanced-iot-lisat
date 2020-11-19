@@ -54,8 +54,8 @@ q15_t preambleMatch(q15_t* mic_buffer)
         {
             match_score = absolute_correlation_output;
         }
-        return match_score;
     }
+    return match_score;
 }
 
 uint16_t hammingWeight(uint16_t N)
