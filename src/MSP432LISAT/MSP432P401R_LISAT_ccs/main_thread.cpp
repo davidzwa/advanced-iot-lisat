@@ -40,11 +40,6 @@ int speed = 250;
 void generateSignatureSignals() {
     generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
     generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);
-//    Display_printf(display, 0, 0, "BEGIN");
-//    for (int i = 0; i < CHIRP_SAMPLE_COUNT; i++) {
-//        Display_printf(display, 0, 0, "%d", tsjirpBuffah[i]);
-//    }
-//    Display_printf(display, 0, 0, "END");
 }
 
 /*
@@ -102,7 +97,6 @@ void *mainThread(void *arg0)
     initIrTaskClock();
     startIrTaskClock();
 #endif
-
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
         robot->UpdateRobotPosition();
@@ -116,15 +110,9 @@ void *mainThread(void *arg0)
         openADCBuf();
 #endif
         sem_wait(&adcbufSem);
+#if MSP_MIC_RAW_MODE == 1
 
-//      2 * max(srcALen, srcBLen) - 1
-//        arm_correlate_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, tsjirpBuffah, CHIRP_SAMPLE_COUNT, correlationChirp);
-//        Display_printf(display, 0, 0, "BEGIN-CORR");
-//        for (int i = 0; i < CORRELATION_LENGTH; i++) {
-//            Display_printf(display, 0, 0, "%d", correlationChirp[i]);
-//        }
-//        Display_printf(display, 0, 0, "END-CORR");
-
+#else
         arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
         Display_printf(display, 0, 0, "Mi.%d", minValue);
         arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
@@ -138,7 +126,7 @@ void *mainThread(void *arg0)
         if(wasPreambleDetected()) {
 //            setAdcBufConversionMode(false);
             resetPreambleDetectionHistory();
-//            openADCBuf();
+            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {
@@ -146,42 +134,26 @@ void *mainThread(void *arg0)
             openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 0);
         }
+        //         Decide to send ADC buffer over the line
+        //        for (int i = 0; i < ADCBUFFERSIZE; i++) {
+        //            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
+        //        }
 
-//         Decide to send ADC buffer over the line
-//        for (int i = 0; i < ADCBUFFERSIZE; i++) {
-//            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
-//        }
+                Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
+                Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
-        Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
-        Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
-
-//        Send mic time differences
-//        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
-//        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
-//        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
-//        Send DOA values for either Valin or CTP or algorithm
-//        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
-//        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
-//        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
-//        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
-
+        //        Send mic time differences
+        //        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
+        //        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
+        //        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
+        //        Send DOA values for either Valin or CTP or algorithm
+        //        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
+        //        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
+        //        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
+        //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
+#endif
         Display_printf(display, 0, 0, "--Done");
         numBufsSent++;
 #endif
     }
-
-//      Old and useful math operations
-//    void DoMathOps()
-//    {
-//     Choose whether to filter or not, filterBuffer can be quite heavy, EMA is very light
-//        filter->FilterBuffer(outputBuffer, outputBuffer_filtered);
-//
-//        int16_t maxValue;
-//        uint32_t maxIndex;
-//        arm_max_q15(outputBuffer, ADCBUFFERSIZE, &maxValue, &maxIndex);
-//        arm_min_q15(outputBuffer, ADCBUFFERSIZE, &minValue, &minIndex)
-//        Display_printf(display, 0, 0, "%d", maxValue);
-//        doFFT(outputBuffer_filtered, fftOutput);
-//        arm_correlate_q15(outputBuffer_filtered, CHUNK_LENGTH, audioVector, AUDIO_LENGTH, correlation);
-//    }
 }

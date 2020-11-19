@@ -16,7 +16,7 @@ public:
     Filter();
 
     arm_fir_instance_q15 S;
-    q15_t firStateF32[ADCBUFFERSIZE + FILTER_TAP_NUM -1];
+//    q15_t firStateF32[ADCBUFFERSIZE + FILTER_TAP_NUM -1];
 
     float EMA_a_low = EMA_A_LOW;
     float EMA_a_high = EMA_A_HIGH;
@@ -38,8 +38,8 @@ public:
 //            +0.0036977508f, +0.0000000000f, -0.0015879294f, -0.0018225230f
 //    };
 
-    void InitFilterState();
-    void FilterBuffer(int16_t* buffer, int16_t* outputBuffer);
+//    void InitFilterState();
+//    void FilterBuffer(int16_t* buffer, int16_t* outputBuffer);
 };
 
 #endif /* DSP_IIRFILTER_H_ */

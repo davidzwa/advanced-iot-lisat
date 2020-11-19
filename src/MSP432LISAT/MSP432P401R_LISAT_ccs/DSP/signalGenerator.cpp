@@ -41,6 +41,6 @@ void sineWave(q15_t* buffer, uint16_t periodLength, uint16_t generatedLength)
     for (uint16_t i = 0; i < generatedLength; ++i)
     {
         int32_t x = SHRT_MAX * (i % periodLength)/periodLength;
-        buffer[i] = arm_sin_q15(x);
+        buffer[i] = arm_sin_q15(x) >> CARRIER_SHIFT;
     }
 }

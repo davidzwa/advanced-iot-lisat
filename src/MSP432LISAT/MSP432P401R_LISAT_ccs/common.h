@@ -26,15 +26,17 @@ enum MIC
     MIC_RIGHT = MIC3R_MODE_WOS
 };
 
-
 #define NUM_ADC_CHANNELS        (3)
-#define CARRIER_FREQUENCY       (11000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
-#define SAMPLE_FREQUENCY        (44000)
-#define PREAMBLE_SINE_PERIOD    (SAMPLE_FREQUENCY/CARRIER_FREQUENCY) // 22 (@44 kHz)
-#if (PREAMBLE_SINE_PERIOD*CARRIER_FREQUENCY) != SAMPLE_FREQUENCY
+#define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
+#define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
+#define SAMPLE_FREQUENCY        (NUM_ADC_CHANNELS*44000)
+#define TARGET_FREQUENCY        (33000)
+#define PREAMBLE_SINE_PERIOD    (TARGET_FREQUENCY/CARRIER_FREQUENCY) // 22 (@44 kHz)
+#if (PREAMBLE_SINE_PERIOD*CARRIER_FREQUENCY) != TARGET_FREQUENCY
 #error Preamble length should be an integer number.
 #endif
-#define ADCBUFFERSIZE_SHORT (PREAMBLE_SINE_PERIOD*3) // 22*3 = 66 samples
+#define ADCBUFFERSIZE_SHORT (PREAMBLE_SINE_PERIOD * 3) // 22*3 = 66 samples
+
 #define PREAMBLE_REF_LENGTH (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
 #define HISTORY_LENGTH (20)
 #define MATCH_THRESHOLD (3000) // Each signal correlator threshold 'round'
@@ -43,7 +45,7 @@ enum MIC
 // Non-preamble signature signal generator properties
 #define NUM_CHIRPS (6)
 #define CHIRP_SILENCE (SAMPLE_FREQUENCY/1000)
-#define ADCBUFFERSIZE 1000 // ((NUM_CHIRPS-1)*CHIRP_SILENCE + )
+#define ADCBUFFERSIZE 1000 // MAX: 3000 (ONE-SHOT) 1500 (CONTINUOUS)     ((NUM_CHIRPS-1)*CHIRP_SILENCE + )
 const double chirpInterval = 2.0;       // ms
 const double chirpFrequencyStart = 5.0; // kHz
 const double chirpFrequencyEnd = 15.0;  // kHz
@@ -55,6 +57,7 @@ const double chirpFrequencyEnd = 15.0;  // kHz
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
+#define MSP_MIC_RAW_MODE (0) // RAW mode disables filters, detectors etc
 #define MIC_CONTINUOUS_SAMPLE (1) // If not the main_thread will have to kick it when it can to continue.
 // Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
 #define MSP_SPEAKER_INTERRUPTS (1)
