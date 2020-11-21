@@ -1,10 +1,10 @@
 clearvars
 close all
 
-Fs = 44000;
-pulse_length = 0.002;
-chirp_f0 = 5000;
-chirp_f1 = 15000;
+Fs = 39000;
+pulse_length = 0.017;
+chirp_f0 = 1000;
+chirp_f1 = 2000;
 
 max_range = 2^15 - 1;
 
