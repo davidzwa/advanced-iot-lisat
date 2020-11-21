@@ -110,6 +110,10 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
 #endif
 
     if (allChannelsCompleted(completedChannel)) {
+        if (!shortBufferMode) {
+            GPIO_toggle(LED_ERROR_2);
+        }
+
         startAdcSampling = false;
         sem_post(&adcbufSem);
     }
@@ -140,5 +144,7 @@ void resetPreambleDetectionHistory()
 
 bool wasPreambleDetected()
 {
-    return detection_history_mics[0] && detection_history_mics[1] && detection_history_mics[2];
+    return detection_history_mics[0]
+                                  && (detection_history_mics[1] || NUM_ADC_CHANNELS<2)
+                                  && (detection_history_mics[2] || NUM_ADC_CHANNELS<3);
 }
