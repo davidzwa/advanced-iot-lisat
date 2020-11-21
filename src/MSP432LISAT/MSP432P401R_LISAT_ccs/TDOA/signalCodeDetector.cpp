@@ -10,7 +10,7 @@
 
 int16_t processSingleBuffer(q15_t* micBuffer, int16_t bufferLength, q15_t *chirp, uint32_t chip_length, uint32_t num_chirps);
 
-valin_tdoa_input processThreeLongBuffer(q15_t* micBuffer1L, q15_t* micBuffer2M, q15_t* micBuffer3R, int16_t bufferLength)
+valin_tdoa_input processThreeLongBuffer(q15_t* micBuffer0, q15_t* micBuffer1, q15_t* micBuffer2, int16_t bufferLength)
 {
     // Signal parameters
     // Chirp 5 kHz to 15 kHz in 2 ms, sampled at 44kHz
@@ -24,15 +24,15 @@ valin_tdoa_input processThreeLongBuffer(q15_t* micBuffer1L, q15_t* micBuffer2M, 
     valin_tdoa_input TODAs;
 
     int16_t arrival_times[3];
-    q15_t* buffers[3] = {micBuffer1L, micBuffer2M, micBuffer3R};
+    q15_t* buffers[3] = {micBuffer0, micBuffer1, micBuffer2};
 
     for(int16_t i = 0; i < 3; i++)
     {
         arrival_times[i] = processSingleBuffer(buffers[i], bufferLength, chirp, chirp_length, num_chirps);
     }
 
-    TODAs.tdoa1 = arrival_times[2] - arrival_times[1];
-    TODAs.tdoa2 = arrival_times[3] - arrival_times[1];
+    TODAs.tdoa1 = arrival_times[0] - arrival_times[2];
+    TODAs.tdoa2 = arrival_times[1] - arrival_times[2];
     return TODAs;
 }
 
