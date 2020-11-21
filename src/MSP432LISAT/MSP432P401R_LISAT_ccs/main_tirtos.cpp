@@ -66,6 +66,7 @@ int main(void)
         while (1) {}
     }
 
+#if MSP_MIC_MEASUREMENT_PC_MODE==0
     // -- Serial ESP Thread
     priParam.sched_priority = 2;
     if (retc != 0) {
@@ -79,8 +80,6 @@ int main(void)
         GPIO_write(LED_ERROR_2, 1);
         while (1) {}
     }
-#if MSP_MIC_MEASUREMENT_PC_MODE==0
-
 #endif
 
     BIOS_start();
