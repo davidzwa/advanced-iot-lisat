@@ -1,5 +1,5 @@
 /*
- * bumpers.cpp
+ * irSensors.cpp
  *
  *  Created on: Oct 31, 2020
  *      Author: Tomas
@@ -11,6 +11,8 @@
 
 bool irCapsCharged = true;
 KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
+bool lineDetected = false;
+int irSensorReading = 0;
 
 void changeSensorsIO(bool);
 void chargeCapacitors();
@@ -23,6 +25,10 @@ void initIrTaskClock() {
 
 void startIrTaskClock() {
     irSensorsTaskClock->startClockTask();
+}
+
+void stopIrTaskClock() {
+    irSensorsTaskClock->stopClockTask();
 }
 
 void taskPerformIrReading() {
@@ -68,11 +74,33 @@ void irTimerCallback() {
         setPeriodUsHighSpeedTimer(1000);
         startHighSpeedTimer();
     } else {
-        int values = GPIO_read(LINE_IR1_RIGHT);
-        //GPIO_write(LED_BLUE_2, values);
+        /* Read values of reflectance sensors */
+        irSensorReading = 0;
+        irSensorReading += GPIO_read(LINE_IR1_RIGHT);
+        irSensorReading += GPIO_read(LINE_IR2_RIGHT);
+        irSensorReading += GPIO_read(LINE_IR3_RIGHT);
+        irSensorReading += GPIO_read(LINE_IR4_RIGHT);
+        irSensorReading += GPIO_read(LINE_IR5_LEFT);
+        irSensorReading += GPIO_read(LINE_IR6_LEFT);
+        irSensorReading += GPIO_read(LINE_IR7_LEFT);
+        irSensorReading += GPIO_read(LINE_IR8_LEFT);
+        if (irSensorReading >= LINE_DETECTION_THRESHOLD) {
+            /* Line has been detected */
+            lineDetected = true;
+            stopIrTaskClock();
+        }
         // Turn off IR LEDs to save power
         GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
         GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);
     }
+}
+
+bool checkLineDetected() {
+    return lineDetected;
+}
+
+void resetLineDetection() {
+    lineDetected = false;
+    startIrTaskClock();
 }
 

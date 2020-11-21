@@ -26,6 +26,30 @@ enum MIC
     MIC_RIGHT = MIC3R_MODE_WOS
 };
 
+typedef enum {
+    IDLE,
+    INTER_DRIVING,
+    INTER_LISTENING,
+    INTER_WAITING,
+    INTER_TRANSMITTING,
+    INTER_CROSSING,
+    FIND_WAITING,
+    FIND_TRANSMITTING,
+    FIND_LISTENING,
+    FIND_DRIVING,
+    NUM_STATES
+} RobotState;
+
+typedef enum {
+    CHANGE_MODE,
+    CHANGE_SPEED,
+    STOP,
+    NUM_MESSAGE_TYPES
+} MessageType;
+
+void changeState(RobotState state);
+void changeMotorSpeed(int speed);
+
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
 #define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
@@ -70,10 +94,13 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 #define SPEAKER_CLOCK_PERIOD_BUTTON     200
 
 /* IR sensors */
-#define IRSENSORS_CLOCK_INITIAL_OFFSET  100    // needs to be larger than 0 for clock to start
+#define IRSENSORS_CLOCK_INITIAL_OFFSET  100 // needs to be larger than 0 for clock to start
 #define IRSENSORS_CLOCK_PERIOD          100
+#define LINE_DETECTION_THRESHOLD        6   // number of IR sensors that should observe a black surface to consider a line to be detected
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
+
+#define LISTEN_WAIT_TIME 5000 // Time robot waits for other robot to cross intersection (in ms)
 
 #endif // COMMON__H

@@ -53,7 +53,7 @@ void user_init(void)
 #ifdef MQTT_CLIENT
     // Setup WiFi & MQTT pubsub client
     setup_wifi();
-    client.setServer(mqtt_server, 1883);
+    client.setServer(mqtt_server, 18883);
     client.setCallback(callback);
 #else
     WiFi.disconnect();

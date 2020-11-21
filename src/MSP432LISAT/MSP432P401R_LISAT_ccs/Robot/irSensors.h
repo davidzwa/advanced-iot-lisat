@@ -13,5 +13,6 @@
 void initIrTaskClock();
 void startIrTaskClock();
 void irTimerCallback();
+bool checkLineDetected();
 
 #endif /* ROBOT_IRSENSORS_H_ */

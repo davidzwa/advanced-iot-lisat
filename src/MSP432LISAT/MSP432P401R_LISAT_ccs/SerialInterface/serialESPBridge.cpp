@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <string.h>
 #include "common.h"
+#include <stdio.h>
+#include <string>
 
 char input;
 char serialBuffer[64];
@@ -9,6 +11,8 @@ const char echoPrompt[] = "ack-MSP";
 UART_Handle uart;
 UART_Params uartParams;
 sem_t uartbufSem; // Easy lock on receiving
+
+void processCommand();
 
 // COMMANDS
 const char INFO[] = "MSP!";
@@ -58,10 +62,49 @@ void waitUARTPacketInfinite() {
         int result = parseHeader(serialBuffer);
         if (result == 0) {
             GPIO_toggle(LED_GREEN_2);
+            processCommand();
         }
         else {
             // Drop the packet and
             GPIO_toggle(LED_ERROR_2);
         }
+    }
+}
+
+
+void processCommand() {
+    char messageType = serialBuffer[4];
+    switch(messageType) {
+        case 'm': { // change mode
+            std::string modeString;
+            modeString += serialBuffer[5];
+            int modeValue = stoi(modeString);
+            if (modeValue == 0) {
+                changeState(INTER_DRIVING);
+            }
+            else if (modeValue == 1) {
+                changeState(FIND_WAITING);
+            } else {
+                GPIO_toggle(LED_ERROR_2);
+            }
+            break;
+        }
+        case 's': {// change speed, bracket required to initialize string
+            std::string speedString;
+            int i = 5; // start after message type buffer index
+            while (serialBuffer[i] != 'x' && i < 15) { // speed value can have at most 15 - 5 = 10 digits, hence ( < 15 )
+                speedString += serialBuffer[i];
+                i++;
+            }
+            int speedValue = stoi(speedString);
+            changeMotorSpeed(speedValue);
+            break;
+        }
+        case 'a': // abort robots
+            //robotAbort();
+            break;
+        default:
+            GPIO_toggle(LED_ERROR_2);
+            int n = 0;
     }
 }
