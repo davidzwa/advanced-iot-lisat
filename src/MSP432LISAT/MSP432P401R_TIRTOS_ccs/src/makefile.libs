@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Users\david\Projects\advanced-iot-lisat\src\MSP432LISAT\MSP432P401R_TIRTOS_ccs\release.cfg
+#     C:\Users\d.zwart\Documents\Projects\advanced-iot-lisat\src\MSP432LISAT\MSP432P401R_TIRTOS_ccs\release.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Users\david\Projects\advanced-iot-lisat\src\MSP432LISAT\MSP432P401R_TIRTOS_ccs\src
+#    C:\Users\d.zwart\Documents\Projects\advanced-iot-lisat\src\MSP432LISAT\MSP432P401R_TIRTOS_ccs\src
 #
 GEN_SRC_DIR ?= ../src
 

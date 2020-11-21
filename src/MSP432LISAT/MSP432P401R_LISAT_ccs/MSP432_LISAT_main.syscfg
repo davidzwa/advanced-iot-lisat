@@ -66,15 +66,13 @@ const LED2     = LED.addInstance();
  */
 Display1.$name          = "CONFIG_Display_0";
 Display1.$hardware      = system.deviceData.board.components.XDS110UART;
-Display1.baudRate       = 921600;
 Display1.uartBufferSize = 2048;
 Display1.uart.$name     = "UART_DEBUG";
-Display1.uart.baudRates = [921600];
 
 ADCBuf1.enableDMA                         = false;
 ADCBuf1.$name                             = "MIC_ADCBUF";
 ADCBuf1.channels                          = 3;
-ADCBuf1.interruptPriority                 = "3";
+ADCBuf1.interruptPriority                 = "1";
 ADCBuf1.adcBufChannel0.$name              = "CHANNEL_0";
 ADCBuf1.adcBufChannel0.referenceSource    = "2.5V";
 ADCBuf1.adcBufChannel0.adc.$assign        = "ADC14";
@@ -89,7 +87,7 @@ ADCBuf1.adcBufChannel2.referenceSource    = "2.5V";
 ADCBuf1.adcBufChannel2.adc.$assign        = "ADC14";
 ADCBuf1.adcBufChannel2.adc.adcPin.$assign = "boosterpack.33";
 
-DMA.interruptPriority = "2";
+DMA.interruptPriority = "1";
 
 GPIO.interruptPriority = "1";
 
@@ -246,10 +244,9 @@ Power.performanceLevel0.$name = "ti_drivers_power_PowerMSP432PerfLevels3";
 
 RTOS.timer0.resource.$assign = "Timer_A0";
 
-Timer1.$name             = "TIMER_FREE_MEASURE";
-Timer1.interruptPriority = "1";
-Timer1.clockSource       = "SMCLK";
-Timer1.timer.$assign     = "Timer_A2";
+Timer1.$name         = "TIMER_FREE_MEASURE";
+Timer1.clockSource   = "SMCLK";
+Timer1.timer.$assign = "Timer_A2";
 
 Timer2.timerType     = "32 Bits";
 Timer2.$name         = "TIMER_HIGH_SPEED";
@@ -257,7 +254,6 @@ Timer2.timer.$assign = "TIMER32_0";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
-UART1.interruptPriority  = "5";
 UART1.uart.txPin.$assign = "boosterpack.3";
 UART1.uart.rxPin.$assign = "boosterpack.4";
 

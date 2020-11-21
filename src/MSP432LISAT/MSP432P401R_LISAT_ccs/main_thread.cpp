@@ -53,6 +53,8 @@ void *mainThread(void *arg0)
 
     robot->StartUp();
     robot->motorDriver->DriveForwards(speed);
+    sleep(1);
+    robot->motorDriver->DriveForwards(0);
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
     initUARTESP();
@@ -124,14 +126,14 @@ void *mainThread(void *arg0)
 
 //        if (stupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
         if(wasPreambleDetected()) {
-//            setAdcBufConversionMode(false);
+            setAdcBufConversionMode(false);
             resetPreambleDetectionHistory();
-            openADCBuf();
+//            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {
             setAdcBufConversionMode(true);
-            openADCBuf();
+//            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 0);
         }
         //         Decide to send ADC buffer over the line
