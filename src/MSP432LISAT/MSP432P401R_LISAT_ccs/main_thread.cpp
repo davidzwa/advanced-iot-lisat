@@ -37,6 +37,18 @@ uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
 int speed = 500;
 
+RobotState robotState = IDLE;
+uint32_t currentTime;
+
+void changeState(RobotState state) {
+    // check if state switch allowed
+    robotState = state;
+}
+
+void changeMotorSpeed(int speed) {
+    robot->motorDriver->DriveForwards(speed);
+}
+
 void generateSignatureSignals() {
     generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
     generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);
@@ -61,7 +73,6 @@ void *mainThread(void *arg0)
     openUARTESP();
 
     robot->StartUp();
-    robot->motorDriver->DriveForwards(speed);
 
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
@@ -101,12 +112,50 @@ void *mainThread(void *arg0)
 #endif
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-        robot->UpdateRobotPosition();
+
+        switch(robotState) {
+            case IDLE:
+                sem_wait(&uartbufSem); // at this point state can only change when command is received
+                break;
+            case INTER_DRIVING:
+                robot->motorDriver->DriveForwards(speed);
+                if (lineDetected()) {
+                    robot->Stop();
+                    resetLineDetection();
+                    robotState = INTER_LISTENING;
+                }
+                break;
+            case INTER_LISTENING:
+                //if sound received
+                    currentTime = Clock_getTicks();
+                    robotState = INTER_WAITING;
+                break;
+            case INTER_WAITING:
+                if (Clock_getTicks() - currentTime > LISTEN_WAIT_TIME) {
+                    robotState = INTER_LISTENING;
+                }
+                break;
+            case INTER_TRANSMITTING:
+                    // if playing sound is finished
+
+                    robotState = INTER_CROSSING;
+                break;
+            case INTER_CROSSING:
+                robot->motorDriver->DriveForwards(speed);
+                if (checkLineDetected() && ) {
+                    robot->Stop();
+                    robotState = INTER_LISTENING;
+                }
+                break;
+        }
+
+        //robot->UpdateRobotPosition();
         sem_wait(&adcbufSem);
         //        speed += 10;
         //        if (speed > 4500) {
         //            speed = 1000;
         //        }
+
 #else
 #if MIC_CONTINUOUS_SAMPLE != 1
         openADCBuf();
