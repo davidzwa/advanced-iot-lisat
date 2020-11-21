@@ -1,5 +1,7 @@
+close all
+clearvars
 
-%[file, path] = uigetfile("*.csv");
+[file, path] = uigetfile("*.csv");
 file = convertCharsToStrings(file);
 path = convertCharsToStrings(path);
 
