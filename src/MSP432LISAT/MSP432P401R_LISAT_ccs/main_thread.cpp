@@ -128,6 +128,7 @@ void *mainThread(void *arg0)
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
                 sem_wait(&lineDetectionSem);
+                stopIrTaskClock();
                 robot->Stop();
                 robotState = INTER_LISTENING;
                 break;
@@ -154,6 +155,7 @@ void *mainThread(void *arg0)
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);
                 resetLineDetection(); //todo: might have to wait a little before resetting line detection
+                startIrTaskClock();
                 sem_wait(&lineDetectionSem);
                 robot->Stop();
                 robotState = IDLE;
