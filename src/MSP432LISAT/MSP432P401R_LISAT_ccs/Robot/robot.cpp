@@ -8,7 +8,6 @@
 #include <math.h>
 #include <Robot/robot.h>
 #include <Robot/tachometer.h>
-#include <Robot/bumpers.h>
 
 /*
  * Class methods
@@ -18,7 +17,6 @@ Robot::Robot()
 //    this->diffDrive = init_diff_drive();
     this->motorDriver = new MotorDriver();
     initTachometers();
-    initBumpers(this);
 
     this->robotPositionX = 0.0f;
     this->robotPositionY = 0.0f;
@@ -45,7 +43,6 @@ void Robot::StartUp() {
     this->motorDriver->Initialize();
     this->motorDriver->PowerUp();
     enableTachometerInterrupts();
-    enableBumperInterrupts();
 }
 
 void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount) {

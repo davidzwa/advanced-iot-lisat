@@ -11,6 +11,7 @@ const char echoPrompt[] = "ack-MSP";
 UART_Handle uart;
 UART_Params uartParams;
 sem_t uartbufSem; // Easy lock on receiving
+sem_t mqttWakeupSem;
 
 void processCommand();
 
@@ -39,6 +40,10 @@ void initUARTESP() {
     sem_init(&uartbufSem, 0, 0);
 }
 
+void initWakeupSem() {
+    sem_init(&mqttWakeupSem, 0, 0);
+}
+
 void openUARTESP() {
     uart = UART_open(COMM_ESP, &uartParams); // UART_DEBUG
 
@@ -62,6 +67,7 @@ void waitUARTPacketInfinite() {
         int result = parseHeader(serialBuffer);
         if (result == 0) {
             GPIO_toggle(LED_GREEN_2);
+            sem_post(&mqttWakeupSem);
             processCommand();
         }
         else {
@@ -80,10 +86,10 @@ void processCommand() {
             modeString += serialBuffer[5];
             int modeValue = stoi(modeString);
             if (modeValue == 0) {
-                changeState(INTER_DRIVING);
+                changeMode(INTER_DRIVING);
             }
             else if (modeValue == 1) {
-                changeState(FIND_WAITING);
+                changeMode(FIND_WAITING);
             } else {
                 GPIO_toggle(LED_ERROR_2);
             }
@@ -101,7 +107,7 @@ void processCommand() {
             break;
         }
         case 'a': // abort robots
-            //robotAbort();
+            breakMotors();
             break;
         default:
             GPIO_toggle(LED_ERROR_2);

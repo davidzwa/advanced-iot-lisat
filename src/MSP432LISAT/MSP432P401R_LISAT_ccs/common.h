@@ -19,6 +19,10 @@
 #include <ti/drivers/ADCBuf.h>
 #include <ti/drivers/Timer.h>
 
+/* Semaphore to signal main thread that speaker sound has finished playing */
+extern sem_t speakerSoundFinishedSem;
+extern sem_t mqttWakeupSem;
+
 enum MIC
 {
     MIC_LEFT = MIC1L_MODE_WOS,
@@ -47,8 +51,9 @@ typedef enum {
     NUM_MESSAGE_TYPES
 } MessageType;
 
-void changeState(RobotState state);
+void changeMode(RobotState state);
 void changeMotorSpeed(int speed);
+void breakMotors();
 
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
@@ -82,7 +87,10 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 #define MSP_MIC_MEASUREMENT_PC_MODE (0)
 #define MSP_MIC_RAW_MODE (0) // RAW mode disables filters, detectors etc
 #define MIC_CONTINUOUS_SAMPLE (0) // If not the main_thread will have to kick it when it can to continue.
-// Switch flag to indicate whether MSP handles speakers commands  (bumper interrupts only works in robot mode)
+
+// Switch flag to indicate whether bumper interrupts are enabled
+#define BUMPER_INTERRUPTS (1)
+// Switch flag to indicate whether MSP handles speakers commands
 #define MSP_SPEAKER_INTERRUPTS (1)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
 #define MSP_IR_SENSORS (0)

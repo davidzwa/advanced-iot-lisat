@@ -15,6 +15,7 @@
 void threadLoopESPSerial(void *arg0) {
     initUARTESP();
     openUARTESP();
+    initWakeupSem();
 
     waitUARTPacketInfinite();
 }
