@@ -5,6 +5,8 @@
  *      Author: david
  */
 
+#include <System/periodicKernelTask.h>
+
 #include "common.h"
 #include "motorDriver.h"
 
