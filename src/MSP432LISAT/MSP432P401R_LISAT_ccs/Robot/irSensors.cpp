@@ -99,7 +99,6 @@ void irTimerCallback() {
         if (irSensorReading >= LINE_DETECTION_THRESHOLD) {
             /* Line has been detected */
             sem_post(&lineDetectionSem);
-            stopIrTaskClock();
         }
         // Turn off IR LEDs to save power
         GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
@@ -110,6 +109,5 @@ void irTimerCallback() {
 void resetLineDetection() {
     lineDetectionDebounce = true;
     irSensorsTaskClock->setClockTimeout(LINE_DETECTION_DEBOUNCE);
-    startIrTaskClock();
 }
 
