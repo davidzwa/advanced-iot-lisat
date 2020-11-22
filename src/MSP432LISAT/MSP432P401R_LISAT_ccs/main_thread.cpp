@@ -169,7 +169,6 @@ void *mainThread(void *arg0)
         if(wasPreambleDetected()) {
             setAdcBufConversionMode(false);
             resetPreambleDetectionHistory();
-//            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 1);
         }
         else {
