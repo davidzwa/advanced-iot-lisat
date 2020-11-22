@@ -10,7 +10,7 @@
 
 #include "common.h"
 
-void initBumpers(Robot*);
+void initBumpers();
 void enableBumperInterrupts();
 void disableBumperInterrupts();
 

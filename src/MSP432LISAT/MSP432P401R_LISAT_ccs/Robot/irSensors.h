@@ -13,7 +13,7 @@
 void initIrTaskClock();
 void startIrTaskClock();
 void irTimerCallback();
-bool checkLineDetected();
+bool checkStoplineDetected();
 void resetLineDetection();
 
 #endif /* ROBOT_IRSENSORS_H_ */

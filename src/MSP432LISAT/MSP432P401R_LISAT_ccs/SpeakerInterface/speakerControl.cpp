@@ -12,11 +12,13 @@ KernelSingleTaskClock* speakerTaskClock = new KernelSingleTaskClock();
 
 // FSM state for single play sound cycle
 SpeakerState state = IDLE_STATE;
+sem_t speakerSoundFinishedSem;
 
 void taskSpeakerCallback();
 
 void initSpeakerTaskClock() {
     speakerTaskClock->setupClockTask(SPEAKER_CLOCK_INITIAL_OFFSET, SPEAKER_CLOCK_PERIOD_BUTTON, taskSpeakerCallback);
+    sem_init(&speakerSoundFinishedSem, 0, 0);
 }
 
 void startSpeakerTaskClock() {
@@ -44,8 +46,9 @@ void taskSpeakerCallback()
     else if (state == PAUSE_PRESSED) {
         /* Release pause button, cycle done */
         GPIO_write(SPEAKER_PAUSE_PIN, 1);
-        speakerTaskClock->startClockTask();
+        speakerTaskClock->stopClockTask();
         state = IDLE_STATE;
+        sem_post(&speakerSoundFinishedSem);
     }
     else {
         /* Wrong state */

@@ -80,10 +80,10 @@ void processCommand() {
             modeString += serialBuffer[5];
             int modeValue = stoi(modeString);
             if (modeValue == 0) {
-                changeState(INTER_DRIVING);
+                changeMode(INTER_DRIVING);
             }
             else if (modeValue == 1) {
-                changeState(FIND_WAITING);
+                changeMode(FIND_WAITING);
             } else {
                 GPIO_toggle(LED_ERROR_2);
             }
@@ -101,7 +101,7 @@ void processCommand() {
             break;
         }
         case 'a': // abort robots
-            //robotAbort();
+            breakMotors();
             break;
         default:
             GPIO_toggle(LED_ERROR_2);

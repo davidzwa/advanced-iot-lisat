@@ -10,6 +10,7 @@
 // Our common defines and entrypoint
 #include "common.h"
 #include "Robot/robot.h"
+#include "Robot/bumpers.h"
 #include "Robot/irSensors.h"
 #include "System/kernelSingleTaskClock.h"
 #include "System/freeRunningTimer.h"
@@ -40,13 +41,21 @@ int speed = 500;
 RobotState robotState = IDLE;
 uint32_t currentTime;
 
-void changeState(RobotState state) {
-    // check if state switch allowed
-    robotState = state;
+void changeMode(RobotState state) { // change between intersection/find each other mode
+    if (robotState == IDLE) {
+        robotState = state;
+    }
 }
 
-void changeMotorSpeed(int speed) {
+void changeMotorSpeed(int newSpeed) {
+    speed = newSpeed;
     robot->motorDriver->DriveForwards(speed);
+}
+
+void breakMotors() { // panic break (bumpers)
+    robot->motorDriver->DriveForwards(0);
+    speed = 0;
+    robotState = IDLE;
 }
 
 void generateSignatureSignals() {
@@ -94,6 +103,10 @@ void *mainThread(void *arg0)
     openADCBuf();
 #endif
 
+#if BUMPER_INTERRUPTS == 1
+    initBumpers();
+#endif
+
 #if MSP_SPEAKER_INTERRUPTS == 1
     initSpeakerTaskClock();
     startSpeakerTaskClock();
@@ -106,22 +119,26 @@ void *mainThread(void *arg0)
 #endif
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-
         switch(robotState) {
             case IDLE:
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
-                if (checkLineDetected()) {
-                    robot->Stop();
-                    resetLineDetection();
-                    robotState = INTER_LISTENING;
+                while (checkStoplineDetected()) {
+                    // control steer diff
                 }
+                robot->Stop();
+                robotState = INTER_LISTENING;
                 break;
             case INTER_LISTENING:
-                //if sound received
+                //todo: LISTEN FOR SET AMOUNT OF TIME
+                bool givePriority = false; // todo: remove, just for testing purposes
+                if(givePriority) {
                     currentTime = Clock_getTicks();
                     robotState = INTER_WAITING;
+                } else {
+                    robotState = INTER_TRANSMITTING;
+                }
                 break;
             case INTER_WAITING:
                 if (Clock_getTicks() - currentTime > LISTEN_WAIT_TIME) {
@@ -129,24 +146,20 @@ void *mainThread(void *arg0)
                 }
                 break;
             case INTER_TRANSMITTING:
-                    // if playing sound is finished
+                    speakerPlaySound();
+                    sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
                     robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);
-                if (checkLineDetected()) {
-                    robot->Stop();
-                    robotState = INTER_LISTENING;
+                resetLineDetection(); //todo: might have to wait a little before resetting line detection
+                while (!checkStoplineDetected()) {
+                    // control wheel diff
                 }
+                robot->Stop();
+                robotState = IDLE;
                 break;
         }
-
-        //robot->UpdateRobotPosition();
-        sem_wait(&adcbufSem);
-        //        speed += 10;
-        //        if (speed > 4500) {
-        //            speed = 1000;
-        //        }
 
 #else
 #if MIC_CONTINUOUS_SAMPLE != 1

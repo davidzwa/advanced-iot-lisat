@@ -95,7 +95,7 @@ void irTimerCallback() {
     }
 }
 
-bool checkLineDetected() {
+bool checkStoplineDetected() {
     return lineDetected;
 }
 
