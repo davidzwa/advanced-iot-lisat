@@ -94,9 +94,9 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 // Switch flag to indicate whether MSP handles speakers commands
 #define MSP_SPEAKER_INTERRUPTS (1)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
-#define MSP_IR_SENSORS (0)
+#define MSP_IR_SENSORS (1)
 // Flag indicating a task which will counter-act any driving offsets
-#define MSP_ROBOT_PID_CONTROL (1)
+#define MSP_ROBOT_PID_CONTROL (0)
 
 /* Speakers */
 //currently in ms, depends on kernel clock config
@@ -114,6 +114,7 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 #define BUMPER_DEBOUNCE_INTERVAL 500 // minimum time between consecutive bumper interrupts (in ms)
 
 /* State machine */
+#define MAIN_THREAD_TIMED_WAIT 1 // Time after which main thread wakes up when waiting for mode (intersection/find each other) switch command (in SECONDS)
 #define LISTEN_WAIT_TIME 5000 // Time robot waits for other robot to cross intersection (in ms)
 
 /* Robot control */

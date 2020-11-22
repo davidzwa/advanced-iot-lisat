@@ -125,8 +125,9 @@ void *mainThread(void *arg0)
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
         switch(robotState) {
             case IDLE:
+                /* Suspend thread and wake up after set period to circumvent semaphore issue */
                 clock_gettime(CLOCK_REALTIME, &ts);
-                ts.tv_sec += 1; // timed wait for 1 second
+                ts.tv_sec += MAIN_THREAD_TIMED_WAIT;
                 sem_timedwait(&mqttWakeupSem, &ts);
                 break;
             case INTER_DRIVING:
