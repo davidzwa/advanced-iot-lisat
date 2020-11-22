@@ -111,14 +111,12 @@ void *mainThread(void *arg0)
 
 #if MSP_SPEAKER_INTERRUPTS == 1
     initSpeakerTaskClock();
-    startSpeakerTaskClock();
 #endif
 
 #if MSP_IR_SENSORS == 1
     initHighSpeedTimer(irTimerCallback);
     initLineDetectionSem();
     initIrTaskClock();
-    startIrTaskClock();
 #endif
 
     while(1) {
@@ -132,8 +130,11 @@ void *mainThread(void *arg0)
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
+#if MSP_IR_SENSORS == 1
+                startIrTaskClock();
                 sem_wait(&lineDetectionSem);
                 stopIrTaskClock();
+#endif
                 robot->Stop();
                 robotState = INTER_LISTENING;
                 break;
@@ -153,15 +154,20 @@ void *mainThread(void *arg0)
                 }
                 break;
             case INTER_TRANSMITTING:
+#if MSP_SPEAKER_INTERRUPTS == 1
                 speakerPlaySound();
                 sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
+#endif
                 robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);
-                resetLineDetection(); //todo: might have to wait a little before resetting line detection
+#if MSP_IR_SENSORS == 1
+                resetLineDetection();
                 startIrTaskClock();
                 sem_wait(&lineDetectionSem);
+                stopIrTaskClock();
+#endif
                 robot->Stop();
                 robotState = IDLE;
                 break;
