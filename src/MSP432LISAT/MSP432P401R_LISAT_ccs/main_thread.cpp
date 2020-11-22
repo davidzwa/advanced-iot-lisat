@@ -79,7 +79,6 @@ void *mainThread(void *arg0)
 
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
-    //    writeUARTInfinite(); // BLOCKING for testing
 #else
     Display_init();
     /* Configure & open Display driver */
@@ -121,6 +120,7 @@ void *mainThread(void *arg0)
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
         switch(robotState) {
             case IDLE:
+                sem_wait(&mqttWakeupSem); // at this point state can only change when command is received
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
@@ -146,9 +146,9 @@ void *mainThread(void *arg0)
                 }
                 break;
             case INTER_TRANSMITTING:
-                    speakerPlaySound();
-                    sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
-                    robotState = INTER_CROSSING;
+                speakerPlaySound();
+                sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
+                robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);

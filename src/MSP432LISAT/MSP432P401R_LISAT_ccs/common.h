@@ -21,6 +21,7 @@
 
 /* Semaphore to signal main thread that speaker sound has finished playing */
 extern sem_t speakerSoundFinishedSem;
+extern sem_t mqttWakeupSem;
 
 enum MIC
 {

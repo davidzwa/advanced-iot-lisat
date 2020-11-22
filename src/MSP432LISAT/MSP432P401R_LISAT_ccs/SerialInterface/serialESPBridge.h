@@ -2,6 +2,7 @@
 #define SERIALINTERFACE_UART_ESP_H_
 
 void initUARTESP();
+void initWakeupSem();
 void openUARTESP();
 void waitUARTPacketInfinite();
 
