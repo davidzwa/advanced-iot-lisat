@@ -10,8 +10,10 @@
 
 #include "common.h"
 
+void initLineDetectionSem();
 void initIrTaskClock();
 void startIrTaskClock();
+void stopIrTaskClock();
 void irTimerCallback();
 bool checkStoplineDetected();
 void resetLineDetection();

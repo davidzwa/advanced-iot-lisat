@@ -10,21 +10,6 @@
 #include <Robot/tachometer.h>
 
 /*
- * Class methods
- */
-Robot::Robot()
-{
-//    this->diffDrive = init_diff_drive();
-    this->motorDriver = new MotorDriver();
-    initTachometers();
-
-    this->robotPositionX = 0.0f;
-    this->robotPositionY = 0.0f;
-    this->robotAngleTheta = 0.0f;
-    this->distanceTravelled = 0.0f;
-}
-
-/*
  * Static calculation utilities
  */
 int32_t SpeedToTicksPerInterrupt(int32_t speed_mmps) {
@@ -39,10 +24,58 @@ float WheelDistanceToRobotDisplacement(float deltaDistanceWheelRight, float delt
     return (deltaDistanceWheelRight + deltaDistanceWheelLeft)/2;
 }
 
+static void RunControlLoop(UArg this_pointer) {
+    Robot* robot = (Robot*)this_pointer;
+    robot->ControlLoop(Clock_getTicks());
+}
+
+/*
+ * Class methods
+ */
+Robot::Robot()
+{
+    this->motorDriver = new MotorDriver();
+    initTachometers();
+
+    this->robotPositionX = 0.0f;
+    this->robotPositionY = 0.0f;
+    this->robotAngleTheta = 0.0f;
+    this->distanceTravelled = 0.0f;
+}
+
 void Robot::StartUp() {
     this->motorDriver->Initialize();
     this->motorDriver->PowerUp();
     enableTachometerInterrupts();
+}
+
+void Robot::EnableDriveControl() {
+    this->enabledAngleControl = true;
+    this->periodicControlTask->setupClockMethod(CONTROL_LOOP_INITIAL_OFFSET, CONTROL_LOOP_PERIOD, RunControlLoop, this);
+    this->periodicControlTask->startClockTask();
+}
+
+bool Robot::IsControlEnabled() {
+    return this->enabledAngleControl;
+}
+
+void Robot::DisableDriveControl() {
+    this->periodicControlTask->stopClockTask();
+    this->Stop(); // Avoid spinning endlessly
+    this->enabledAngleControl = false;
+}
+
+void Robot::ControlLoop(uint16_t time) {
+    // As UpdateRobotPosition is based on tacho interrupts, we can expect the position to be updated
+    float heading_error = robotAngleTheta;
+    float err = atan2(sin(heading_error), cos(heading_error));
+    this->E_i+=err;
+    float U_i = this->K_i * E_i;
+    float U_p = this->K_p * err;
+    float w = U_p + U_i;
+
+
+    GPIO_toggle(LED_GREEN_2_GPIO);
 }
 
 void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount) {
@@ -56,7 +89,6 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
         this->motorDriver->Drive(500,500);
         usleep(250000);
     }
-
     this->Stop();
 }
 
@@ -107,10 +139,6 @@ void Robot::Stop() {
     this->motorDriver->DriveForwards(0);
 }
 
-void Robot::DriveStraight() {
-    // Implement drive straight control loop
-}
-
 void Robot::UpdateRobotPosition() {
     // Fetch ISR ticks and reset the corresponding counters
     uint32_t numTicksLeft = getInterruptCountLeft();
@@ -137,6 +165,11 @@ void Robot::_updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceR
     float deltaTheta = (float)(deltaDistanceRight - deltaDistanceLeft)/WHEEL_BASE;
     tempTheta += deltaTheta;
     this->robotAngleTheta = atan2(sin(tempTheta), cos(tempTheta));
+}
+
+bool Robot::_isDriving() {
+//    return (this->motorDriver->)
+    return true;
 }
 
 //void Robot::RunTest() {

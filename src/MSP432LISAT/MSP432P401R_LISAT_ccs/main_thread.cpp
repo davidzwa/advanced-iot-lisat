@@ -1,6 +1,7 @@
 /* DriverLib Includes */
 #include <stdint.h>
 #include <stdio.h>
+#include <System/periodicKernelTask.h>
 #include <unistd.h>
 
 // Bios interaction
@@ -12,7 +13,6 @@
 #include "Robot/robot.h"
 #include "Robot/bumpers.h"
 #include "Robot/irSensors.h"
-#include "System/kernelSingleTaskClock.h"
 #include "System/freeRunningTimer.h"
 #include "System/highSpeedTimer.h"
 #include "DSP/signalGenerator.h"
@@ -37,6 +37,7 @@ int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
 int speed = 500;
+timespec ts;
 
 RobotState robotState = IDLE;
 uint32_t currentTime;
@@ -52,7 +53,7 @@ void changeMotorSpeed(int newSpeed) {
     robot->motorDriver->DriveForwards(speed);
 }
 
-void breakMotors() { // panic break (bumpers)
+void panicStop() { // panic break (bumpers)
     robot->motorDriver->DriveForwards(0);
     speed = 0;
     robotState = IDLE;
@@ -70,10 +71,12 @@ void *mainThread(void *arg0)
 {
     Display_Params displayParams;
     int32_t status;
-    int numBufsSent = 0;
 
     robot->StartUp();
     robot->motorDriver->DriveForwards(0);
+#if MSP_ROBOT_PID_CONTROL == 1
+    robot->EnableDriveControl();
+#endif
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
 
@@ -108,25 +111,30 @@ void *mainThread(void *arg0)
 
 #if MSP_SPEAKER_INTERRUPTS == 1
     initSpeakerTaskClock();
-    startSpeakerTaskClock();
 #endif
 
 #if MSP_IR_SENSORS == 1
     initHighSpeedTimer(irTimerCallback);
+    initLineDetectionSem();
     initIrTaskClock();
-    startIrTaskClock();
 #endif
+
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
         switch(robotState) {
             case IDLE:
-                sem_wait(&mqttWakeupSem); // at this point state can only change when command is received
+                /* Suspend thread and wake up after set period to circumvent semaphore issue */
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_sec += MAIN_THREAD_TIMED_WAIT;
+                sem_timedwait(&mqttWakeupSem, &ts);
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
-                while (checkStoplineDetected()) {
-                    // control steer diff
-                }
+#if MSP_IR_SENSORS == 1
+                startIrTaskClock();
+                sem_wait(&lineDetectionSem);
+                stopIrTaskClock();
+#endif
                 robot->Stop();
                 robotState = INTER_LISTENING;
                 break;
@@ -146,16 +154,20 @@ void *mainThread(void *arg0)
                 }
                 break;
             case INTER_TRANSMITTING:
+#if MSP_SPEAKER_INTERRUPTS == 1
                 speakerPlaySound();
                 sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
+#endif
                 robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);
-                resetLineDetection(); //todo: might have to wait a little before resetting line detection
-                while (!checkStoplineDetected()) {
-                    // control wheel diff
-                }
+#if MSP_IR_SENSORS == 1
+                resetLineDetection();
+                startIrTaskClock();
+                sem_wait(&lineDetectionSem);
+                stopIrTaskClock();
+#endif
                 robot->Stop();
                 robotState = IDLE;
                 break;
@@ -208,7 +220,6 @@ void *mainThread(void *arg0)
         //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 #endif
         Display_printf(display, 0, 0, "--Done");
-        numBufsSent++;
 #endif
     }
 }

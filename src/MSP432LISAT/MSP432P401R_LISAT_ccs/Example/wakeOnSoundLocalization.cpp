@@ -5,7 +5,7 @@
  *      Author: david
  */
 
-#include <TDOA/wakeOnSoundLocalization.h>
+#include <Example/wakeOnSoundLocalization.h>
 #include "System/freeRunningTimer.h"
 
 // WoS measurements

@@ -22,6 +22,7 @@
 /* Semaphore to signal main thread that speaker sound has finished playing */
 extern sem_t speakerSoundFinishedSem;
 extern sem_t mqttWakeupSem;
+extern sem_t lineDetectionSem;
 
 enum MIC
 {
@@ -53,7 +54,7 @@ typedef enum {
 
 void changeMode(RobotState state);
 void changeMotorSpeed(int speed);
-void breakMotors();
+void panicStop();
 
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
@@ -93,7 +94,9 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 // Switch flag to indicate whether MSP handles speakers commands
 #define MSP_SPEAKER_INTERRUPTS (1)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
-#define MSP_IR_SENSORS (0)
+#define MSP_IR_SENSORS (1)
+// Flag indicating a task which will counter-act any driving offsets
+#define MSP_ROBOT_PID_CONTROL (0)
 
 /* Speakers */
 //currently in ms, depends on kernel clock config
@@ -102,13 +105,20 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 #define SPEAKER_CLOCK_PERIOD_BUTTON     200
 
 /* IR sensors */
-#define IRSENSORS_CLOCK_INITIAL_OFFSET  100 // needs to be larger than 0 for clock to start
+#define IRSENSORS_CLOCK_INITIAL_OFFSET  100     // needs to be larger than 0 for clock to start
 #define IRSENSORS_CLOCK_PERIOD          100
-#define LINE_DETECTION_THRESHOLD        6   // number of IR sensors that should observe a black surface to consider a line to be detected
+#define LINE_DETECTION_THRESHOLD        6       // number of IR sensors that should observe a black surface to consider a line to be detected
+#define LINE_DETECTION_DEBOUNCE         1000    // time after which line detection is reactivated after detecting line (in ms)
 
 /* Robot Bumpers */
-#define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
+#define BUMPER_DEBOUNCE_INTERVAL 500 // minimum time between consecutive bumper interrupts (in ms)
 
+/* State machine */
+#define MAIN_THREAD_TIMED_WAIT 1 // Time after which main thread wakes up when waiting for mode (intersection/find each other) switch command (in SECONDS)
 #define LISTEN_WAIT_TIME 5000 // Time robot waits for other robot to cross intersection (in ms)
+
+/* Robot control */
+#define CONTROL_LOOP_INITIAL_OFFSET 1000
+#define CONTROL_LOOP_PERIOD 100 // 10 Hz (currently kernel has 1000 ticks per second)
 
 #endif // COMMON__H

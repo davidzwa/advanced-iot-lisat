@@ -5,6 +5,8 @@
  *      Author: david
  */
 
+#include <System/periodicKernelTask.h>
+
 #include "common.h"
 #include "motorDriver.h"
 
@@ -26,6 +28,9 @@ const float dist_per_rising_edge = CIRCUMFERENCE_WHEEL/LINES_PER_REV;
 #define ACLK_COUNTS 32768
 
 #define MIN_RPM_ERROR 30
+
+static void RunControlLoop(UArg robot_this_pointer);
+
 /*
  * Combine differentialRobot struct, methods and MotorDriver functions to position the robot or keep the robot speed in close-loop control.
  */
@@ -35,20 +40,40 @@ public:
     Robot();
     void StartUp();
     void Stop();
-    void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
-    void DriveStraight();
+
+    // Set or disable control
+    void EnableDriveControl();
+    void DisableDriveControl();
+    bool IsControlEnabled();
+
+    // Controlled or manual drive
+    void ControlLoop(uint16_t time);
     void UpdateRobotPosition();
 
+    // Calibration
+    void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
+
+    // Public access for ease of use
     MotorDriver* motorDriver;
 private:
     void _updateRobotCenterPosition(float deltaDistanceCenter);
     void _updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight);
+    bool _isDriving();
     uint32_t _reachMMPS(int32_t rpm, int maxRounds, int maxRPMError);
 
+    PeriodicKernelTask* periodicControlTask = new PeriodicKernelTask();
+
+    /* Sensor state */
+    bool enabledAngleControl;
     float robotPositionX;
     float robotPositionY;
     float robotAngleTheta;
     float distanceTravelled;
+
+    /* Controller state and parameters*/
+    double E_i=0;
+    float K_i = 2.6;
+    float K_p = 330;
 };
 
 #endif /* ROBOT_ROBOT_H_ */

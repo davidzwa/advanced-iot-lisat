@@ -7,12 +7,13 @@
 
 #include <Robot/irSensors.h>
 #include <System/highSpeedTimer.h>
-#include <System/kernelSingleTaskClock.h>
+#include <System/periodicKernelTask.h>
 
 bool irCapsCharged = true;
-KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
-bool lineDetected = false;
+bool lineDetectionDebounce = false;
+PeriodicKernelTask* irSensorsTaskClock = new PeriodicKernelTask();
 int irSensorReading = 0;
+sem_t lineDetectionSem;
 
 void changeSensorsIO(bool);
 void chargeCapacitors();
@@ -21,6 +22,10 @@ void irTimerCallback();
 
 void initIrTaskClock() {
     irSensorsTaskClock->setupClockTask(IRSENSORS_CLOCK_INITIAL_OFFSET, IRSENSORS_CLOCK_PERIOD, taskPerformIrReading);
+}
+
+void initLineDetectionSem() {
+    sem_init(&lineDetectionSem, 0, 0);
 }
 
 void startIrTaskClock() {
@@ -65,6 +70,13 @@ void chargeCapacitors() {
 }
 
 void irTimerCallback() {
+    if (lineDetectionDebounce) {
+        lineDetectionDebounce = false;
+        stopIrTaskClock();
+        irSensorsTaskClock->setClockTimeout(IRSENSORS_CLOCK_PERIOD);
+        startIrTaskClock();
+        return;
+    }
     // Turn on IR LEDs
     if (irCapsCharged) {
         /* Set light sensor pins as output and read white/black value */
@@ -86,8 +98,7 @@ void irTimerCallback() {
         irSensorReading += GPIO_read(LINE_IR8_LEFT);
         if (irSensorReading >= LINE_DETECTION_THRESHOLD) {
             /* Line has been detected */
-            lineDetected = true;
-            stopIrTaskClock();
+            sem_post(&lineDetectionSem);
         }
         // Turn off IR LEDs to save power
         GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
@@ -95,12 +106,8 @@ void irTimerCallback() {
     }
 }
 
-bool checkStoplineDetected() {
-    return lineDetected;
-}
-
 void resetLineDetection() {
-    lineDetected = false;
-    startIrTaskClock();
+    lineDetectionDebounce = true;
+    irSensorsTaskClock->setClockTimeout(LINE_DETECTION_DEBOUNCE);
 }
 
