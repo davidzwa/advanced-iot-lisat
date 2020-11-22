@@ -37,6 +37,7 @@ int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
 int speed = 500;
+timespec ts;
 
 RobotState robotState = IDLE;
 uint32_t currentTime;
@@ -119,11 +120,14 @@ void *mainThread(void *arg0)
     initIrTaskClock();
     startIrTaskClock();
 #endif
+
     while(1) {
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
         switch(robotState) {
             case IDLE:
-                sem_wait(&mqttWakeupSem); // at this point state can only change when command is received
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_sec += 1; // timed wait for 1 second
+                sem_timedwait(&mqttWakeupSem, &ts);
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
