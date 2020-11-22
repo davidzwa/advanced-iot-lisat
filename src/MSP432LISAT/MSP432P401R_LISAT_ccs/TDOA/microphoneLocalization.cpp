@@ -1,8 +1,9 @@
 #include <ti/sysbios/knl/Clock.h>
 
 #include "common.h"
-#include "TDOA/microphoneLocalization.h"
+#include <TDOA/microphoneLocalization.h>
 #include <TDOA/signalPreambleDetector.h>
+#include <TDOA/signalCodeDetector.h>
 #include "tdoaAlgorithm.h"
 
 // Ease of debugging
@@ -19,6 +20,7 @@ bool startAdcSampling = false;
 int lastChannelCompleted = -1;
 bool completedChannels[3] = {false, false, false};
 bool shortBufferMode = false;
+valin_tdoa_input lastTdoaData;
 int16_t rms;
 void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversion, void *completedADCBuffer, uint32_t completedChannel);
 bool allChannelsCompleted(int setCompletedChannel);
@@ -111,6 +113,12 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
 
     if (allChannelsCompleted(completedChannel)) {
         if (!shortBufferMode) {
+            // Preamble was detected, abuse ERROR LED for it.
+            GPIO_toggle(LED_ERROR_2);
+
+            // Perform long buffer analysis
+            lastTdoaData = processThreeLongBuffer(sampleBuffer1a, sampleBuffer2a, sampleBuffer3a, conversion->samplesRequestedCount);
+
             GPIO_toggle(LED_ERROR_2);
         }
 

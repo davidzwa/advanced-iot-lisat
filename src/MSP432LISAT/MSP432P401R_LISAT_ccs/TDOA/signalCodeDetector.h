@@ -9,9 +9,10 @@
 #define TDOA_SIGNALCODEDETECTOR_H_
 
 struct valin_tdoa_input {
-   uint16_t tdoa1;
-   uint16_t tdoa2;
-   uint16_t tdoa3;
+   int16_t tdoa1;
+   int16_t tdoa2;
 } TDOAs;
+
+valin_tdoa_input processThreeLongBuffer(q15_t* micBuffer1L, q15_t* micBuffer2M, q15_t* micBuffer3R, int16_t bufferLength);
 
 #endif /* TDOA_SIGNALCODEDETECTOR_H_ */
