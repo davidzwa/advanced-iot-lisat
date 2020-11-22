@@ -111,6 +111,5 @@ void processCommand() {
             break;
         default:
             GPIO_toggle(LED_ERROR_2);
-            int n = 0;
     }
 }

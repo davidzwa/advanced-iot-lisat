@@ -24,12 +24,16 @@ float WheelDistanceToRobotDisplacement(float deltaDistanceWheelRight, float delt
     return (deltaDistanceWheelRight + deltaDistanceWheelLeft)/2;
 }
 
+static void RunControlLoop(UArg this_pointer) {
+    Robot* robot = (Robot*)this_pointer;
+    robot->ControlLoop(Clock_getTicks());
+}
+
 /*
  * Class methods
  */
 Robot::Robot()
 {
-//    this->diffDrive = init_diff_drive();
     this->motorDriver = new MotorDriver();
     initTachometers();
 
@@ -47,8 +51,8 @@ void Robot::StartUp() {
 
 void Robot::EnableDriveControl() {
     this->enabledAngleControl = true;
-
-//    this->
+    this->periodicControlTask->setupClockMethod(CONTROL_LOOP_INITIAL_OFFSET, CONTROL_LOOP_PERIOD, RunControlLoop, this);
+    this->periodicControlTask->startClockTask();
 }
 
 bool Robot::IsControlEnabled() {
@@ -56,7 +60,13 @@ bool Robot::IsControlEnabled() {
 }
 
 void Robot::DisableDriveControl() {
+    this->periodicControlTask->stopClockTask();
+    this->Stop(); // Avoid spinning endlessly
     this->enabledAngleControl = false;
+}
+
+void Robot::ControlLoop(uint16_t time) {
+    GPIO_toggle(LED_GREEN_2_GPIO);
 }
 
 void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount) {
@@ -70,7 +80,6 @@ void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibrated
         this->motorDriver->Drive(500,500);
         usleep(250000);
     }
-
     this->Stop();
 }
 
@@ -119,10 +128,6 @@ uint32_t Robot::_reachMMPS(int32_t speed_mmps, int maxRounds, int maxTicksError)
 
 void Robot::Stop() {
     this->motorDriver->DriveForwards(0);
-}
-
-void Robot::DriveStraight() {
-    // Implement drive straight control loop
 }
 
 void Robot::UpdateRobotPosition() {

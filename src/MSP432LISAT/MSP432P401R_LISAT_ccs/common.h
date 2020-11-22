@@ -96,7 +96,7 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
 #define MSP_IR_SENSORS (0)
 // Flag indicating a task which will counter-act any driving offsets
-#define MSP_ROBOT_PID_CONTROL (1)
+#define MSP_ROBOT_PID_CONTROL (0)
 
 /* Speakers */
 //currently in ms, depends on kernel clock config
@@ -113,6 +113,11 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
 
+/* State machine */
 #define LISTEN_WAIT_TIME 5000 // Time robot waits for other robot to cross intersection (in ms)
+
+/* Robot control */
+#define CONTROL_LOOP_INITIAL_OFFSET 1000
+#define CONTROL_LOOP_PERIOD 100 // 10 kernel ticks per control loop call (currently kernel has 1000 Hz update rate => 100 Hz)
 
 #endif // COMMON__H

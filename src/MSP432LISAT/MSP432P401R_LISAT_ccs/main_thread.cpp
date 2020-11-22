@@ -70,10 +70,12 @@ void *mainThread(void *arg0)
 {
     Display_Params displayParams;
     int32_t status;
-    int numBufsSent = 0;
 
     robot->StartUp();
     robot->motorDriver->DriveForwards(0);
+#if MSP_ROBOT_PID_CONTROL == 1
+    robot->EnableDriveControl();
+#endif
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
 
@@ -205,7 +207,6 @@ void *mainThread(void *arg0)
         //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 #endif
         Display_printf(display, 0, 0, "--Done");
-        numBufsSent++;
 #endif
     }
 }

@@ -28,6 +28,9 @@ const float dist_per_rising_edge = CIRCUMFERENCE_WHEEL/LINES_PER_REV;
 #define ACLK_COUNTS 32768
 
 #define MIN_RPM_ERROR 30
+
+static void RunControlLoop(UArg robot_this_pointer);
+
 /*
  * Combine differentialRobot struct, methods and MotorDriver functions to position the robot or keep the robot speed in close-loop control.
  */
@@ -38,11 +41,13 @@ public:
     void StartUp();
     void Stop();
 
-    // Control or manual drive
+    // Set or disable control
     void EnableDriveControl();
     void DisableDriveControl();
     bool IsControlEnabled();
-    void DriveStraight();
+
+    // Controlled or manual drive
+    void ControlLoop(uint16_t time);
     void UpdateRobotPosition();
 
     // Calibration
@@ -55,7 +60,7 @@ private:
     void _updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight);
     uint32_t _reachMMPS(int32_t rpm, int maxRounds, int maxRPMError);
 
-    PeriodicKernelTask* controlTaskClock = new PeriodicKernelTask();
+    PeriodicKernelTask* periodicControlTask = new PeriodicKernelTask();
 
     bool enabledAngleControl;
     float robotPositionX;

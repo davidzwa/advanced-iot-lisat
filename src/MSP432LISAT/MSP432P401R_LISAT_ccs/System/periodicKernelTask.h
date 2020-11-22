@@ -18,6 +18,7 @@ class PeriodicKernelTask
 public:
     PeriodicKernelTask();
     void setupClockTask(uint32_t delayClockTicks, uint16_t periodClockTicks, void(*callback)());
+    void setupClockMethod(uint32_t delayClockTicks, uint16_t periodClockTicks, void(*callback)(UArg), void* this_pointer);
     void startClockTask();
     void stopClockTask();
     void adjustClockCallback(void(*callback)());
