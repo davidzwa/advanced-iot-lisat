@@ -4,6 +4,8 @@
 #ifndef TDOA_EXTERNALINTERRUPT_H_
 #define TDOA_EXTERNALINTERRUPT_H_
 
+int16_t tjirp[CHIRP_SAMPLE_COUNT];
+
 int16_t sampleBuffer1a[ADCBUFFERSIZE]; // This is for long and short mode
 int16_t sampleBuffer1b[ADCBUFFERSIZE];
 #if NUM_ADC_CHANNELS >= 2

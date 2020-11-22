@@ -13,15 +13,6 @@ Filter::Filter()
 
 }
 
-//void Filter::InitFilterState(){
-//    arm_fir_init_q15(&this->S, FILTER_TAP_NUM, filter_taps, this->firStateF32, ADCBUFFERSIZE);
-//}
-//
-//void Filter::FilterBuffer(int16_t* buffer, int16_t* outputBuffer)
-//{
-//    arm_fir_q15(&this->S, buffer, outputBuffer, ADCBUFFERSIZE);
-//}
-
 void Filter::ResetEMAState(int16_t initialValue) {
     // initialization of EMA alpha
     EMA_a_low = 0.1f;

@@ -21,11 +21,6 @@
 #include "SerialInterface/serialDebugInterface.h"
 #include "TDOA/microphoneLocalization.h"
 
-// Chirp buffah
-int16_t tsjirpBuffah[CHIRP_SAMPLE_COUNT];
-#define CORRELATION_LENGTH (2*ADCBUFFERSIZE_SHORT-1)
-int16_t correlationChirp[CORRELATION_LENGTH];
-
 int32_t buffersCompletedCounter = 0;
 uint32_t maxIndex;
 uint32_t minIndex;
@@ -60,7 +55,7 @@ void panicStop() { // panic break (bumpers)
 }
 
 void generateSignatureSignals() {
-    generateSignatureChirp(tsjirpBuffah, CHIRP_SAMPLE_COUNT);
+    generateSignatureChirp(tjirp, CHIRP_SAMPLE_COUNT);
     generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);
 }
 
@@ -79,7 +74,6 @@ void *mainThread(void *arg0)
 #endif
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 #else
@@ -174,17 +168,21 @@ void *mainThread(void *arg0)
         }
 
 #else
-#if MIC_CONTINUOUS_SAMPLE != 1
+#if MIC_CONTINUOUS_SAMPLE == 0
         openADCBuf();
 #endif
-        sem_wait(&adcbufSem);
+
+        timespec abstime;
+        clock_gettime(CLOCK_REALTIME, &abstime);
+        abstime.tv_sec+=1;
+        sem_timedwait(&adcbufSem, &abstime);
 #if MSP_MIC_RAW_MODE == 1
 
 #else
-        arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
-        Display_printf(display, 0, 0, "Mi.%d", minValue);
-        arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
-        Display_printf(display, 0, 0, "Ma.%d", maxValue);
+//        arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
+//        Display_printf(display, 0, 0, "Mi.%d", minValue);
+//        arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
+//        Display_printf(display, 0, 0, "Ma.%d", maxValue);
 
 //        Send RMS value of ADCBuf for either Valin or CTP or algorithm
 //        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
@@ -198,16 +196,16 @@ void *mainThread(void *arg0)
         }
         else {
             setAdcBufConversionMode(true);
-//            openADCBuf();
             GPIO_write(LED_GREEN_2_GPIO, 0);
         }
+
         //         Decide to send ADC buffer over the line
         //        for (int i = 0; i < ADCBUFFERSIZE; i++) {
         //            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
         //        }
 
-                Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
-                Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
+//                Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
+//                Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
 
         //        Send mic time differences
         //        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
@@ -219,7 +217,8 @@ void *mainThread(void *arg0)
         //        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
         //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
 #endif
-        Display_printf(display, 0, 0, "--Done");
+//        Display_printf(display, 0, 0, "--Done");
+//        numBufsSent++;
 #endif
     }
 }
