@@ -10,6 +10,7 @@
 #include <System/periodicKernelTask.h>
 
 bool irCapsCharged = true;
+bool lineDetectionDebounce = false;
 PeriodicKernelTask* irSensorsTaskClock = new PeriodicKernelTask();
 int irSensorReading = 0;
 sem_t lineDetectionSem;
@@ -69,6 +70,13 @@ void chargeCapacitors() {
 }
 
 void irTimerCallback() {
+    if (lineDetectionDebounce) {
+        lineDetectionDebounce = false;
+        stopIrTaskClock();
+        irSensorsTaskClock->setClockTimeout(IRSENSORS_CLOCK_PERIOD);
+        startIrTaskClock();
+        return;
+    }
     // Turn on IR LEDs
     if (irCapsCharged) {
         /* Set light sensor pins as output and read white/black value */
@@ -100,6 +108,8 @@ void irTimerCallback() {
 }
 
 void resetLineDetection() {
+    lineDetectionDebounce = true;
+    irSensorsTaskClock->setClockTimeout(LINE_DETECTION_DEBOUNCE);
     startIrTaskClock();
 }
 

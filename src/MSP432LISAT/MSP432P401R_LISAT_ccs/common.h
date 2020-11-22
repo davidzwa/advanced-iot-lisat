@@ -105,9 +105,10 @@ const double chirpFrequencyEnd = 2.0;  // kHz
 #define SPEAKER_CLOCK_PERIOD_BUTTON     200
 
 /* IR sensors */
-#define IRSENSORS_CLOCK_INITIAL_OFFSET  100 // needs to be larger than 0 for clock to start
+#define IRSENSORS_CLOCK_INITIAL_OFFSET  100     // needs to be larger than 0 for clock to start
 #define IRSENSORS_CLOCK_PERIOD          100
-#define LINE_DETECTION_THRESHOLD        6   // number of IR sensors that should observe a black surface to consider a line to be detected
+#define LINE_DETECTION_THRESHOLD        6       // number of IR sensors that should observe a black surface to consider a line to be detected
+#define LINE_DETECTION_DEBOUNCE         1000    // time after which line detection is reactivated after detecting line (in ms)
 
 /* Robot Bumpers */
 #define BUMPER_DEBOUNCE_INTERVAL 1000 // minimum time between consecutive bumper interrupts (in ms)
