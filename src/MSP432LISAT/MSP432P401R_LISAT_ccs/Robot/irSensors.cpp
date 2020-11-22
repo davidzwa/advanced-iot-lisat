@@ -11,8 +11,8 @@
 
 bool irCapsCharged = true;
 KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
-bool lineDetected = false;
 int irSensorReading = 0;
+sem_t lineDetectionSem;
 
 void changeSensorsIO(bool);
 void chargeCapacitors();
@@ -21,6 +21,10 @@ void irTimerCallback();
 
 void initIrTaskClock() {
     irSensorsTaskClock->setupClockTask(IRSENSORS_CLOCK_INITIAL_OFFSET, IRSENSORS_CLOCK_PERIOD, taskPerformIrReading);
+}
+
+void initLineDetectionSem() {
+    sem_init(&lineDetectionSem, 0, 0);
 }
 
 void startIrTaskClock() {
@@ -86,7 +90,7 @@ void irTimerCallback() {
         irSensorReading += GPIO_read(LINE_IR8_LEFT);
         if (irSensorReading >= LINE_DETECTION_THRESHOLD) {
             /* Line has been detected */
-            lineDetected = true;
+            sem_post(&lineDetectionSem);
             stopIrTaskClock();
         }
         // Turn off IR LEDs to save power
@@ -95,12 +99,7 @@ void irTimerCallback() {
     }
 }
 
-bool checkStoplineDetected() {
-    return lineDetected;
-}
-
 void resetLineDetection() {
-    lineDetected = false;
     startIrTaskClock();
 }
 

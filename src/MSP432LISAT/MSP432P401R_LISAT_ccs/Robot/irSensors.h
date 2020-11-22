@@ -10,6 +10,7 @@
 
 #include "common.h"
 
+void initLineDetectionSem();
 void initIrTaskClock();
 void startIrTaskClock();
 void irTimerCallback();
