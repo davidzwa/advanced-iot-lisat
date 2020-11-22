@@ -13,7 +13,7 @@
 long bumper_last_called = 0;
 
 void bumperInterrupt(uint_least8_t index) {
-    breakMotors();
+    panicStop();
     if (Clock_getTicks() - bumper_last_called < BUMPER_DEBOUNCE_INTERVAL) {
         return;
     }

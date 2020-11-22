@@ -107,7 +107,7 @@ void processCommand() {
             break;
         }
         case 'a': // abort robots
-            breakMotors();
+            panicStop();
             break;
         default:
             GPIO_toggle(LED_ERROR_2);

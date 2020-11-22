@@ -54,7 +54,7 @@ typedef enum {
 
 void changeMode(RobotState state);
 void changeMotorSpeed(int speed);
-void breakMotors();
+void panicStop();
 
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!

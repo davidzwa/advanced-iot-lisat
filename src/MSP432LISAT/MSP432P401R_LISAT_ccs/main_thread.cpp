@@ -52,7 +52,7 @@ void changeMotorSpeed(int newSpeed) {
     robot->motorDriver->DriveForwards(speed);
 }
 
-void breakMotors() { // panic break (bumpers)
+void panicStop() { // panic break (bumpers)
     robot->motorDriver->DriveForwards(0);
     speed = 0;
     robotState = IDLE;
