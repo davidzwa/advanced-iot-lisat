@@ -7,10 +7,10 @@
 
 #include <Robot/irSensors.h>
 #include <System/highSpeedTimer.h>
-#include <System/kernelSingleTaskClock.h>
+#include <System/periodicKernelTask.h>
 
 bool irCapsCharged = true;
-KernelSingleTaskClock* irSensorsTaskClock = new KernelSingleTaskClock();
+PeriodicKernelTask* irSensorsTaskClock = new PeriodicKernelTask();
 int irSensorReading = 0;
 sem_t lineDetectionSem;
 

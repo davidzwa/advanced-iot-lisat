@@ -13,10 +13,10 @@
 #ifndef SYSTEM_KERNELSINGLETASKCLOCK_H_
 #define SYSTEM_KERNELSINGLETASKCLOCK_H_
 
-class KernelSingleTaskClock
+class PeriodicKernelTask
 {
 public:
-    KernelSingleTaskClock();
+    PeriodicKernelTask();
     void setupClockTask(uint32_t delayClockTicks, uint16_t periodClockTicks, void(*callback)());
     void startClockTask();
     void stopClockTask();

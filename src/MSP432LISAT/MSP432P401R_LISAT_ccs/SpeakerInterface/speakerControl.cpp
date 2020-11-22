@@ -5,10 +5,10 @@
  *      Author: s154384
  */
 
+#include <System/periodicKernelTask.h>
 #include "speakerControl.h"
-#include <System/kernelSingleTaskClock.h>
 
-KernelSingleTaskClock* speakerTaskClock = new KernelSingleTaskClock();
+PeriodicKernelTask* speakerTaskClock = new PeriodicKernelTask();
 
 // FSM state for single play sound cycle
 SpeakerState state = IDLE_STATE;

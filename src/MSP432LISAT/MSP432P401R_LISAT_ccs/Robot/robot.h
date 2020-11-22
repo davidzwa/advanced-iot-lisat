@@ -35,16 +35,27 @@ public:
     Robot();
     void StartUp();
     void Stop();
-    void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
+
+    // Control or manual drive
+    void EnableDriveControl();
+    void DisableDriveControl();
+    bool IsControlEnabled();
     void DriveStraight();
     void UpdateRobotPosition();
 
+    // Calibration
+    void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
+
+    // Public access for ease of use
     MotorDriver* motorDriver;
 private:
     void _updateRobotCenterPosition(float deltaDistanceCenter);
     void _updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight);
     uint32_t _reachMMPS(int32_t rpm, int maxRounds, int maxRPMError);
 
+    PeriodicKernelTask* controlTaskClock = new PeriodicKernelTask();
+
+    bool enabledAngleControl;
     float robotPositionX;
     float robotPositionY;
     float robotAngleTheta;

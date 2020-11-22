@@ -1,6 +1,7 @@
 /* DriverLib Includes */
 #include <stdint.h>
 #include <stdio.h>
+#include <System/periodicKernelTask.h>
 #include <unistd.h>
 
 // Bios interaction
@@ -12,7 +13,6 @@
 #include "Robot/robot.h"
 #include "Robot/bumpers.h"
 #include "Robot/irSensors.h"
-#include "System/kernelSingleTaskClock.h"
 #include "System/freeRunningTimer.h"
 #include "System/highSpeedTimer.h"
 #include "DSP/signalGenerator.h"

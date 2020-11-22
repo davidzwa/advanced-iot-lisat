@@ -8,8 +8,8 @@
 #ifndef SPEAKERINTERFACE_SPEAKERCONTROL_H_
 #define SPEAKERINTERFACE_SPEAKERCONTROL_H_
 
+#include <System/periodicKernelTask.h>
 #include "common.h"
-#include <System/kernelSingleTaskClock.h>
 
 typedef enum {
     IDLE_STATE,

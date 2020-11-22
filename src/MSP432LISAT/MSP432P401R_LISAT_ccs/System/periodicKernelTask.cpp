@@ -5,15 +5,15 @@
  *      Author: david
  */
 
-#include <System/kernelSingleTaskClock.h>
+#include <System/periodicKernelTask.h>
 #include "common.h"
 
-KernelSingleTaskClock::KernelSingleTaskClock()
+PeriodicKernelTask::PeriodicKernelTask()
 {
     // TODO Auto-generated constructor stub
 }
 
-void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodClockTicks, void(*callback)() ) {
+void PeriodicKernelTask::setupClockTask(uint32_t timeout, uint16_t periodClockTicks, void(*callback)() ) {
 /*   Examples for clock setup:   */
 //     https://dev.ti.com/tirex/explore/node?node=ABPpE.IWPsTrdNbHg2sxgw__z-lQYNj__1.40.01.00
 //     https://e2e.ti.com/support/microcontrollers/msp430/f/166/t/611213?RTOS-MSP432-RTOS-SYS-BIOS-Runtime-clock
@@ -33,22 +33,22 @@ void KernelSingleTaskClock::setupClockTask(uint32_t timeout, uint16_t periodCloc
     Clock_setTimeout(myClock, timeout); // Important: if this function is not explicitly called the clock will not start
 }
 
-void KernelSingleTaskClock::startClockTask() {
+void PeriodicKernelTask::startClockTask() {
     Clock_start(myClock);
 }
 
-void KernelSingleTaskClock::stopClockTask() {
+void PeriodicKernelTask::stopClockTask() {
     Clock_stop(myClock);
 }
 
-void KernelSingleTaskClock::adjustClockCallback(void(*callback)()) {
+void PeriodicKernelTask::adjustClockCallback(void(*callback)()) {
     Clock_setFunc(myClock, (Clock_FuncPtr) callback, NULL);
 }
 
-void KernelSingleTaskClock::setClockTimeout(uint32_t timeout) {
+void PeriodicKernelTask::setClockTimeout(uint32_t timeout) {
     Clock_setTimeout(myClock, timeout);
 }
 
-void KernelSingleTaskClock::setClockPeriod(uint16_t period) {
+void PeriodicKernelTask::setClockPeriod(uint16_t period) {
     Clock_setPeriod(myClock, period);
 }

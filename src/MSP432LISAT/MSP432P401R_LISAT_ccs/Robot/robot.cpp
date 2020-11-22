@@ -10,21 +10,6 @@
 #include <Robot/tachometer.h>
 
 /*
- * Class methods
- */
-Robot::Robot()
-{
-//    this->diffDrive = init_diff_drive();
-    this->motorDriver = new MotorDriver();
-    initTachometers();
-
-    this->robotPositionX = 0.0f;
-    this->robotPositionY = 0.0f;
-    this->robotAngleTheta = 0.0f;
-    this->distanceTravelled = 0.0f;
-}
-
-/*
  * Static calculation utilities
  */
 int32_t SpeedToTicksPerInterrupt(int32_t speed_mmps) {
@@ -39,10 +24,39 @@ float WheelDistanceToRobotDisplacement(float deltaDistanceWheelRight, float delt
     return (deltaDistanceWheelRight + deltaDistanceWheelLeft)/2;
 }
 
+/*
+ * Class methods
+ */
+Robot::Robot()
+{
+//    this->diffDrive = init_diff_drive();
+    this->motorDriver = new MotorDriver();
+    initTachometers();
+
+    this->robotPositionX = 0.0f;
+    this->robotPositionY = 0.0f;
+    this->robotAngleTheta = 0.0f;
+    this->distanceTravelled = 0.0f;
+}
+
 void Robot::StartUp() {
     this->motorDriver->Initialize();
     this->motorDriver->PowerUp();
     enableTachometerInterrupts();
+}
+
+void Robot::EnableDriveControl() {
+    this->enabledAngleControl = true;
+
+//    this->
+}
+
+bool Robot::IsControlEnabled() {
+    return this->enabledAngleControl;
+}
+
+void Robot::DisableDriveControl() {
+    this->enabledAngleControl = false;
 }
 
 void Robot::RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount) {
