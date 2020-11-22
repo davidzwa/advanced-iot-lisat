@@ -64,15 +64,9 @@ void *mainThread(void *arg0)
     int numBufsSent = 0;
 
     robot->StartUp();
-    robot->motorDriver->DriveForwards(speed);
-    sleep(1);
     robot->motorDriver->DriveForwards(0);
 
 #if MSP_MIC_MEASUREMENT_PC_MODE!=1
-    initUARTESP();
-    openUARTESP();
-
-    robot->StartUp();
 
    // Some tests/debug things
     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
@@ -115,11 +109,10 @@ void *mainThread(void *arg0)
 
         switch(robotState) {
             case IDLE:
-                sem_wait(&uartbufSem); // at this point state can only change when command is received
                 break;
             case INTER_DRIVING:
                 robot->motorDriver->DriveForwards(speed);
-                if (lineDetected()) {
+                if (checkLineDetected()) {
                     robot->Stop();
                     resetLineDetection();
                     robotState = INTER_LISTENING;
@@ -137,12 +130,11 @@ void *mainThread(void *arg0)
                 break;
             case INTER_TRANSMITTING:
                     // if playing sound is finished
-
                     robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(speed);
-                if (checkLineDetected() && ) {
+                if (checkLineDetected()) {
                     robot->Stop();
                     robotState = INTER_LISTENING;
                 }
