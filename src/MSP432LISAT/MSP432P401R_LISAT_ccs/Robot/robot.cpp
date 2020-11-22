@@ -66,6 +66,15 @@ void Robot::DisableDriveControl() {
 }
 
 void Robot::ControlLoop(uint16_t time) {
+    // As UpdateRobotPosition is based on tacho interrupts, we can expect the position to be updated
+    float heading_error = robotAngleTheta;
+    float err = atan2(sin(heading_error), cos(heading_error));
+    this->E_i+=err;
+    float U_i = this->K_i * E_i;
+    float U_p = this->K_p * err;
+    float w = U_p + U_i;
+
+
     GPIO_toggle(LED_GREEN_2_GPIO);
 }
 
@@ -156,6 +165,11 @@ void Robot::_updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceR
     float deltaTheta = (float)(deltaDistanceRight - deltaDistanceLeft)/WHEEL_BASE;
     tempTheta += deltaTheta;
     this->robotAngleTheta = atan2(sin(tempTheta), cos(tempTheta));
+}
+
+bool Robot::_isDriving() {
+//    return (this->motorDriver->)
+    return true;
 }
 
 //void Robot::RunTest() {

@@ -58,15 +58,22 @@ public:
 private:
     void _updateRobotCenterPosition(float deltaDistanceCenter);
     void _updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceRight);
+    bool _isDriving();
     uint32_t _reachMMPS(int32_t rpm, int maxRounds, int maxRPMError);
 
     PeriodicKernelTask* periodicControlTask = new PeriodicKernelTask();
 
+    /* Sensor state */
     bool enabledAngleControl;
     float robotPositionX;
     float robotPositionY;
     float robotAngleTheta;
     float distanceTravelled;
+
+    /* Controller state and parameters*/
+    double E_i=0;
+    float K_i = 2.6;
+    float K_p = 330;
 };
 
 #endif /* ROBOT_ROBOT_H_ */

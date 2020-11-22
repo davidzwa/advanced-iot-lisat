@@ -135,6 +135,16 @@ void MotorDriver::DriveForwards(uint16_t speed) {
     this->SetMotorSpeedLimited(this->pwmRight, speed, &(this->dutyRight));
 }
 
+void MotorDriver::SetControlAdjustment(uint16_t offset_left, uint16_t offset_right) {
+    this->dutyLeftOffset = offset_left;
+    this->dutyRightOffset = offset_right;
+}
+
+void MotorDriver::ResetControlAdjustment() {
+    this->dutyLeftOffset = 0;
+    this->dutyRightOffset = 0;
+}
+
 void MotorDriver::Drive(int16_t speed_left, int16_t speed_right) {
     if (speed_left > 0) {
         this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
@@ -147,8 +157,8 @@ void MotorDriver::Drive(int16_t speed_left, int16_t speed_right) {
     } else {
         this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
     }
-    this->SetMotorSpeedLimited(this->pwmLeft, speed_left, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmRight, speed_right, &(this->dutyRight));
+    this->SetMotorSpeedLimited(this->pwmLeft, speed_left, &(this->dutyLeft)); // -this->dutyLeftOffset
+    this->SetMotorSpeedLimited(this->pwmRight, speed_right, &(this->dutyRight)); //-this->dutyRightOffset
 }
 
 // Set motor direction: 1 forward, 0 backward
