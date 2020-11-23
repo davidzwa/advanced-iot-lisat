@@ -12,15 +12,18 @@
 bool irCapsCharged = true;
 bool lineDetectionDebounce = false;
 PeriodicKernelTask* irSensorsTaskClock = new PeriodicKernelTask();
-int irSensorReading = 0;
+uint8_t irReadingSum = 0;
+uint8_t irReadingByte = 0b00000000;
 sem_t lineDetectionSem;
+Robot* irRobot;
 
 void changeSensorsIO(bool);
 void chargeCapacitors();
 void taskPerformIrReading();
 void irTimerCallback();
 
-void initIrTaskClock() {
+void initIrTaskClock(Robot* pRobot) {
+    irRobot = pRobot;
     irSensorsTaskClock->setupClockTask(IRSENSORS_CLOCK_INITIAL_OFFSET, IRSENSORS_CLOCK_PERIOD, taskPerformIrReading);
 }
 
@@ -87,19 +90,38 @@ void irTimerCallback() {
         startHighSpeedTimer();
     } else {
         /* Read values of reflectance sensors */
-        irSensorReading = 0;
-        irSensorReading += GPIO_read(LINE_IR1_RIGHT);
-        irSensorReading += GPIO_read(LINE_IR2_RIGHT);
-        irSensorReading += GPIO_read(LINE_IR3_RIGHT);
-        irSensorReading += GPIO_read(LINE_IR4_RIGHT);
-        irSensorReading += GPIO_read(LINE_IR5_LEFT);
-        irSensorReading += GPIO_read(LINE_IR6_LEFT);
-        irSensorReading += GPIO_read(LINE_IR7_LEFT);
-        irSensorReading += GPIO_read(LINE_IR8_LEFT);
-        if (irSensorReading >= LINE_DETECTION_THRESHOLD) {
-            /* Line has been detected */
+        irReadingSum = 0;
+        irReadingByte = 0b00000000;
+        irReadingSum += GPIO_read(LINE_IR1_RIGHT);
+        irReadingSum += GPIO_read(LINE_IR2_RIGHT);
+        irReadingSum += GPIO_read(LINE_IR3_RIGHT);
+        irReadingSum += GPIO_read(LINE_IR4_RIGHT);
+        irReadingSum += GPIO_read(LINE_IR5_LEFT);
+        irReadingSum += GPIO_read(LINE_IR6_LEFT);
+        irReadingSum += GPIO_read(LINE_IR7_LEFT);
+        irReadingSum += GPIO_read(LINE_IR8_LEFT);
+        irReadingByte |= GPIO_read(LINE_IR1_RIGHT);
+        irReadingByte |= GPIO_read(LINE_IR2_RIGHT) << 1;
+        irReadingByte |= GPIO_read(LINE_IR3_RIGHT) << 2;
+        irReadingByte |= GPIO_read(LINE_IR4_RIGHT) << 3;
+        irReadingByte |= GPIO_read(LINE_IR5_LEFT)  << 4;
+        irReadingByte |= GPIO_read(LINE_IR6_LEFT)  << 5;
+        irReadingByte |= GPIO_read(LINE_IR7_LEFT)  << 6;
+        irReadingByte |= GPIO_read(LINE_IR8_LEFT)  << 7;
+        if (irReadingSum >= LINE_DETECTION_THRESHOLD) {
+            /* STOPLINE has been detected */
             sem_post(&lineDetectionSem);
         }
+        else if (irReadingByte >= 96) {
+            /* TRACKLINE is off to the right */
+            //irRobot->adjustRobotAngleThetaOffset(1);
+        }
+        else if (irReadingByte <= 6) {
+            /* TRACKLINE is off to the left */
+            //irRobot->adjustRobotAngleThetaOffset(-1);
+        }
+        /* TRACKLINE is in the middle */
+
         // Turn off IR LEDs to save power
         GPIO_write(LINE_IR_EVEN_BACKLIGHT, 0);
         GPIO_write(LINE_IR_ODD_BACKLIGHT, 0);

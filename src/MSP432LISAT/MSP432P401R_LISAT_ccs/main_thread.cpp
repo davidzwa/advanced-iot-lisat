@@ -116,7 +116,7 @@ void *mainThread(void *arg0)
 #if MSP_IR_SENSORS == 1
     initHighSpeedTimer(irTimerCallback);
     initLineDetectionSem();
-    initIrTaskClock();
+    initIrTaskClock(robot);
 #endif
 
     while(1) {

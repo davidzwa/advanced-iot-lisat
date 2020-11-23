@@ -9,9 +9,10 @@
 #define ROBOT_IRSENSORS_H_
 
 #include "common.h"
+#include <Robot/robot.h>
 
 void initLineDetectionSem();
-void initIrTaskClock();
+void initIrTaskClock(Robot*);
 void startIrTaskClock();
 void stopIrTaskClock();
 void irTimerCallback();

@@ -49,7 +49,7 @@ public:
     // Controlled or manual drive
     void ControlLoop(uint16_t time);
     void UpdateRobotPosition();
-
+    void adjustRobotAngleThetaOffset(float angleOffset);
     // Calibration
     void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
 
@@ -68,6 +68,7 @@ private:
     float robotPositionX;
     float robotPositionY;
     float robotAngleTheta;
+    float robotAngleThetaOffset;
     float distanceTravelled;
 
     /* Controller state and parameters*/
