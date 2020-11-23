@@ -73,10 +73,10 @@ void turnRight(float angle);
 #define ADCBUFFERSIZE           1600
 #define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
 #define CHIRP_SHIFT             (4)
-#define NUM_CHIRPS              (2)
-#define CHIRP_LENGTH            (0.017) // ms
+#define NUM_CHIRPS              (1)
+#define CHIRP_LENGTH            (0.030) // ms
 #define CHIRP_FREQ_START_KHZ    (500)  // kHz
-#define CHIRP_FREQ_END_KHZ      (11000)  // kHz
+#define CHIRP_FREQ_END_KHZ      (3500)  // kHz
 #define CHIRP_SAMPLE_COUNT      (uint32_t)(CHIRP_LENGTH*TARGET_FREQUENCY)
 #define PREAMBLE_REF_LENGTH     (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
 #define MATCH_THRESHOLD         (3000) // Each signal correlator threshold 'round'
