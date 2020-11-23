@@ -31,7 +31,7 @@ const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
-int speed = 500;
+uint16_t speed = 0;
 timespec ts;
 sem_t pressPauseSem;
 
@@ -44,7 +44,7 @@ void changeMode(RobotState state) { // change between intersection/find each oth
     }
 }
 
-void changeMotorSpeed(int newSpeed) {
+void changeMotorSpeed(uint16_t newSpeed) {
     speed = newSpeed;
     robot->motorDriver->DriveForwards(speed);
 }
@@ -68,6 +68,49 @@ void generateSignatureSignals() {
     generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);
 }
 
+bool awaitAudioByListening() {
+    timespec startWaitTime;
+    clock_gettime(CLOCK_REALTIME, &startWaitTime);
+
+    while(1) {
+        timespec currentTime;
+        clock_gettime(CLOCK_REALTIME, &currentTime);
+#if MIC_CONTINUOUS_SAMPLE == 0
+            openADCBuf();
+#endif
+            // This should not wait too long (less than 50ms), but just to be sure
+            currentTime.tv_sec+=1;
+            sem_timedwait(&adcbufSem, &currentTime);
+
+            // Register time for the next part
+            clock_gettime(CLOCK_REALTIME, &currentTime);
+#if MSP_MIC_RAW_MODE == 0
+            if(wasPreambleDetected()) {
+                resetPreambleDetectionHistory();
+                GPIO_write(LED_GREEN_2_GPIO, 1);
+                return true;
+
+                // DOA analysis goes one state further
+//                setAdcBufConversionMode(false);
+                //                continue;
+            }
+//            else if (shortBufferMode == false) {
+//                // DOA analysis
+//
+//            }
+            else {
+                if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
+                    return false;
+                }
+                setAdcBufConversionMode(true);
+                GPIO_write(LED_GREEN_2_GPIO, 0);
+            }
+#else
+    return false;
+#endif
+    }
+}
+
 /*
  *  ======== mainThread ========
  */
@@ -83,11 +126,10 @@ void *mainThread(void *arg0)
 #if MSP_ROBOT_PID_CONTROL == 1
     robot->EnableDriveControl();
 #endif
+    // Some tests/debug things
+     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
-#if MSP_MIC_MEASUREMENT_PC_MODE!=1
-   // Some tests/debug things
-    //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
-#else
+#if MSP_MIC_MEASUREMENT_PC_MODE==1
     Display_init();
     /* Configure & open Display driver */
     Display_Params_init(&displayParams);
@@ -125,7 +167,7 @@ void *mainThread(void *arg0)
 #endif
 
     while(1) {
-#if MSP_MIC_MEASUREMENT_PC_MODE!=1
+#if MSP_ESP_ROBOT_MODE==1
         switch(robotState) {
             case IDLE:
                 /* Suspend thread and wake up after set period to circumvent semaphore issue */
@@ -134,7 +176,7 @@ void *mainThread(void *arg0)
                 sem_timedwait(&mqttWakeupSem, &ts);
                 break;
             case INTER_DRIVING:
-                robot->motorDriver->DriveForwards(speed);
+                robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 startIrTaskClock();
                 sem_wait(&lineDetectionSem);
@@ -144,8 +186,7 @@ void *mainThread(void *arg0)
                 robotState = INTER_LISTENING;
                 break;
             case INTER_LISTENING:
-                //todo: LISTEN FOR SET AMOUNT OF TIME
-                bool givePriority = false; // todo: remove, just for testing purposes
+                bool givePriority = awaitAudioByListening();
                 if(givePriority) {
                     currentTime = Clock_getTicks();
                     robotState = INTER_WAITING;
@@ -161,16 +202,15 @@ void *mainThread(void *arg0)
             case INTER_TRANSMITTING:
 #if MSP_SPEAKER_INTERRUPTS == 1
                 speakerPressPause();
-                //sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
                 clock_gettime(CLOCK_REALTIME, &ts);
                 ts.tv_sec += SPEAKER_SOUND_DURATION_SECONDS;
-                sem_timedwait(&pressPauseSem, &ts);
+                sem_timedwait(&pressPauseSem, &ts);// basically non blocking wait for wait 4 seconds
                 speakerPressPause();
 #endif
                 robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
-                robot->motorDriver->DriveForwards(speed);
+                robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 resetLineDetection();
                 startIrTaskClock();
@@ -181,59 +221,9 @@ void *mainThread(void *arg0)
                 robotState = IDLE;
                 break;
         }
-
 #else
-#if MIC_CONTINUOUS_SAMPLE == 0
-        openADCBuf();
-#endif
-
-        timespec abstime;
-        clock_gettime(CLOCK_REALTIME, &abstime);
-        abstime.tv_sec+=1;
-        sem_timedwait(&adcbufSem, &abstime);
-#if MSP_MIC_RAW_MODE == 1
-
-#else
-//        arm_min_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &minValue, &minIndex);
-//        Display_printf(display, 0, 0, "Mi.%d", minValue);
-//        arm_max_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &maxValue, &maxIndex);
-//        Display_printf(display, 0, 0, "Ma.%d", maxValue);
-
-//        Send RMS value of ADCBuf for either Valin or CTP or algorithm
-//        arm_rms_q15(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, &rms);
-//        Display_printf(display, 0, 0, "R.%d", rms);
-
-//        if (stupidDetectionBlackBox(outputBuffer_filtered, ADCBUFFERSIZE_SHORT, rms)) {
-        if(wasPreambleDetected()) {
-            setAdcBufConversionMode(false);
-            resetPreambleDetectionHistory();
-            GPIO_write(LED_GREEN_2_GPIO, 1);
-        }
-        else {
-            setAdcBufConversionMode(true);
-            GPIO_write(LED_GREEN_2_GPIO, 0);
-        }
-
-        //         Decide to send ADC buffer over the line
-        //        for (int i = 0; i < ADCBUFFERSIZE; i++) {
-        //            Display_printf(display, 0, 0, "v.%d", outputBuffer[i]);
-        //        }
-
-//                Display_printf(display, 0, 0, "S.%d", ADCBUFFERSIZE_SHORT);
-//                Display_printf(display, 0, 0, "F.%d", SAMPLE_FREQUENCY);
-
-        //        Send mic time differences
-        //        Display_printf(display, 0, 0, "M1.%ld", lastTriggerMic1L);
-        //        Display_printf(display, 0, 0, "M2.%ld", lastTriggerMic2M);
-        //        Display_printf(display, 0, 0, "M3.%ld", lastTriggerMic3R);
-        //        Send DOA values for either Valin or CTP or algorithm
-        //        Display_printf(display, 0, 0, "Dv1.%f", outputDirVector2D_valin[0]);
-        //        Display_printf(display, 0, 0, "Dv2.%f", outputDirVector2D_valin[1]);
-        //        Display_printf(display, 0, 0, "Dp1.%f", outputDirVector2D_plane_cutting[0]);
-        //        Display_printf(display, 0, 0, "Dp2.%f", outputDirVector2D_plane_cutting[1]);
-#endif
-//        Display_printf(display, 0, 0, "--Done");
-//        numBufsSent++;
+        // We want to listen to audio constinuously
+        awaitAudioByListening();
 #endif
     }
 }

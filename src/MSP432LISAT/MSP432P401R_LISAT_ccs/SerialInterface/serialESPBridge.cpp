@@ -102,7 +102,7 @@ void processCommand() {
                 speedString += serialBuffer[i];
                 i++;
             }
-            int speedValue = stoi(speedString);
+            uint16_t speedValue = stoi(speedString);
             changeMotorSpeed(speedValue);
             break;
         }
@@ -124,6 +124,6 @@ void processCommand() {
             panicStop();
             break;
         default:
-            GPIO_toggle(LED_ERROR_2);
+            //GPIO_toggle(LED_ERROR_2);
     }
 }

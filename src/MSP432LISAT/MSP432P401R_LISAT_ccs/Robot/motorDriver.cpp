@@ -122,21 +122,24 @@ void MotorDriver::DriveRight(uint16_t speed, int16_t speed2){
 #define TURN_SPEED 200
 
 void MotorDriver::SetupRotateLeft() {
+    this->isRotating = true;
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
+    this->SetMotorSpeedLimited(this->pwmRight, TURN_SPEED, &(this->dutyLeft));
 }
 
 void MotorDriver::SetupRotateRight() {
+    this->isRotating = true;
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
+    this->SetMotorSpeedLimited(this->pwmRight, TURN_SPEED, &(this->dutyLeft));
 }
 
 // Drive backward mode (SPEED_MAX: 1/2)
 void MotorDriver::DriveBackwards(uint16_t speed){
+    this->isRotating = false;
     this->speedSetpoint = speed;
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
@@ -146,6 +149,7 @@ void MotorDriver::DriveBackwards(uint16_t speed){
 
 // Drive forward mode
 void MotorDriver::DriveForwards(uint16_t speed) {
+    this->isRotating = false;
     this->speedSetpoint = speed;
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
@@ -197,6 +201,11 @@ void MotorDriver::SetMotorSpeedLimited(PWM_Handle pwmHandle, uint16_t speed, uin
     }
     else {
         this->PowerDown(); // Erroneous situation
+        GPIO_write(LED_ERROR_2, 1);
     }
+}
+
+uint16_t MotorDriver::getSpeedSetpoint() {
+    return this->speedSetpoint;
 }
 

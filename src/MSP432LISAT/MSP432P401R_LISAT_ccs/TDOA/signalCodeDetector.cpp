@@ -35,7 +35,6 @@ int16_t processSingleBuffer(q15_t* micBuffer, uint16_t bufferLength, q15_t *chir
 {
     uint32_t correlation_buffer_length = bufferLength*2-1;
     q15_t correlation_buffer[correlation_buffer_length];
-    q15_t* correlation_buffer_pointer = correlation_buffer;
 
     q15_t pulse_delays[num_chirps];
     q15_t pulse_values;

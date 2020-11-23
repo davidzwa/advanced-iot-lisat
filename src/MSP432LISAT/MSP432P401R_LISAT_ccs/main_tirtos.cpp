@@ -66,7 +66,7 @@ int main(void)
         while (1) {}
     }
 
-#if MSP_MIC_MEASUREMENT_PC_MODE==0
+#if MSP_ESP_ROBOT_MODE==1
     // -- Serial ESP Thread
     priParam.sched_priority = 2;
     if (retc != 0) {

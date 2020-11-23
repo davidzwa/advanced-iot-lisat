@@ -70,7 +70,7 @@ private:
     float robotPositionX;
     float robotPositionY;
     float robotAngleTheta;
-    float robotAngleThetaOffset;
+    float robotAngleThetaOffset = 0;
     float distanceTravelled;
 
     /* Controller state and parameters*/
