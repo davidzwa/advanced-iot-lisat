@@ -134,7 +134,7 @@ void *mainThread(void *arg0)
                 sem_timedwait(&mqttWakeupSem, &ts);
                 break;
             case INTER_DRIVING:
-                robot->motorDriver->DriveForwards(speed);
+                robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 startIrTaskClock();
                 sem_wait(&lineDetectionSem);
@@ -170,7 +170,7 @@ void *mainThread(void *arg0)
                 robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
-                robot->motorDriver->DriveForwards(500);
+                robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 resetLineDetection();
                 startIrTaskClock();

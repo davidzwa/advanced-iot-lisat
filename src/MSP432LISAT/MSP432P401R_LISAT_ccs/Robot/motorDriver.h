@@ -28,6 +28,7 @@ public:
     void SetControlAdjustment(uint16_t offset_left, uint16_t offset_right);
     void ResetControlAdjustment();
     void ControlUpdateDutyCycle();
+    uint16_t getSpeedSetpoint();
 protected:
     void AwakeDriver();
     void SleepDriver();

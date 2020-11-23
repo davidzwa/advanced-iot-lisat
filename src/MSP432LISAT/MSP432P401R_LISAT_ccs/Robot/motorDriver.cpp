@@ -197,6 +197,11 @@ void MotorDriver::SetMotorSpeedLimited(PWM_Handle pwmHandle, uint16_t speed, uin
     }
     else {
         this->PowerDown(); // Erroneous situation
+        GPIO_write(LED_ERROR_2, 1);
     }
+}
+
+uint16_t MotorDriver::getSpeedSetpoint() {
+    return this->speedSetpoint;
 }
 

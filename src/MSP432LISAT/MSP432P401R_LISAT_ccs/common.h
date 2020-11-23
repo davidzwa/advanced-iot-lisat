@@ -53,7 +53,7 @@ typedef enum {
 } MessageType;
 
 void changeMode(RobotState state);
-void changeMotorSpeed(int speed);
+void changeMotorSpeed(uint16_t speed);
 void panicStop();
 void turnLeft(float angle);
 void turnRight(float angle);
@@ -124,5 +124,7 @@ void turnRight(float angle);
 /* Robot control */
 #define CONTROL_LOOP_INITIAL_OFFSET 1000
 #define CONTROL_LOOP_PERIOD 100 // 10 Hz (currently kernel has 1000 ticks per second)
+
+#define STANDARD_FORWARD_SPEED 500
 
 #endif // COMMON__H
