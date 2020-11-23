@@ -67,14 +67,15 @@ void Robot::DisableDriveControl() {
 
 void Robot::ControlLoop(uint16_t time) {
     // As UpdateRobotPosition is based on tacho interrupts, we can expect the position to be updated
+    this->UpdateRobotPosition();
     float heading_error = robotAngleTheta;
     float err = atan2(sin(heading_error), cos(heading_error));
     this->E_i+=err;
     float U_i = this->K_i * E_i;
     float U_p = this->K_p * err;
     float w = U_p + U_i;
-
-
+    this->motorDriver->SetControlAdjustment(w, -w);
+    this->motorDriver->ControlUpdateDutyCycle();
     GPIO_toggle(LED_GREEN_2_GPIO);
 }
 
