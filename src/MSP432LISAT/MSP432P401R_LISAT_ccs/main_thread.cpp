@@ -70,11 +70,11 @@ void generateSignatureSignals() {
 
 bool awaitAudioByListening() {
     timespec startWaitTime;
-    clock_gettime(CLOCK_REALTIME, &startWaitTime);
+    clock_gettime(CLOCK_MONOTONIC, &startWaitTime);
     convertADCBuf();
     while(1) {
         timespec currentTime;
-        clock_gettime(CLOCK_REALTIME, &currentTime);
+        clock_gettime(CLOCK_MONOTONIC, &currentTime);
 #if MIC_CONTINUOUS_SAMPLE == 0
         convertADCBuf();
 #endif
@@ -83,7 +83,7 @@ bool awaitAudioByListening() {
             sem_timedwait(&adcbufSem, &currentTime);
 
             // Register time for the next part
-            clock_gettime(CLOCK_REALTIME, &currentTime);
+            clock_gettime(CLOCK_MONOTONIC, &currentTime);
 #if MSP_MIC_RAW_MODE == 0
             if(wasPreambleDetected()) {
                 resetPreambleDetectionHistory();
