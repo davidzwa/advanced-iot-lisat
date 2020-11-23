@@ -102,7 +102,7 @@ void processCommand() {
                 speedString += serialBuffer[i];
                 i++;
             }
-            int speedValue = stoi(speedString);
+            uint16_t speedValue = stoi(speedString);
             changeMotorSpeed(speedValue);
             break;
         }

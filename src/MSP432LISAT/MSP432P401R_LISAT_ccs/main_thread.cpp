@@ -31,7 +31,7 @@ const int num_calibs = 10;
 int32_t targetSpeed_MMPS[] = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120};
 uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
-int speed = 500;
+uint16_t speed = 0;
 timespec ts;
 sem_t pressPauseSem;
 
@@ -44,7 +44,7 @@ void changeMode(RobotState state) { // change between intersection/find each oth
     }
 }
 
-void changeMotorSpeed(int newSpeed) {
+void changeMotorSpeed(uint16_t newSpeed) {
     speed = newSpeed;
     robot->motorDriver->DriveForwards(speed);
 }
@@ -164,13 +164,13 @@ void *mainThread(void *arg0)
                 //sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
                 clock_gettime(CLOCK_REALTIME, &ts);
                 ts.tv_sec += SPEAKER_SOUND_DURATION_SECONDS;
-                sem_timedwait(&pressPauseSem, &ts);
+                sem_timedwait(&pressPauseSem, &ts);// basically non blocking wait for wait 4 seconds
                 speakerPressPause();
 #endif
                 robotState = INTER_CROSSING;
                 break;
             case INTER_CROSSING:
-                robot->motorDriver->DriveForwards(speed);
+                robot->motorDriver->DriveForwards(500);
 #if MSP_IR_SENSORS == 1
                 resetLineDetection();
                 startIrTaskClock();
