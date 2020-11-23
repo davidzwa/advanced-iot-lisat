@@ -91,10 +91,9 @@ bool awaitAudioByListening() {
 #if MSP_ESP_ROBOT_MODE == 1
                 return true;
 #endif
-
-                // DOA analysis goes one state further
+// DOA analysis goes one state further
 //                setAdcBufConversionMode(false);
-                //                continue;
+//                continue;
             }
 //            else if (shortBufferMode == false) {
 //                // DOA analysis
