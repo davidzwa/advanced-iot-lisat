@@ -30,6 +30,7 @@ extern int16_t rms;
 
 void initADCBuf();
 void openADCBuf();
+void closeADCBuf();
 void setAdcBufConversionMode(bool shortConversion);
 
 #endif /* TDOA_EXTERNALINTERRUPT_H_ */

@@ -98,6 +98,9 @@ void openADCBuf() {
 // Not used as we have a one-shot adcbuf
 void closeADCBuf() {
     // Start ADCBuf here for measurements
+#if MIC_CONTINUOUS_SAMPLE
+    ADCBuf_convertCancel(adcBuf);
+#endif
     ADCBuf_close(adcBuf);
 }
 

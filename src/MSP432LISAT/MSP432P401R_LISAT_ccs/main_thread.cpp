@@ -71,7 +71,7 @@ void generateSignatureSignals() {
 bool awaitAudioByListening() {
     timespec startWaitTime;
     clock_gettime(CLOCK_REALTIME, &startWaitTime);
-
+    openADCBuf();
     while(1) {
         timespec currentTime;
         clock_gettime(CLOCK_REALTIME, &currentTime);
@@ -150,6 +150,7 @@ void *mainThread(void *arg0)
     initADCBuf();
     generateSignatureSignals();
     openADCBuf();
+    closeADCBuf();
 #endif
 
 #if BUMPER_INTERRUPTS == 1
