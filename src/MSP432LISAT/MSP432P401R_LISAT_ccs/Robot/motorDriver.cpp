@@ -125,14 +125,14 @@ void MotorDriver::SetupRotateLeft() {
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, FORWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, BACKWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
+    this->SetMotorSpeedLimited(this->pwmRight, TURN_SPEED, &(this->dutyLeft));
 }
 
 void MotorDriver::SetupRotateRight() {
     this->SetMotorDirection(MOTOR_LEFT_DIRECTION, BACKWARDS);
     this->SetMotorDirection(MOTOR_RIGHT_DIRECTION, FORWARDS);
     this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
-    this->SetMotorSpeedLimited(this->pwmLeft, TURN_SPEED, &(this->dutyLeft));
+    this->SetMotorSpeedLimited(this->pwmRight, TURN_SPEED, &(this->dutyLeft));
 }
 
 // Drive backward mode (SPEED_MAX: 1/2)
