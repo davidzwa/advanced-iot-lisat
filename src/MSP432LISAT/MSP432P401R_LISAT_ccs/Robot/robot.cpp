@@ -179,7 +179,7 @@ void Robot::_updateRobotAngleTheta(float deltaDistanceLeft, float deltaDistanceR
     float tempTheta = this->robotAngleTheta;
     float deltaTheta = (float)(deltaDistanceRight - deltaDistanceLeft)/WHEEL_BASE;
     tempTheta += deltaTheta;
-    this->robotAngleTheta = atan2(sin(tempTheta), cos(tempTheta)) + this->robotAngleThetaOffset;
+    this->robotAngleTheta = atan2(sin(tempTheta), cos(tempTheta));
 }
 
 void Robot::adjustRobotAngleThetaOffset(float angleOffset) {

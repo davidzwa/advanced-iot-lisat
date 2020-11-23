@@ -40,9 +40,9 @@ private:
     /* Period and duty in microseconds */
     uint16_t pwmPeriod = PERIOD_US;
     uint16_t dutyLeft = 0;
-    uint16_t dutyLeftOffset = 0;
+    int16_t dutyLeftOffset = 0;
     uint16_t dutyRight = 0;
-    uint16_t dutyRightOffset = 0;
+    int16_t dutyRightOffset = 0;
 
     uint16_t speedSetpoint = 0;
 
