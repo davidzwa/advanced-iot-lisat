@@ -57,42 +57,43 @@ void changeMotorSpeed(int speed);
 void panicStop();
 
 #define NUM_ADC_CHANNELS        (3)
-#define CARRIER_FREQUENCY       (3000) // Choose this to get integer number for PREAMBLE_LENGTH, which is validated. So be careful!
-#define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
-#define TARGET_FREQUENCY        (39000)
+#define CARRIER_FREQUENCY       (3000)
+#define TARGET_FREQUENCY        (33000)
 #define SAMPLE_FREQUENCY        (NUM_ADC_CHANNELS*TARGET_FREQUENCY)
 #define PREAMBLE_SINE_PERIOD    (TARGET_FREQUENCY/CARRIER_FREQUENCY) // 22 (@44 kHz)
 #if (PREAMBLE_SINE_PERIOD*CARRIER_FREQUENCY) != TARGET_FREQUENCY
 #error Preamble length should be an integer number.
 #endif
-#define ADCBUFFERSIZE_SHORT (PREAMBLE_SINE_PERIOD * 3) // 22*3 = 66 samples
-
-#define PREAMBLE_REF_LENGTH (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
-#define MATCH_THRESHOLD (3000) // Each signal correlator threshold 'round'
-#define HISTORY_LENGTH (20)
-#define DETECTION_THRESHOLD (15) // Enough matching 'rounds'
+#define ADCBUFFERSIZE_SHORT     (PREAMBLE_SINE_PERIOD * 3) // 22*3 = 66 samples
 
 // Non-preamble signature signal generator properties
-#define NUM_CHIRPS (2)
-#define ADCBUFFERSIZE 1700 // MAX: 3000 (ONE-SHOT) 1700 (CONTINUOUS)     ((NUM_CHIRPS-1)*CHIRP_SILENCE + )
-const double chirpInterval = 17.0;       // ms
-const double chirpFrequencyStart = 1.0; // kHz
-const double chirpFrequencyEnd = 2.0;  // kHz
-#define CHIRP_SAMPLE_COUNT (88)         // Count
+// MAX: 3000 (ONE-SHOT) 1700 (CONTINUOUS)
+#define ADCBUFFERSIZE           1600
+#define CARRIER_SHIFT           (5) // Avoid (partial corr.) dot product overflow, bit-shift by this amount
+#define CHIRP_SHIFT             (4)
+#define NUM_CHIRPS              (2)
+#define CHIRP_LENGTH            (0.017) // ms
+#define CHIRP_FREQ_START_KHZ    (500)  // kHz
+#define CHIRP_FREQ_END_KHZ      (11000)  // kHz
+#define CHIRP_SAMPLE_COUNT      (uint32_t)(CHIRP_LENGTH*TARGET_FREQUENCY)
+#define PREAMBLE_REF_LENGTH     (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
+#define MATCH_THRESHOLD         (3000) // Each signal correlator threshold 'round'
+#define HISTORY_LENGTH          (20) // Total number of 'rounds'
+#define DETECTION_THRESHOLD     (15) // Enough matching 'rounds'
 
-// Short buffer EMA BPF filter
-#define EMA_A_LOW (0.5f)
-#define EMA_A_HIGH (0.9f)
+// EMA BPF filter
+#define EMA_A_LOW               (0.5f)
+#define EMA_A_HIGH              (0.9f)
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
-#define MSP_MIC_MEASUREMENT_PC_MODE (0)
+#define MSP_MIC_MEASUREMENT_PC_MODE (1)
 #define MSP_MIC_RAW_MODE (0) // RAW mode disables filters, detectors etc
-#define MIC_CONTINUOUS_SAMPLE (0) // If not the main_thread will have to kick it when it can to continue.
+#define MIC_CONTINUOUS_SAMPLE (1) // If not the main_thread will have to kick it when it can to continue.
 
 // Switch flag to indicate whether bumper interrupts are enabled
 #define BUMPER_INTERRUPTS (1)
 // Switch flag to indicate whether MSP handles speakers commands
-#define MSP_SPEAKER_INTERRUPTS (1)
+#define MSP_SPEAKER_INTERRUPTS (0)
 // Switch flag to indicate whether IR Sensors with high speed timer interrupts are active
 #define MSP_IR_SENSORS (1)
 // Flag indicating a task which will counter-act any driving offsets
