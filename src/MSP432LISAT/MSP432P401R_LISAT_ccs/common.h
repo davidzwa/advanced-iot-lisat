@@ -88,7 +88,7 @@ void turnRight(float angle);
 #define EMA_A_HIGH              (0.9f)
 
 // Switch flag to indicate whether the MSP ignores the ESP's signals, and just prints the debugging statements to the PC
-#define MSP_ESP_ROBOT_MODE          (1)
+#define MSP_ESP_ROBOT_MODE          (0)
 #define MSP_MIC_MEASUREMENT_PC_MODE (1)
 #define MSP_MIC_RAW_MODE            (0) // RAW mode disables filters, detectors etc
 #define MIC_CONTINUOUS_SAMPLE       (1) // If not the main_thread will have to kick it when it can to continue.

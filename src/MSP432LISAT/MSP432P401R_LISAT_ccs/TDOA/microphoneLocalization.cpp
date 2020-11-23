@@ -78,12 +78,12 @@ void setAdcBufConversionMode(bool shortConversion) {
     conversionStruct[2].samplesRequestedCount = bufferLength;
 #endif
     if (shortConversion != shortBufferMode) {
-        openADCBuf();
+        convertADCBuf();
     }
     shortBufferMode = shortConversion;
 }
 
-void openADCBuf() {
+void convertADCBuf() {
     ADCBuf_convert(adcBuf, conversionStruct, NUM_ADC_CHANNELS);
     if (!adcBuf){
         /* AdcBuf did not open correctly. */

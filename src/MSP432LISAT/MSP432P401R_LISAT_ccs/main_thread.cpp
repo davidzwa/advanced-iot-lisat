@@ -71,12 +71,12 @@ void generateSignatureSignals() {
 bool awaitAudioByListening() {
     timespec startWaitTime;
     clock_gettime(CLOCK_REALTIME, &startWaitTime);
-    openADCBuf();
+    convertADCBuf();
     while(1) {
         timespec currentTime;
         clock_gettime(CLOCK_REALTIME, &currentTime);
 #if MIC_CONTINUOUS_SAMPLE == 0
-            openADCBuf();
+        convertADCBuf();
 #endif
             // This should not wait too long (less than 50ms), but just to be sure
             currentTime.tv_sec+=1;
@@ -113,6 +113,7 @@ bool awaitAudioByListening() {
     return false;
 #endif
     }
+    closeADCBuf();
 }
 
 /*
@@ -130,8 +131,8 @@ void *mainThread(void *arg0)
 #if MSP_ROBOT_PID_CONTROL == 1
     robot->EnableDriveControl();
 #endif
-    // Some tests/debug things
-     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
+// Some tests/debug things
+//    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
 #if MSP_MIC_MEASUREMENT_PC_MODE==1
     Display_init();
@@ -153,8 +154,8 @@ void *mainThread(void *arg0)
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
     generateSignatureSignals();
-    openADCBuf();
-    closeADCBuf();
+//    openADCBuf();
+//    closeADCBuf();
 #endif
 
 #if BUMPER_INTERRUPTS == 1
