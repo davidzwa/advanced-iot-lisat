@@ -136,9 +136,20 @@ uint32_t Robot::_reachMMPS(int32_t speed_mmps, int maxRounds, int maxTicksError)
     return initialDutyCycleLeft;
 }
 
+void Robot::TurnLeft(float angle) {
+    this->robotAngleThetaOffset += angle;
+    this->motorDriver->SetupRotateLeft();
+}
+
+void Robot::TurnRight(float angle) {
+    this->robotAngleThetaOffset -= angle;
+    this->motorDriver->SetupRotateRight();
+}
+
 void Robot::Stop() {
     this->motorDriver->DriveForwards(0);
 }
+
 
 void Robot::UpdateRobotPosition() {
     // Fetch ISR ticks and reset the corresponding counters

@@ -106,6 +106,20 @@ void processCommand() {
             changeMotorSpeed(speedValue);
             break;
         }
+        case 'r': {
+            std::string rotateString;
+            rotateString += serialBuffer[5];
+            int rotateDirection = stoi(rotateString);
+            if (rotateDirection == 0) {
+                turnLeft(90);
+            }
+            else if (rotateDirection == 1) {
+                turnRight(90);
+            } else {
+                GPIO_toggle(LED_ERROR_2);
+            }
+            break;
+        }
         case 'a': // abort robots
             panicStop();
             break;

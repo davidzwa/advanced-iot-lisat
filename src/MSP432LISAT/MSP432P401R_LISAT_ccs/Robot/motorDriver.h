@@ -21,6 +21,8 @@ public:
     void DriveRight(uint16_t,int16_t curve);
     void DriveForwards(uint16_t);
     void DriveBackwards(uint16_t);
+    void SetupRotateLeft();
+    void SetupRotateRight();
     void PowerUp();
     void PowerDown();
     void SetControlAdjustment(uint16_t offset_left, uint16_t offset_right);

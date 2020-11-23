@@ -54,6 +54,14 @@ void panicStop() { // panic break (bumpers)
     robotState = IDLE;
 }
 
+void turnLeft(float angle) {
+    robot->TurnLeft(angle);
+}
+
+void turnRight(float angle) {
+    robot->TurnRight(angle);
+}
+
 void generateSignatureSignals() {
     generateSignatureChirp(tjirp, CHIRP_SAMPLE_COUNT);
     generateSignatureSine(preprocessed_reference_preamble, PREAMBLE_SINE_PERIOD, PREAMBLE_REF_LENGTH);

@@ -51,6 +51,8 @@ public:
     void UpdateRobotPosition();
     void adjustRobotAngleThetaOffset(float angleOffset);
     // Calibration
+    void TurnLeft(float angle);
+    void TurnRight(float angle);
     void RunTachoCalibrations(int32_t* requestedRPMs, uint32_t* outCalibratedDutyCycles, int calibrationCount);
 
     // Public access for ease of use

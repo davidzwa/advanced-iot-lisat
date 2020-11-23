@@ -55,6 +55,8 @@ typedef enum {
 void changeMode(RobotState state);
 void changeMotorSpeed(int speed);
 void panicStop();
+void turnLeft(float angle);
+void turnRight(float angle);
 
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000)
