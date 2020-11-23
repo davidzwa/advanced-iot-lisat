@@ -33,17 +33,30 @@ valin_tdoa_input processThreeLongBuffer(
 
 int16_t processSingleBuffer(q15_t* micBuffer, int16_t bufferLength, q15_t *chirp, uint32_t chirp_length, uint32_t num_chirps)
 {
-    uint32_t correlation_buffer_length = 2*bufferLength -1;
+    uint32_t correlation_buffer_length = bufferLength * 2 -1; //bufferLength - chirp_length;
     q15_t correlation_buffer[correlation_buffer_length];
     q15_t* correlation_buffer_pointer = correlation_buffer;
-    q15_t pulse_delays[num_chirps];
+//    q15_t correlation_multiplication_temp[bufferLength];
+//    q15_t* correlation_mult_pointer = correlation_multiplication_temp;
 
+    q15_t pulse_delays[num_chirps];
     q15_t pulse_values;
     uint32_t pulse_delay;
     uint16_t zeroing_range = 50;
 
     // correlate chirp with the buffer
     arm_correlate_q15(chirp, chirp_length, micBuffer, bufferLength, correlation_buffer);
+//    for (uint16_t i = 0; i < correlation_buffer_length; i++)
+//    {
+//        q15_t padded_chirp[bufferLength];
+//        memcpy(padded_chirp + i, chirp, chirp_length);
+//        correlation_buffer[i]=0;
+//        arm_mult_q15(micBuffer, padded_chirp, correlation_multiplication_temp, bufferLength);
+//        for(uint16_t j = 0; j < bufferLength; j++)
+//        {
+//            arm_add_q15(correlation_buffer + i , correlation_multiplication_temp + j, correlation_buffer + i, 1);
+//        }
+//    }
 
     for(int16_t i = 0; i < num_chirps; i++)
     {
