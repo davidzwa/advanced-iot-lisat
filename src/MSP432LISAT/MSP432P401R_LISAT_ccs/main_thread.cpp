@@ -88,7 +88,9 @@ bool awaitAudioByListening() {
             if(wasPreambleDetected()) {
                 resetPreambleDetectionHistory();
                 GPIO_write(LED_GREEN_2_GPIO, 1);
+#if MSP_ESP_ROBOT_MODE == 1
                 return true;
+#endif
 
                 // DOA analysis goes one state further
 //                setAdcBufConversionMode(false);
@@ -99,9 +101,11 @@ bool awaitAudioByListening() {
 //
 //            }
             else {
+#if MSP_ESP_ROBOT_MODE == 1
                 if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
                     return false;
                 }
+#endif
                 setAdcBufConversionMode(true);
                 GPIO_write(LED_GREEN_2_GPIO, 0);
             }
