@@ -25,6 +25,7 @@ public:
     void PowerDown();
     void SetControlAdjustment(uint16_t offset_left, uint16_t offset_right);
     void ResetControlAdjustment();
+    void ControlUpdateDutyCycle();
 protected:
     void AwakeDriver();
     void SleepDriver();
@@ -39,6 +40,8 @@ private:
     uint16_t dutyLeftOffset = 0;
     uint16_t dutyRight = 0;
     uint16_t dutyRightOffset = 0;
+
+    uint16_t speedSetpoint = 0;
 
     /* Sleep time in microseconds */
     uint32_t   time = 50000;
