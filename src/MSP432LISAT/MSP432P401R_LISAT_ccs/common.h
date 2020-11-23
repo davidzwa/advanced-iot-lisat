@@ -58,7 +58,7 @@ void panicStop();
 
 #define NUM_ADC_CHANNELS        (3)
 #define CARRIER_FREQUENCY       (3000)
-#define TARGET_FREQUENCY        (27000)
+#define TARGET_FREQUENCY        (33000)
 #define SAMPLE_FREQUENCY        (NUM_ADC_CHANNELS*TARGET_FREQUENCY)
 #define PREAMBLE_SINE_PERIOD    (TARGET_FREQUENCY/CARRIER_FREQUENCY) // 22 (@44 kHz)
 #if (PREAMBLE_SINE_PERIOD*CARRIER_FREQUENCY) != TARGET_FREQUENCY
@@ -73,8 +73,8 @@ void panicStop();
 #define CHIRP_SHIFT             (4)
 #define NUM_CHIRPS              (2)
 #define CHIRP_LENGTH            (0.017) // ms
-#define CHIRP_FREQ_START_KHZ    (1000)  // kHz
-#define CHIRP_FREQ_END_KHZ      (2000)  // kHz
+#define CHIRP_FREQ_START_KHZ    (500)  // kHz
+#define CHIRP_FREQ_END_KHZ      (11000)  // kHz
 #define CHIRP_SAMPLE_COUNT      (uint32_t)(CHIRP_LENGTH*TARGET_FREQUENCY)
 #define PREAMBLE_REF_LENGTH     (ADCBUFFERSIZE_SHORT + PREAMBLE_SINE_PERIOD/2) // Contains multiple sines 'VDHorst optimization'
 #define MATCH_THRESHOLD         (3000) // Each signal correlator threshold 'round'

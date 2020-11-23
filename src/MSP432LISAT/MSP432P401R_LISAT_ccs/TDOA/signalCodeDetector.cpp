@@ -48,7 +48,7 @@ int16_t processSingleBuffer(q15_t* micBuffer, uint16_t bufferLength, q15_t *chir
     for(int16_t i = 0; i < num_chirps; i++)
     {
         // find highest peak in correlation buffer
-        arm_max_q15(correlation_buffer, correlation_buffer_length, &pulse_values, &pulse_delay);
+        arm_max_q15(correlation_buffer, bufferLength+150, &pulse_values, &pulse_delay);
 
         // store time value of highest peak
         pulse_delays[i] = pulse_delay;
