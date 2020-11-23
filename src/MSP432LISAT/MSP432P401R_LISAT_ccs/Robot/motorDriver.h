@@ -45,6 +45,7 @@ private:
     int16_t dutyRightOffset = 0;
 
     uint16_t speedSetpoint = 0;
+    bool isRotating = false;
 
     /* Sleep time in microseconds */
     uint32_t   time = 50000;

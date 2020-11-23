@@ -124,6 +124,6 @@ void processCommand() {
             panicStop();
             break;
         default:
-            GPIO_toggle(LED_ERROR_2);
+            //GPIO_toggle(LED_ERROR_2);
     }
 }

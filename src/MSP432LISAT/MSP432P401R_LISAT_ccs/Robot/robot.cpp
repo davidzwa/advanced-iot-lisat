@@ -69,8 +69,11 @@ void Robot::ControlLoop(uint16_t time) {
     if (this->motorDriver->getSpeedSetpoint() <= 0 ) { // hack to ignore increasing tachometers while robot is stationary
         return;
     }
-    // As UpdateRobotPosition is based on tacho interrupts, we can expect the position to be updated
     this->UpdateRobotPosition();
+    if (isRotating) {
+
+    }
+    // As UpdateRobotPosition is based on tacho interrupts, we can expect the position to be updated
     float heading_error = robotAngleTheta;
     float err = atan2(sin(heading_error), cos(heading_error));
     this->E_i+=err;
