@@ -106,6 +106,7 @@ void turnRight(float angle);
 #define SPEAKER_CLOCK_INITIAL_OFFSET    4000 // needs to be larger than 0 for clock to start
 #define SPEAKER_CLOCK_PERIOD_SOUND      4000 // duration before rewind button is pressed
 #define SPEAKER_CLOCK_PERIOD_BUTTON     200
+#define SPEAKER_SOUND_DURATION_SECONDS  4    // used for timedwait in main, in seconds
 
 /* IR sensors */
 #define IRSENSORS_CLOCK_INITIAL_OFFSET  100     // needs to be larger than 0 for clock to start

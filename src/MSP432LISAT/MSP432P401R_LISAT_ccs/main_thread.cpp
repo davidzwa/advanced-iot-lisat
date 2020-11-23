@@ -33,6 +33,7 @@ uint32_t duty_LUT[num_calibs];
 Robot* robot = new Robot();
 int speed = 500;
 timespec ts;
+sem_t pressPauseSem;
 
 RobotState robotState = IDLE;
 uint32_t currentTime;
@@ -74,6 +75,8 @@ void *mainThread(void *arg0)
 {
     Display_Params displayParams;
     int32_t status;
+
+    sem_init(&pressPauseSem, 0, 0);
 
     robot->StartUp();
     robot->motorDriver->DriveForwards(0);
@@ -157,8 +160,12 @@ void *mainThread(void *arg0)
                 break;
             case INTER_TRANSMITTING:
 #if MSP_SPEAKER_INTERRUPTS == 1
-                speakerPlaySound();
-                sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
+                speakerPressPause();
+                //sem_wait(&speakerSoundFinishedSem); // wait for sound to finish playing
+                clock_gettime(CLOCK_REALTIME, &ts);
+                ts.tv_sec += SPEAKER_SOUND_DURATION_SECONDS;
+                sem_timedwait(&pressPauseSem, &ts);
+                speakerPressPause();
 #endif
                 robotState = INTER_CROSSING;
                 break;
