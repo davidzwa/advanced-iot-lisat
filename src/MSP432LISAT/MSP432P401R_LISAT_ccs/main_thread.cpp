@@ -72,7 +72,6 @@ bool awaitAudioByListening() {
     timespec startWaitTime;
     clock_gettime(CLOCK_MONOTONIC, &startWaitTime);
     // Open the driver again, set the short mode and call conversion kickoff
-    openADCBuf();
     setAdcBufConversionMode(true);
     convertADCBuf();
 
@@ -107,7 +106,7 @@ bool awaitAudioByListening() {
         }
 #if MSP_ESP_ROBOT_MODE == 1
         if (returnSet) {
-            closeADCBuf();
+//            closeADCBuf();
             return returnFlag;
         }
 #endif
@@ -151,6 +150,7 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
+    openADCBuf();
     setAdcBufConversionMode(true);
     generateSignatureSignals();
 #endif
@@ -192,7 +192,7 @@ void *mainThread(void *arg0)
                 bool givePriority = awaitAudioByListening();
                 if(givePriority) {
                     currentTime = Clock_getTicks();
-                    robotState = INTER_WAITING;
+//                    robotState = INTER_WAITING;
                 } else {
                     robotState = INTER_TRANSMITTING;
                 }
