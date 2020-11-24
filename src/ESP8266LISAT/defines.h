@@ -12,9 +12,11 @@
 // #define DEBUG
 // #define MEASURE_ADCTIMER_JITTER
 
-#define SERIAL_SWAP_MSP432 // Swaps serial and disables serial debug
+//#define DAVID_HOME //or tomas's home WiFi settings
+//#define SERIAL_SWAP_MSP432 // Swaps serial and disables serial debug
 #define MQTT_CLIENT
 #define MQTT_DISCONNECT_RETRY 5000
+#define DEBUG_TO_MQTT
 // Arduino has 1000000 or even more unstable 2000000
 const int serial_baud_rate = 115200; // MSP432 set to this, VS Code has max 250000 -_-
 

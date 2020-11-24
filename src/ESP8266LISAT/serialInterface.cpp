@@ -60,7 +60,9 @@ void processIncomingSerial()
     if (Serial.available() > 0)
     {
         incoming = Serial.readString();
-        // Serial.println(incoming); // MSP doesnt like garbage back at him
+#ifndef SERIAL_SWAP_MSP432        
+        Serial.println(incoming); // MSP doesnt like garbage back at him
+#endif        
         incoming = "";
     }
 }

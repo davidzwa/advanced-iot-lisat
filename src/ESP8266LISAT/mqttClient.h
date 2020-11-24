@@ -5,8 +5,10 @@
 #include <PubSubClient.h>
 
 #define MSG_BUFFER_SIZE (50)
+#define DEBUG_BUFFER_SIZE (50)
 
 extern const char *mqtt_server;
+extern char mqqt_debug[DEBUG_BUFFER_SIZE];
 extern char mqqt_msg[MSG_BUFFER_SIZE];
 extern int value;
 extern unsigned long lastMsg;

@@ -16,11 +16,15 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 #endif
 
+String incomingDebug = "";    
+
 void user_init(void)
 {
     // LED as visual tool
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
+#ifdef DEBUG_TO_MQTT        
+#endif    
 
 #ifdef MIC3_MEASURE_SETUP
     // ADC timer
@@ -53,7 +57,11 @@ void user_init(void)
 #ifdef MQTT_CLIENT
     // Setup WiFi & MQTT pubsub client
     setup_wifi();
+#ifdef DAVID_HOME    
+    client.setServer(mqtt_server, 1883);
+#else     
     client.setServer(mqtt_server, 18883);
+#endif    
     client.setCallback(callback);
 #else
     WiFi.disconnect();
@@ -100,6 +108,20 @@ void loop()
     }
 #endif
 
+#ifdef DEBUG_TO_MQTT
+    if (Serial.available() > 0)
+    {
+        incomingDebug = Serial.readString();
+#ifndef SERIAL_SWAP_MSP432        
+        Serial.println(incomingDebug); // MSP doesnt like garbage back at him
+        incomingDebug.toCharArray(mqqt_debug, DEBUG_BUFFER_SIZE);
+#endif        
+        //snprintf(mqqt_debug, DEBUG_BUFFER_SIZE, "DEBUG: %s", incoming);
+        client.publish("debugTopic", mqqt_debug);
+        incomingDebug = "";
+    }
+#else
     processIncomingSerial();
+#endif    
     yield(); // or delay(0);
 }

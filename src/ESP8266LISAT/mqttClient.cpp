@@ -4,11 +4,19 @@
 // WiFi/AP config ESP
 #include <ESP8266WiFi.h> // Include the Wi-Fi library
 
+#ifdef DAVID_HOME
 const char *ssid = "Brus";
 const char *password = "Tackle1963";
 const char *mqtt_server = "192.168.1.10";
+#else
+const char *ssid = "Internet in de trein";
+const char *password = "fietsband135";
+const char *mqtt_server = "80.112.155.68";
+#endif
 const char *mqtt_user = "david";
 const char *mqtt_password = "Davido12";
+
+char mqqt_debug[DEBUG_BUFFER_SIZE];
 char mqqt_msg[MSG_BUFFER_SIZE];
 int value = 0;
 unsigned long lastMsg = 0;
