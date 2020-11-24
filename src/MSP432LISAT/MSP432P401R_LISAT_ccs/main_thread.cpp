@@ -90,7 +90,6 @@ bool awaitAudioByListening() {
         // Register time for the next part
         if(wasPreambleDetected()) {
             resetPreambleDetectionHistory();
-            GPIO_toggle(LED_GREEN_2_GPIO);
             returnFlag = true;
             returnSet = true;
         }
