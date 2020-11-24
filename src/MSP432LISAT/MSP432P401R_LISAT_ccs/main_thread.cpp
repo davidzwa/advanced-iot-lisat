@@ -181,8 +181,9 @@ void *mainThread(void *arg0)
                 robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 startIrTaskClock();
+                listenToLineDetection = true;
                 sem_wait(&lineDetectionSem);
-                stopIrTaskClock();
+                //stopIrTaskClock();
 #endif
                 robot->Stop();
                 robotState = INTER_LISTENING;
@@ -191,7 +192,7 @@ void *mainThread(void *arg0)
                 bool givePriority = awaitAudioByListening();
                 if(givePriority) {
                     currentTime = Clock_getTicks();
-//                    robotState = INTER_WAITING;
+                    robotState = INTER_WAITING;
                 } else {
                     robotState = INTER_TRANSMITTING;
                 }
@@ -214,8 +215,13 @@ void *mainThread(void *arg0)
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
-                resetLineDetection();
-                startIrTaskClock();
+                clock_gettime(CLOCK_REALTIME, &ts);
+                /* LINE DETECTION DEBOUNCE, USE PRESS PAUSE SEM SINCE IT WON'T BE TRIGGERED ANYWAY AND NO MEMORY LEFT FOR ANOTHER SEM */
+                ts.tv_sec += 2;
+                sem_timedwait(&pressPauseSem, &ts);
+                listenToLineDetection = true;
+                //resetLineDetection();
+                //startIrTaskClock();
                 sem_wait(&lineDetectionSem);
                 stopIrTaskClock();
 #endif
