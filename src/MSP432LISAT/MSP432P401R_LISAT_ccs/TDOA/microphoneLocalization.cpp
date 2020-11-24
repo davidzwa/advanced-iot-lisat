@@ -38,10 +38,20 @@ void initADCBuf() {
 #endif
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.callbackFxn = adcBufCompletionCallback;
-    adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
+}
 
+void openADCBuf() {
+    adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
+    if (!adcBuf){
+        /* AdcBuf did not open correctly. */
+        GPIO_write(LED_ERROR_2, 1);
+        while(1);
+    }
+    else {
+        startAdcSampling = true;
+    }
     /* Configure the conversion struct for 1-3 channels on same sequencer */
-    setAdcBufConversionMode(true);
+//    setAdcBufConversionMode(true);
 }
 
 void setAdcBufConversionMode(bool shortConversion) {
@@ -77,13 +87,13 @@ void setAdcBufConversionMode(bool shortConversion) {
 #endif
     conversionStruct[2].samplesRequestedCount = bufferLength;
 #endif
-    if (shortConversion != shortBufferMode) {
-        openADCBuf();
-    }
+//    if (shortConversion != shortBufferMode) {
+//        convertADCBuf();
+//    }
     shortBufferMode = shortConversion;
 }
 
-void openADCBuf() {
+void convertADCBuf() {
     ADCBuf_convert(adcBuf, conversionStruct, NUM_ADC_CHANNELS);
     if (!adcBuf){
         /* AdcBuf did not open correctly. */
@@ -98,6 +108,9 @@ void openADCBuf() {
 // Not used as we have a one-shot adcbuf
 void closeADCBuf() {
     // Start ADCBuf here for measurements
+#if MIC_CONTINUOUS_SAMPLE
+    ADCBuf_convertCancel(adcBuf);
+#endif
     ADCBuf_close(adcBuf);
 }
 
@@ -113,6 +126,12 @@ void adcBufCompletionCallback(ADCBuf_Handle handle, ADCBuf_Conversion *conversio
     if (shortBufferMode) {
         // Track history - short buffer only
         bool result = signalPreambleDetector(outputBuffer_filtered, &detection_history_mics[completedChannel]);
+        if (result) {
+            GPIO_write(LED_GREEN_2_GPIO, 1);
+        }
+        else {
+            GPIO_write(LED_GREEN_2_GPIO, 0);
+        }
     }
     completedChannelBuffers[completedChannel] = (q15_t*) completedADCBuffer;
 #endif

@@ -70,43 +70,44 @@ void generateSignatureSignals() {
 
 bool awaitAudioByListening() {
     timespec startWaitTime;
-    clock_gettime(CLOCK_REALTIME, &startWaitTime);
+    clock_gettime(CLOCK_MONOTONIC, &startWaitTime);
+    // Open the driver again, set the short mode and call conversion kickoff
+    setAdcBufConversionMode(true);
+    convertADCBuf();
 
+    bool returnSet = false;
+    bool returnFlag = false;
     while(1) {
         timespec currentTime;
-        clock_gettime(CLOCK_REALTIME, &currentTime);
+        clock_gettime(CLOCK_MONOTONIC, &currentTime);
 #if MIC_CONTINUOUS_SAMPLE == 0
-            openADCBuf();
+        convertADCBuf();
 #endif
-            // This should not wait too long (less than 50ms), but just to be sure
-            currentTime.tv_sec+=1;
-            sem_timedwait(&adcbufSem, &currentTime);
+        // This should not wait too long (less than 50ms), but just to be sure
+        currentTime.tv_sec+=1;
+        sem_timedwait(&adcbufSem, &currentTime);
 
-            // Register time for the next part
-            clock_gettime(CLOCK_REALTIME, &currentTime);
-#if MSP_MIC_RAW_MODE == 0
-            if(wasPreambleDetected()) {
-                resetPreambleDetectionHistory();
-                GPIO_write(LED_GREEN_2_GPIO, 1);
-                return true;
-
-                // DOA analysis goes one state further
-//                setAdcBufConversionMode(false);
-                //                continue;
+        // Register time for the next part
+        if(wasPreambleDetected()) {
+            resetPreambleDetectionHistory();
+            returnFlag = true;
+            returnSet = true;
+        }
+        else {
+#if MSP_ESP_ROBOT_MODE == 1
+            clock_gettime(CLOCK_MONOTONIC, &currentTime);
+            if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
+                returnFlag = false;
+                returnSet = true;
             }
-//            else if (shortBufferMode == false) {
-//                // DOA analysis
-//
-//            }
-            else {
-                if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
-                    return false;
-                }
-                setAdcBufConversionMode(true);
-                GPIO_write(LED_GREEN_2_GPIO, 0);
-            }
-#else
-    return false;
+#endif
+//            setAdcBufConversionMode(true);
+        }
+#if MSP_ESP_ROBOT_MODE == 1
+        if (returnSet) {
+//            closeADCBuf();
+            return returnFlag;
+        }
 #endif
     }
 }
@@ -126,8 +127,8 @@ void *mainThread(void *arg0)
 #if MSP_ROBOT_PID_CONTROL == 1
     robot->EnableDriveControl();
 #endif
-    // Some tests/debug things
-     //    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
+// Some tests/debug things
+//    robot->RunTachoCalibrations(targetSpeed_MMPS, duty_LUT, num_calibs);
 
 #if MSP_MIC_MEASUREMENT_PC_MODE==1
     Display_init();
@@ -148,8 +149,9 @@ void *mainThread(void *arg0)
 
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
-    generateSignatureSignals();
     openADCBuf();
+    setAdcBufConversionMode(true);
+    generateSignatureSignals();
 #endif
 
 #if BUMPER_INTERRUPTS == 1
@@ -179,8 +181,9 @@ void *mainThread(void *arg0)
                 robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
                 startIrTaskClock();
+                listenToLineDetection = true;
                 sem_wait(&lineDetectionSem);
-                stopIrTaskClock();
+                //stopIrTaskClock();
 #endif
                 robot->Stop();
                 robotState = INTER_LISTENING;
@@ -212,13 +215,20 @@ void *mainThread(void *arg0)
             case INTER_CROSSING:
                 robot->motorDriver->DriveForwards(STANDARD_FORWARD_SPEED);
 #if MSP_IR_SENSORS == 1
-                resetLineDetection();
-                startIrTaskClock();
+                clock_gettime(CLOCK_REALTIME, &ts);
+                /* LINE DETECTION DEBOUNCE, USE PRESS PAUSE SEM SINCE IT WON'T BE TRIGGERED ANYWAY AND NO MEMORY LEFT FOR ANOTHER SEM */
+                ts.tv_sec += 2;
+                sem_timedwait(&pressPauseSem, &ts);
+                listenToLineDetection = true;
+                //resetLineDetection();
+                //startIrTaskClock();
                 sem_wait(&lineDetectionSem);
                 stopIrTaskClock();
 #endif
                 robot->Stop();
                 robotState = IDLE;
+                break;
+            default:
                 break;
         }
 #else

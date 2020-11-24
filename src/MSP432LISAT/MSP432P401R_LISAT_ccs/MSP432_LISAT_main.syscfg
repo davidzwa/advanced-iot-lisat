@@ -72,7 +72,7 @@ Display1.uart.$name     = "UART_DEBUG";
 ADCBuf1.enableDMA                         = false;
 ADCBuf1.$name                             = "MIC_ADCBUF";
 ADCBuf1.channels                          = 3;
-ADCBuf1.interruptPriority                 = "1";
+ADCBuf1.interruptPriority                 = "3";
 ADCBuf1.adcBufChannel0.$name              = "CHANNEL_0";
 ADCBuf1.adcBufChannel0.referenceSource    = "2.5V";
 ADCBuf1.adcBufChannel0.adc.$assign        = "ADC14";
@@ -254,6 +254,7 @@ Timer2.timer.$assign = "TIMER32_0";
 
 UART1.$name              = "COMM_ESP";
 UART1.ringBufferSize     = 64;
+UART1.interruptPriority  = "2";
 UART1.uart.txPin.$assign = "boosterpack.3";
 UART1.uart.rxPin.$assign = "boosterpack.4";
 
