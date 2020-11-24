@@ -29,6 +29,7 @@ extern bool startAdcSampling;
 extern int16_t rms;
 
 void initADCBuf();
+void openADCBuf();
 void convertADCBuf();
 void closeADCBuf();
 void setAdcBufConversionMode(bool shortConversion);

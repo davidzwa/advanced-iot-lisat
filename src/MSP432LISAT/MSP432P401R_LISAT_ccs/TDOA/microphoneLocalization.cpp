@@ -38,10 +38,20 @@ void initADCBuf() {
 #endif
     adcBufParams.returnMode = ADCBuf_RETURN_MODE_CALLBACK;
     adcBufParams.callbackFxn = adcBufCompletionCallback;
-    adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
+}
 
+void openADCBuf() {
+    adcBuf = ADCBuf_open(MIC_ADCBUF, &adcBufParams);
+    if (!adcBuf){
+        /* AdcBuf did not open correctly. */
+        GPIO_write(LED_ERROR_2, 1);
+        while(1);
+    }
+    else {
+        startAdcSampling = true;
+    }
     /* Configure the conversion struct for 1-3 channels on same sequencer */
-    setAdcBufConversionMode(true);
+//    setAdcBufConversionMode(true);
 }
 
 void setAdcBufConversionMode(bool shortConversion) {
@@ -77,9 +87,9 @@ void setAdcBufConversionMode(bool shortConversion) {
 #endif
     conversionStruct[2].samplesRequestedCount = bufferLength;
 #endif
-    if (shortConversion != shortBufferMode) {
-        convertADCBuf();
-    }
+//    if (shortConversion != shortBufferMode) {
+//        convertADCBuf();
+//    }
     shortBufferMode = shortConversion;
 }
 
