@@ -72,47 +72,43 @@ bool awaitAudioByListening() {
     timespec startWaitTime;
     clock_gettime(CLOCK_MONOTONIC, &startWaitTime);
     convertADCBuf();
+
+    bool returnSet = false;
+    bool returnFlag = false;
     while(1) {
         timespec currentTime;
         clock_gettime(CLOCK_MONOTONIC, &currentTime);
 #if MIC_CONTINUOUS_SAMPLE == 0
         convertADCBuf();
 #endif
-            // This should not wait too long (less than 50ms), but just to be sure
-            currentTime.tv_sec+=1;
-            sem_timedwait(&adcbufSem, &currentTime);
+        // This should not wait too long (less than 50ms), but just to be sure
+        currentTime.tv_sec+=1;
+        sem_timedwait(&adcbufSem, &currentTime);
 
-            // Register time for the next part
+        // Register time for the next part
+        if(wasPreambleDetected()) {
+            resetPreambleDetectionHistory();
+            GPIO_toggle(LED_GREEN_2_GPIO);
+            returnFlag = true;
+            returnSet = true;
+        }
+        else {
+#if MSP_ESP_ROBOT_MODE == 1
             clock_gettime(CLOCK_MONOTONIC, &currentTime);
-#if MSP_MIC_RAW_MODE == 0
-            if(wasPreambleDetected()) {
-                resetPreambleDetectionHistory();
-                GPIO_write(LED_GREEN_2_GPIO, 1);
-#if MSP_ESP_ROBOT_MODE == 1
-                return true;
-#endif
-// DOA analysis goes one state further
-//                setAdcBufConversionMode(false);
-//                continue;
+            if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
+                returnFlag = false;
+                returnSet = true;
             }
-//            else if (shortBufferMode == false) {
-//                // DOA analysis
-//
-//            }
-            else {
-#if MSP_ESP_ROBOT_MODE == 1
-                if (currentTime.tv_sec > startWaitTime.tv_sec + MIC_SOUND_WAITING_SECONDS) {
-                    return false;
-                }
 #endif
-                setAdcBufConversionMode(true);
-                GPIO_write(LED_GREEN_2_GPIO, 0);
-            }
-#else
-    return false;
+            setAdcBufConversionMode(true);
+        }
+#if MSP_ESP_ROBOT_MODE == 1
+        if (returnSet) {
+            closeADCBuf();
+            return returnFlag;
+        }
 #endif
     }
-    closeADCBuf();
 }
 
 /*
@@ -153,8 +149,6 @@ void *mainThread(void *arg0)
     Display_printf(display, 0, 0, "Started MSP UART Display Driver\n");
     initADCBuf();
     generateSignatureSignals();
-//    openADCBuf();
-//    closeADCBuf();
 #endif
 
 #if BUMPER_INTERRUPTS == 1
@@ -170,6 +164,8 @@ void *mainThread(void *arg0)
     initLineDetectionSem();
     initIrTaskClock(robot);
 #endif
+
+    bool givePriority = awaitAudioByListening();
 
     while(1) {
 #if MSP_ESP_ROBOT_MODE==1
@@ -224,6 +220,8 @@ void *mainThread(void *arg0)
 #endif
                 robot->Stop();
                 robotState = IDLE;
+                break;
+            default:
                 break;
         }
 #else
